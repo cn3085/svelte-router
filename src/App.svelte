@@ -4,6 +4,9 @@
   import routes from "./js/routes";
   import Header from "./components/Header.svelte";
   import Nav from "./components/Nav.svelte";
+  import Login from "./pages/login/Login.svelte";
+
+  let isLoginUser = false;
 
   function conditionsFailed(event) {
     console.error("conditionsFailed event", event.detail);
@@ -15,18 +18,17 @@
   }
 </script>
 
-<Header />
-<Nav />
-<section id="content_area">
-  <Router
-    {routes}
-    on:conditionsFailed={conditionsFailed}
-    on:routeLoaded={routeLoaded}
-  />
-</section>
 
-<style>
-  #content_area {
-    margin-left: 50px;
-  }
-</style>
+{#if isLoginUser}
+  <Header />
+  <Nav />
+  <section id="content_area">
+    <Router
+      {routes}
+      on:conditionsFailed={conditionsFailed}
+      on:routeLoaded={routeLoaded}
+    />
+  </section>
+{:else}
+  <Login/>
+{/if}

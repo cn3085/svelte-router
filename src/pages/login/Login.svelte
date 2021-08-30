@@ -1,9 +1,10 @@
 <script>
     import {doLogin} from '../../js/LoginService';
+    import {replace} from 'svelte-spa-router'
     let username="";
     let password="";
 
-    function submitLogin(){
+    async function submitLogin(){
         if(!username){
             alert('아이디를 입력해주세요.');
             return;
@@ -13,7 +14,13 @@
             return;
         }
 
-        doLogin({userId:username, password: password});
+        const {code, message} = await doLogin({userId:username, password: password});
+
+        if(code === 'SUCC'){
+            replace('/')
+        }else{
+            alert(message);
+        }
     }
 </script>
 <div class="v_c_wrapper">

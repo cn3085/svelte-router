@@ -7,12 +7,15 @@
   import Login from "./pages/login/Login.svelte";
   import MemberList from './pages/member/MemberList.svelte';
   import Content from './components/Content.svelte';
+  import MemberRegist from './pages/member/MemberRegist.svelte';
 
   let page;
 
   router('/', () => page = Home)
   router('/about', () => page = About)
   router('/member', () => page = MemberList)
+  router('/member/regist', () => page = MemberRegist)
+  router('/login', () => page = Login)
 
   router.start();
 

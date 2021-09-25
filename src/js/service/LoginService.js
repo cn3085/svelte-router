@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const TOKEN_NAME = 'YOUTHCAFEAPPLICATION';
 
-export function isValidLogin(){
+export function getToken(){
     const loginToken = window.sessionStorage.getItem(TOKEN_NAME);
     return loginToken;
 }

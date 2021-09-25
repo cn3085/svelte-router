@@ -15,10 +15,10 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" >회원등록</a>
+                          <a href="/member/regist" >회원등록</a>
                       </li>
                       <li>
-                          <a href="http://" >회원조회</a>
+                          <a href="/member" >회원조회</a>
                       </li>
                   </ul>
               </div>
@@ -35,12 +35,12 @@
               </div>
               <div class="sub_menu">
                   <ul>
-                      <li>
-                          <a href="http://" >회원등록</a>
-                      </li>
-                      <li>
-                          <a href="http://" >회원조회</a>
-                      </li>
+                        <li>
+                            <a href="/member/regist" >회원등록</a>
+                        </li>
+                        <li>
+                            <a href="/member" >회원조회</a>
+                        </li>
                   </ul>
               </div>
           </div>

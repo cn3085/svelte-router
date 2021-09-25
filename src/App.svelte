@@ -6,6 +6,7 @@
   import Home from './pages/Home.svelte';
   import Login from "./pages/login/Login.svelte";
   import MemberList from './pages/member/MemberList.svelte';
+  import Content from './components/Content.svelte';
 
   let page;
 
@@ -20,9 +21,7 @@
 
   <Header />
   <Nav />
-  <section id="content_area">
-    <svelte:component this={page}/>
-  </section>
+  <Content contentComponent={page}/>
 {#if false}
   <Login/>
 {/if}

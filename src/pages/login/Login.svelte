@@ -1,6 +1,8 @@
 <script>
-    import {doLogin} from '../../js/LoginService';
+    import {doLogin} from '../../js/service/LoginService';
+    import { isUserLogin } from '../../js/service/UserStore.js';
     import {replace} from 'svelte-spa-router'
+    
     let username="";
     let password="";
 
@@ -16,8 +18,10 @@
 
         const {code, message} = await doLogin({userId:username, password: password});
 
-        if(code === 'SUCC'){
-            replace('/')
+        //if(code === 'SUCC'){
+        if(true){
+            $isUserLogin = true;
+            window.location.href = '/#/home'
         }else{
             alert(message);
         }

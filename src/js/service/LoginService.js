@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {replace} from 'svelte-spa-router'
 
 export const TOKEN_NAME = 'YOUTHCAFEAPPLICATION';
 
@@ -31,4 +32,6 @@ export async function doLogin(loginData){
 
 export function doLogout(){
     window.sessionStorage.removeItem(TOKEN_NAME);
+    window.location.href = '/';
+
 }

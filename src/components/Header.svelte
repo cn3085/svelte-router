@@ -1,5 +1,5 @@
 <script>
-    import {doLogout} from '../js/LoginService'
+    import {doLogout} from '../js/service/LoginService'
 </script>
 
 <div id="header">

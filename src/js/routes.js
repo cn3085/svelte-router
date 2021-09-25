@@ -1,10 +1,11 @@
 import { wrap } from "svelte-spa-router/wrap";
 import Login from "../pages//login/Login.svelte";
 import Home from "../pages/Home.svelte";
+import MemberList from "../pages/member/MemberList.svelte";
 import About from "../pages/About.svelte";
 import Blog from "../pages/Blog.svelte";
 import NotFound from "../pages/NotFound.svelte";
-import {isValidLogin} from './LoginService.js'
+import {isValidLogin} from './service/LoginService.js'
 
 const routes = {
   "/": wrap({
@@ -17,6 +18,11 @@ const routes = {
   }),
   "/home": wrap({
     component: Home,
+    conditions: [
+    ],
+  }),
+  "/member": wrap({
+    component: MemberList,
     conditions: [
     ],
   }),

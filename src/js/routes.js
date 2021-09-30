@@ -1,11 +1,25 @@
 import { wrap } from "svelte-spa-router/wrap";
+import Login from "../pages//login/Login.svelte";
 import Home from "../pages/Home.svelte";
 import About from "../pages/About.svelte";
 import Blog from "../pages/Blog.svelte";
 import NotFound from "../pages/NotFound.svelte";
+import {isValidLogin} from './LoginService.js'
 
 const routes = {
-  "/": Home,
+  "/": wrap({
+    component: Login,
+    conditions: [
+      // () => {
+      //   return isValidLogin();
+      // }
+    ]
+  }),
+  "/home": wrap({
+    component: Home,
+    conditions: [
+    ],
+  }),
   "/about": wrap({
     component: About,
     conditions: [

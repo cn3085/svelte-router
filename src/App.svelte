@@ -4,6 +4,7 @@
   import routes from "./js/routes";
   import Header from "./components/Header.svelte";
   import Nav from "./components/Nav.svelte";
+  import Toasts from "./components/Toasts.svelte";
 
   function conditionsFailed(event) {
     console.error("conditionsFailed event", event.detail);
@@ -24,6 +25,7 @@
     on:routeLoaded={routeLoaded}
   />
 </section>
+<Toasts />
 
 <style>
   #content_area {

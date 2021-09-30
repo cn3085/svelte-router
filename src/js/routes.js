@@ -9,10 +9,10 @@ const routes = {
   "/about": wrap({
     component: About,
     conditions: [
-      (detail) => {
-        console.log(detail);
-        return false;
-      },
+      // (detail) => {
+      //   console.log(detail);
+      //   return false;
+      // },
     ],
   }),
   "/blog": wrap({

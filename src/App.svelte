@@ -4,17 +4,7 @@
   import routes from "./js/routes";
   import Header from "./components/Header.svelte";
   import Nav from "./components/Nav.svelte";
-  import Login from "./pages/login/Login.svelte";
-  import {isValidLogin} from './js/service/LoginService'
-  import { isUserLogin } from "./js/service/UserStore";
-
-  if(isValidLogin()){//여기서 login체크
-    $isUserLogin = true;
-  }else{
-    $isUserLogin = false;
-  }
-
-  console.log('app render');
+  import Toasts from "./components/Toasts.svelte";
 
   function conditionsFailed(event) {
     console.error("conditionsFailed event", event.detail);
@@ -31,6 +21,16 @@
   }
 </script>
 
+<Header />
+<Nav />
+<section id="content_area">
+  <Router
+    {routes}
+    on:conditionsFailed={conditionsFailed}
+    on:routeLoaded={routeLoaded}
+  />
+</section>
+<Toasts />
 
 {#if $isUserLogin}
   <Header />
@@ -43,5 +43,5 @@
     />
   </section>
 {:else}
-  <Login/>
+  <Login />
 {/if}

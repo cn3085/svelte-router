@@ -1,9 +1,8 @@
 import axios from 'axios';
-import {replace} from 'svelte-spa-router'
 
 export const TOKEN_NAME = 'YOUTHCAFEAPPLICATION';
 
-export function isValidLogin(){
+export function getToken(){
     const loginToken = window.sessionStorage.getItem(TOKEN_NAME);
     return loginToken;
 }

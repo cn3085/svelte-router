@@ -54,6 +54,10 @@ textarea:focus {
   border: 1px solid white;
 }
 
+.button {
+  border: none;
+}
+
 .input:focus {
   animation-name: border-focus;
   animation-duration: 0.2s;
@@ -155,6 +159,9 @@ select.w1 {
   display: inline-block;
   margin-left: 5%;
 }
+.form_group.button_group {
+  margin-bottom: 50px;
+}
 .form_line {
   margin-bottom: 22px;
 }
@@ -177,6 +184,9 @@ button {
   cursor: pointer;
 }
 
+.submit{
+  background: #ffea71;
+}
 .submit:hover {
   background: #ffea71;
   box-shadow: 1px 1px #d9d9d9;

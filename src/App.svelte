@@ -1,47 +1,32 @@
 <script>
-  import Router from "svelte-spa-router";
-  import { replace } from "svelte-spa-router";
-  import routes from "./js/routes";
+  import router from 'page'
   import Header from "./components/Header.svelte";
   import Nav from "./components/Nav.svelte";
   import Toasts from "./components/Toasts.svelte";
+  import About from './pages/About.svelte';
+  import Home from './pages/Home.svelte';
+  import Login from "./pages/login/Login.svelte";
+  import MemberList from './pages/member/MemberList.svelte';
+  import Content from './components/Content.svelte';
+  import MemberRegist from './pages/member/MemberRegist.svelte';
 
-  function conditionsFailed(event) {
-    console.error("conditionsFailed event", event.detail);
-    replace("/");
-  }
+  let page;
 
-  function routeLoaded(event) {
-    console.log("routedLoaded", event.detail);
-    if(isValidLogin()){//여기서 login체크
-      $isUserLogin = true;
-    }else{
-      $isUserLogin = false;
-    }
-  }
+  router('/', () => page = Home)
+  router('/about', () => page = About)
+  router('/member', () => page = MemberList)
+  router('/member/regist', () => page = MemberRegist)
+  router('/login', () => page = Login)
+
+  router.start();
+
+  console.log('app render');
 </script>
 
-<Header />
-<Nav />
-<section id="content_area">
-  <Router
-    {routes}
-    on:conditionsFailed={conditionsFailed}
-    on:routeLoaded={routeLoaded}
-  />
-</section>
-<Toasts />
-
-{#if $isUserLogin}
   <Header />
   <Nav />
-  <section id="content_area">
-    <Router
-      {routes}
-      on:conditionsFailed={conditionsFailed}
-      on:routeLoaded={routeLoaded}
-    />
-  </section>
-{:else}
-  <Login />
+  <Content contentComponent={page}/>
+{#if false}
+  <Login/>
 {/if}
+  <Toasts />

@@ -1,7 +1,6 @@
 <script>
     import {doLogin} from '../../js/service/LoginService';
     import { isUserLogin } from '../../js/service/UserStore.js';
-    import {replace} from 'svelte-spa-router'
     
     let username="";
     let password="";

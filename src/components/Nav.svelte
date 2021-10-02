@@ -1,6 +1,4 @@
 <script>
-  import { link } from "svelte-spa-router";
-  import active from "svelte-spa-router/active";
 </script>
 
 <nav id="nav">
@@ -17,10 +15,10 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" use:link use:active>회원등록</a>
+                          <a href="/member/regist" >회원등록</a>
                       </li>
                       <li>
-                          <a href="http://" use:link use:active>회원조회</a>
+                          <a href="/member" >회원조회</a>
                       </li>
                   </ul>
               </div>
@@ -37,12 +35,12 @@
               </div>
               <div class="sub_menu">
                   <ul>
-                      <li>
-                          <a href="http://" use:link use:active>회원등록</a>
-                      </li>
-                      <li>
-                          <a href="http://" use:link use:active>회원조회</a>
-                      </li>
+                        <li>
+                            <a href="/member/regist" >회원등록</a>
+                        </li>
+                        <li>
+                            <a href="/member" >회원조회</a>
+                        </li>
                   </ul>
               </div>
           </div>
@@ -59,10 +57,10 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" use:link use:active>회원등록</a>
+                          <a href="http://" >회원등록</a>
                       </li>
                       <li>
-                          <a href="http://" use:link use:active>회원조회</a>
+                          <a href="http://" >회원조회</a>
                       </li>
                   </ul>
               </div>
@@ -80,10 +78,10 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" use:link use:active>회원등록</a>
+                          <a href="http://" >회원등록</a>
                       </li>
                       <li>
-                          <a href="http://" use:link use:active>회원조회</a>
+                          <a href="http://" >회원조회</a>
                       </li>
                   </ul>
               </div>
@@ -101,10 +99,10 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" use:link use:active>회원등록</a>
+                          <a href="http://" >회원등록</a>
                       </li>
                       <li>
-                          <a href="http://" use:link use:active>회원조회</a>
+                          <a href="http://" >회원조회</a>
                       </li>
                   </ul>
               </div>
@@ -115,13 +113,13 @@
 
 <!-- <nav>
   <div>
-    <a href="/" use:link use:active>Home</a>
+    <a href="/" >Home</a>
   </div>
   <div>
-    <a href="/about" use:link use:active>About</a>
+    <a href="/about" >About</a>
   </div>
   <div>
-    <a href="/blog" use:link use:active>Blog</a>
+    <a href="/blog" >Blog</a>
   </div>
 </nav> -->
 

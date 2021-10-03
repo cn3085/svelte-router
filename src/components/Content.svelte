@@ -1,9 +1,25 @@
 <script>
+import Login from "../pages/login/Login.svelte";
+
+    import Header from "./Header.svelte";
+    import Nav from "./Nav.svelte";
+    
     export let contentComponent;
+
+    if(contentComponent === Login){
+        console.log('yes');
+    }
 </script>
-<section id="content_area">
-    <svelte:component this={contentComponent}/>
-</section>
+
+{#if contentComponent === Login}
+    <Login></Login>
+{:else}
+    <Header />
+    <Nav />
+    <section id="content_area">
+        <svelte:component this={contentComponent}/>
+    </section>
+{/if}
 
 <style>
     #content_area{

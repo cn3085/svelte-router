@@ -1,16 +1,18 @@
 <script>
     import {getAxios} from '../../js/service/AuthAxios'
+    import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import router from 'page'
-    const titleName = '회원 등록';
 
+    const titleName = '회원 등록';
+    
     let member = {
         name : {
             value : null,
             require : true,
         },
         sex : {
-            value : null,
+            value : 'M',
             require : true
         },
         birth : {
@@ -39,16 +41,12 @@
         },
     }
 
-    function selectSex(e){
-        member.sex.value = e.target.value;
-        console.log(member.sex.value);
-    }
 
     function registMember(){
         const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
         
         if(emptyRequiredKey.length > 0){
-            alert('이름, 성별, 생년월일은 필수값입니다.');
+            alertError(5000, '이름, 성별, 생년월일은 필수값입니다.');
             return false;
         }
 
@@ -63,10 +61,25 @@
             school: member.school.value,
             grade: member.grade.value,
             memo: member.memo.value
-        }).then(res => console.log(res))
+        }).then(res => {
+            console.log(res);
+            if(res.status === 200 && res.data.code === 'SUCC'){
+                alertSuccess(3000, res.data.message);
+            }
+        })
         .catch(res => {
             console.error(res);
             router.replace('/login');
+        })
+    }
+
+
+    function duplicateCheck(){
+        const request = getAxios();
+        request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
+        .then(res => console.log(res))
+        .catch(res => {
+            console.error(res);
         })
     }
 </script>
@@ -79,7 +92,7 @@
                     이름<span class="necessary">*</span>
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" bind:value={member.name.value} placeholder="이름을 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.name.value} placeholder="이름을 입력하세요.">
                 </div>
             </div>
             <div class="form_group">
@@ -87,8 +100,12 @@
                     성별<span class="necessary">*</span>
                 </div>
                 <div class="input_form">
-                    <button class="input w1" type="button" name="sexType" value="M" on:click={selectSex}>남</button>
-                    <button class="input w1" type="button" name="sexType" value="W" on:click={selectSex}>여</button>
+                    <label for="sex-type-m">
+                        남<input class="input w1" id="sex-type-m" type="radio" name="sexType" value="M" bind:group={member.sex.value}>
+                    </label>
+                    <label for="sex-type-w">
+                        여<input class="input w1" id="sex-type-w" type="radio" name="sexType" value="W" bind:group={member.sex.value}>
+                    </label>
                 </div>
             </div>
         </div>
@@ -108,7 +125,7 @@
                     학교
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
                 </div>
             </div>
             <div class="form_group">
@@ -136,7 +153,7 @@
                     연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
                 </div>
             </div>
             <div class="form_group">
@@ -144,7 +161,7 @@
                     연락처2
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" bind:value={member.parentPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
                 </div>
             </div>
         </div>

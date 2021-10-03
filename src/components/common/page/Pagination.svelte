@@ -3,35 +3,47 @@
     import IconGoBefore from "./IconGoBefore.svelte";
     import IconGoAfter from "./IconGoAfter.svelte";
     import IconGoLast from "./IconGoLast.svelte";
+    import { pageable } from "../../../js/page_store";
+
+    // export let number = 0;
+    // export let totalPages = 1;
+    // export let first = false;
+    // export let last = false;
+    export let getList;
+
+    async function goPage(clickedPage){
+        // $pageable.showNumber = clickedPage;
+        await getList(clickedPage - 1);
+    }
+
 </script>
 <div id="page_navigation_area">
     <div id="page_before_area">
-        <div class="page_nav_btn svg_wrapper">
-            <IconGoFirst/>
-        </div>
-        <div class="page_nav_btn svg_wrapper">
-            <IconGoBefore/>
-        </div>
+        {#if $pageable.firstPageNum !== 1}
+            <div class="page_nav_btn svg_wrapper">
+                    <IconGoFirst/>
+            </div>
+            <div class="page_nav_btn svg_wrapper">
+                    <IconGoBefore/>
+            </div>
+        {/if}
     </div>
     <div id="page_numbers_area">
-        <div class="page_number"><a href=""> 1 </a> </div>
-        <div class="page_number"><a href=""> 2 </a> </div>
-        <div class="page_number"><a href=""> 3 </a> </div>
-        <div class="page_number"><a href=""> 4 </a> </div>
-        <div class="page_number"><a href=""> 5 </a> </div>
-        <div class="page_number"><a href=""> 6 </a> </div>
-        <div class="page_number"><a href=""> 7 </a> </div>
-        <div class="page_number"><a href=""> 8 </a> </div>
-        <div class="page_number"><a href=""> 9 </a> </div>
-        <div class="page_number selected"><a href=""> 10 </a> </div>
+        {#each $pageable.pageNumbers as p}
+            <div class="page_number" class:selected={$pageable.showNumber === p} on:click={() => goPage(p)}>
+                <p> {p} </p>
+            </div>
+        {/each}
     </div>
     <div id="page_after_area">
-        <div class="page_nav_btn svg_wrapper">
-            <IconGoAfter/>
-        </div>
-        <div class="page_nav_btn svg_wrapper">
-            <IconGoLast/>
-        </div>
+        {#if $pageable.pageNumbers[-1] === $pageable.totalPages}
+            <div class="page_nav_btn svg_wrapper">
+                <IconGoAfter/>
+            </div>
+            <div class="page_nav_btn svg_wrapper">
+                <IconGoLast/>
+            </div>
+        {/if}
     </div>
 </div>
 
@@ -71,6 +83,10 @@
 
     .page_number.selected{
         background-color: #ffea71;
+        font-weight: bolder;
+    }
+    .page_number>p:hover{
+        cursor: pointer;
         font-weight: bolder;
     }
 </style>

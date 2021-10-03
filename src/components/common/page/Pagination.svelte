@@ -36,7 +36,7 @@
         {/each}
     </div>
     <div id="page_after_area">
-        {#if $pageable.pageNumbers[-1] === $pageable.totalPages}
+        {#if $pageable.pageNumbers.slice(-1) === $pageable.totalPages}
             <div class="page_nav_btn svg_wrapper">
                 <IconGoAfter/>
             </div>

@@ -31,60 +31,77 @@
 </script>
 
 <article
-  class={type}
   role="alert"
   transition:fade
   on:mouseleave={resumeDismiss}
   on:mouseenter={pauseDismiss}
 >
-  {#if type === "success"}
-    <SuccessIcon width="1.1em" />
-  {:else if type === "error"}
-    <ErrorIcon width="1.1em" />
-  {:else}
-    <InfoIcon width="1.1em" />
-  {/if}
-
-  <div class="text">
-    <slot />
+  <div class="alert_tag {type}"></div>
+  <div class="alert_content">
+    {#if type === "success"}
+      <SuccessIcon width="1.1em" />
+    {:else if type === "error"}
+      <ErrorIcon width="1.1em" />
+    {:else}
+      <InfoIcon width="1.1em" />
+    {/if}
+  
+    <div class="text">
+      <slot />
+    </div>
+  
+    {#if dismissible}
+      <div class="close" on:click={() => dispatch("dismiss")}>
+        <CloseIcon width="0.8em" />
+      </div>
+    {/if}
   </div>
-
-  {#if dismissible}
-    <button class="close" on:click={() => dispatch("dismiss")}>
-      <CloseIcon width="0.8em" />
-    </button>
-  {/if}
 </article>
 
 <style>
   article {
     color: white;
-    padding: 0.75rem 1.5rem;
     border-radius: 0.2rem;
     display: inline-flex;
-    align-items: center;
     margin: 0 0 0.5rem 0;
     width: 20rem;
+    box-shadow: 0 10px 20px 0 rgba(155, 155, 155, 0.16);
+    border: solid 1px #d9d9d9;
+    background-color: #fff
+  }
+  .alert_tag{
+    width: 5px;
+    height: auto;
+  }
+  .alert_content{
+    display: flex;
+    padding: 5px 20px;
+    width: 100%;
   }
   .error {
-    background: IndianRed;
+    background: #ed314f;
+  }
+  .warn {
+    background: SkyBlue;
   }
   .success {
-    background: MediumSeaGreen;
+    background: #91d656;
   }
   .info {
-    background: SkyBlue;
+    background: #ffcb30;
   }
   .text {
     margin-left: 1rem;
   }
-  button {
-    color: white;
+  .close {
+    color: #707070;
     background: transparent;
     border: 0 none;
     padding: 0;
     margin: 0 0 0 auto;
     line-height: 1;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
   }
 </style>

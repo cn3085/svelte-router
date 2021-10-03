@@ -2,17 +2,4 @@
   export let width = "1em";
 </script>
 
-<svg
-  {width}
-  style="text-align: center; display: inline-block;"
-  aria-hidden="true"
-  focusable="false"
-  role="img"
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 512 512"
->
-  <path
-    fill="currentColor"
-    d="M256 40c118.621 0 216 96.075 216 216 0 119.291-96.61 216-216 216-119.244 0-216-96.562-216-216 0-119.203 96.602-216 216-216m0-32C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm-36 344h12V232h-12c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12h48c6.627 0 12 5.373 12 12v140h12c6.627 0 12 5.373 12 12v8c0 6.627-5.373 12-12 12h-72c-6.627 0-12-5.373-12-12v-8c0-6.627 5.373-12 12-12zm36-240c-17.673 0-32 14.327-32 32s14.327 32 32 32 32-14.327 32-32-14.327-32-32-32z"
-  />
-</svg>
+<svg {width} xmlns="http://www.w3.org/2000/svg" id="레이어_1" data-name="레이어 1" viewBox="0 0 22 22"><defs><style>.cls-1{fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;}.cls-2-info{fill:#ffcb30;}.cls-3{fill:#fff;}</style></defs><polyline class="cls-1" points="7.5 12 10.5 16 15.5 8"/><polygon class="cls-2-info" points="11 1 0.5 19 21.5 19 11 1"/><line class="cls-1" x1="11" y1="7.86" x2="11" y2="13.32"/><circle class="cls-3" cx="11" cy="15.64" r="0.5"/></svg>

@@ -35,10 +35,10 @@
 
   .toast_title {
     font-weight: bolder;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .toast_message {
-    font-size: 14px;
+    font-size: 12px;
   }
 </style>

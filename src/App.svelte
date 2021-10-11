@@ -8,6 +8,7 @@
   import MemberList from './pages/member/MemberList.svelte';
   import Content from './components/Content.svelte';
   import MemberRegist from './pages/member/MemberRegist.svelte';
+  import MemberDetail from './pages/member/MemberDetail.svelte';
 
   let page;
   let params;
@@ -20,7 +21,14 @@
     next();
   }, () => page = MemberList)
   router('/member/regist', () => page = MemberRegist)
+  router('/member/detail/:id', (ctx, next) => {
+    params = ctx.params;
+    console.log(params);
+    console.log(ctx);
+    next();
+  }, () => page = MemberDetail)
   router('/login', () => page = Login)
+  router('/*', () => page = Login) //ERROR페이지로 보내기
 
   router.start();
 
@@ -28,7 +36,7 @@
 </script>
 
 
-  <Content contentComponent={page}/>
+  <Content contentComponent={page} {params}/>
 {#if false}
   <Login/>
 {/if}

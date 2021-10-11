@@ -7,6 +7,7 @@
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
     import { onMount, tick } from 'svelte';
+    import page from 'page';
 
     const titleName = '회원 조회';
 
@@ -39,14 +40,10 @@
         }
     }
 
-    onMount(async () => {
-        await getList();
-    })
 
     async function searchMember(){
         await getList();
         await tick();
-
     }
 
     function clearBirthParam(){
@@ -60,18 +57,14 @@
         }
     }
 
-    // async function getMemberList(){
-    //     const res = await request.get('/v1/members?' + makeQueryString(searchParam));
-    //     const data = res.data;
-    //     if(res.status === 200 && data.code === 'SUCC'){
-    //         console.log(data.data);
-    //         return await data.data;
-    //     }
-    //     // .then(res => console.log(res))
-    //     // .catch(res => {
-    //     //     console.error(res);
-    //     // })
-    // }
+
+    onMount(async () => {
+        await getList();
+    })
+    
+    function goToDetailPage(memberId){
+        page.show('/member/detail/' + memberId + '?' + makeQueryString(searchParam));
+    }
 
     
 </script>
@@ -182,7 +175,8 @@
                         birth = {m.birth}
                         myPhoneNumber = {m.myPhoneNumber}
                         school = {m.school}
-                        i = {pageMaxNumber - index}/>
+                        i = {pageMaxNumber - index}
+                        {goToDetailPage}/>
         {:else}
             <td colspan="6">데이터가 존재하지 않습니다.</td>
         {/each}

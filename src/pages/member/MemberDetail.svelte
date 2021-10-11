@@ -3,8 +3,14 @@
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import router from 'page'
+    import { onMount } from 'svelte';
+import page from 'page';
 
-    const titleName = '회원 등록';
+    export let params;
+
+    const memberId = params.id;
+
+    const titleName = '회원 조회';
     
     let member = {
         name : {
@@ -42,7 +48,7 @@
     }
 
 
-    function registMember(){
+    function updateMember(){
         const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
         
         if(emptyRequiredKey.length > 0){
@@ -50,9 +56,13 @@
             return false;
         }
 
+        if(!confirm('회원 정보를 수정하시겠습니까?')){
+            return false;
+        }
+
         const request = getAxios();
 
-        request.post('/v1/members', {
+        request.put('/v1/members/' + memberId, {
             name: member.name.value,
             sex: member.sex.value,
             birth: member.birth.value,
@@ -74,14 +84,71 @@
     }
 
 
+    function removeMember(){
+        if(!confirm('정말로 회원 정보를 삭제하시겠습니까?')){
+            return false;
+        }
+
+        const request = getAxios();
+
+        request.delete('/v1/members/' + memberId)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200 && res.data.code === 'SUCC'){
+                alertSuccess(3000, res.data.message);
+                page.replace('/member')
+            }
+        })
+        .catch(res => {
+            console.error(res);
+            router.replace('/login');
+        })
+    }
+
+
+    function goToListPage(){
+        page.show('/member');
+    }
+
+
     function duplicateCheck(){
         const request = getAxios();
         request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
-        .then(res => console.log(res))
-        .catch(res => {
-            console.error(res);
-        })
+            .then(res => console.log(res))
+            .catch(res => {
+                console.error(res);
+            })
     }
+
+
+    function bindMemberData(memberData){
+        member.name.value = memberData.name;
+        member.birth.value = memberData.birth;
+        member.grade.value = memberData.grade;
+        member.memo.value = memberData.memo;
+        member.myPhoneNumber.value = memberData.myPhoneNumber;
+        member.parentPhoneNumber.value = memberData.parentPhoneNumber;
+        member.school.value = memberData.school;
+        member.sex.value = memberData.sex;
+    }
+
+    onMount(async () => {
+        const request = getAxios();
+        request.get('/v1/members/' + memberId)
+            .then( res => {
+                if(res.status === 200 && res.data.code === 'SUCC'){
+                    console.log(res.data.data);
+                    bindMemberData(res.data.data);
+                }else{
+                    alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
+                }
+            })
+            .catch( res => {
+                console.error(res);
+                alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
+            });
+
+    })
 </script>
 <ContentTitle {titleName}/>
 <div id="content_body">
@@ -175,9 +242,15 @@
                 </div>
             </div>
         </div>
-        <div class="form_line">
+        <div class="form_line w10">
             <div class="form_group button_group">
-                <button class="success_btn submit w4" type="button" on:click={registMember}>회원등록</button>
+                <button class="success_btn submit w2" type="button" on:click={updateMember}>수정</button>
+            </div>
+            <div class="form_group button_group">
+                <button class="warn_btn submit w2" type="button" on:click={removeMember}>삭제</button>
+            </div>
+            <div class="form_group button_group stick_r">
+                <button class="list_btn submit w2" type="button" on:click={goToListPage}>목록</button>
             </div>
         </div>
     </div>

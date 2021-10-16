@@ -6,6 +6,7 @@ import Login from "../pages/login/Login.svelte";
     
     export let contentComponent;
     export let params;
+    export let querystring;
 
     if(contentComponent === Login){
         console.log('yes');
@@ -18,7 +19,7 @@ import Login from "../pages/login/Login.svelte";
     <Header />
     <Nav />
     <section id="content_area">
-        <svelte:component this={contentComponent} {params}/>
+        <svelte:component this={contentComponent} {params} {querystring}/>
     </section>
 {/if}
 

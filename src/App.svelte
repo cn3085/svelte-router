@@ -12,6 +12,7 @@
 
   let page;
   let params;
+  let querystring;
 
   router('/', () => page = Home)
   router('/about', () => page = About)
@@ -23,6 +24,7 @@
   router('/member/regist', () => page = MemberRegist)
   router('/member/detail/:id', (ctx, next) => {
     params = ctx.params;
+    querystring = ctx.querystring;
     console.log(params);
     console.log(ctx);
     next();
@@ -36,7 +38,7 @@
 </script>
 
 
-  <Content contentComponent={page} {params}/>
+  <Content contentComponent={page} {params} {querystring}/>
 {#if false}
   <Login/>
 {/if}

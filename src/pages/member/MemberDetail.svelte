@@ -4,9 +4,10 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import router from 'page'
     import { onMount } from 'svelte';
-import page from 'page';
+    import page from 'page';
 
     export let params;
+    export let querystring;
 
     const memberId = params.id;
 
@@ -107,7 +108,7 @@ import page from 'page';
 
 
     function goToListPage(){
-        page.show('/member');
+        page.show('/member?' + querystring);
     }
 
 

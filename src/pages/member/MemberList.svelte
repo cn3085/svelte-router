@@ -7,20 +7,25 @@
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
     import { onMount, tick } from 'svelte';
+    import { parse } from "querystring";
     import page from 'page';
 
+
+    export let querystring;
+    let queryObj = parse(querystring);
     const titleName = '회원 조회';
+
 
     
     let searchParam = {
-        nm: null,
-        st: '',
-        ab: null,
-        mp: null,
-        pp: null,
-        sch: null,
-        gd: '',
-        page: null
+        nm: queryObj.nm ?? null,
+        st: queryObj.st ?? '',
+        ab: queryObj.ab ??null,
+        mp: queryObj.mp ??null,
+        pp: queryObj.pp ??null,
+        sch: queryObj.sch ??null,
+        gd: queryObj.gd ??'',
+        page: queryObj.page ??null
     };
 
     const request = getAxios();

@@ -3,11 +3,12 @@
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import ErrorIcon from '../../components/ErrorIcon.svelte'
+    import SuccessIcon from '../../components/SuccessIcon.svelte'
     import router from 'page'
 
     const titleName = '회원 등록';
 
-    let myPhoneNumberDuplicate = undefined;
+    let isMyPhoneNumberDuplicate = undefined;
     
     let member = {
         name : {
@@ -78,11 +79,21 @@
 
 
     function duplicateCheck(){
+
+        let myPhoneNumberValue = member.myPhoneNumber.value;
+
+        if(myPhoneNumberValue === ''){
+            isMyPhoneNumberDuplicate = undefined;
+            return;
+        }
         const request = getAxios();
         request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
         .then(res => {
             if(res.status === 200 && res.data.code === 'FAIL'){
+                isMyPhoneNumberDuplicate = true;
                 alertError(3000, '이미 등록된 연락처입니다.');
+            }else if(res.status === 200 && res.data.code === 'SUCC'){
+                isMyPhoneNumberDuplicate = false;
             }
         })
         .catch(res => {
@@ -161,8 +172,12 @@
                 </div>
                 <div class="input_form">
                     <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
-                    <div>
-                        <ErrorIcon/>
+                    <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
+                        {#if isMyPhoneNumberDuplicate === true}
+                            <ErrorIcon/>
+                        {:else if isMyPhoneNumberDuplicate === false}
+                            <SuccessIcon/>
+                        {/if}
                     </div>
                 </div>
             </div>

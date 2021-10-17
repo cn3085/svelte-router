@@ -179,6 +179,7 @@ select.w1 {
 
 .input_form {
   display: inline-block;
+  position: relative;
 }
 
 input::placeholder {

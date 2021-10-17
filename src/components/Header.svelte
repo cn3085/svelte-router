@@ -24,6 +24,7 @@
     width: 100%;
     top: 0;
     display: flex;
+    z-index: 9;
 }
 
 .top_logo_box{

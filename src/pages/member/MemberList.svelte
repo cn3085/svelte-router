@@ -22,22 +22,33 @@
     const titleName = '회원 조회';
     
     let searchParam = {
-        nm: queryObj.get('nm') ?? null,
-        st: queryObj.get('st') ?? '',
-        ab: queryObj.get('ab') ?? null,
-        mp: queryObj.get('mp') ?? null,
-        pp: queryObj.get('pp') ?? null,
-        sch: queryObj.get('sch') ?? null,
-        gd: queryObj.get('gd') ?? '',
-        page: queryObj.get('page') ?? null
+        nm: null,
+        st: '',
+        ab: null,
+        mp: null,
+        pp: null,
+        sch: null,
+        gd: '',
+        page: null
     };
+
+    console.log(searchParam);
 
     const request = getAxios();
 
     let pageMaxNumber = 0;
 
     async function getList(pageNum){
+        
+        searchParam.nm =  queryObj.get('nm');
+        searchParam.st =  queryObj.get('st');
+        searchParam.ab =  queryObj.get('ab');
+        searchParam.mp =  queryObj.get('mp');
+        searchParam.pp =  queryObj.get('pp');
+        searchParam.sch =  queryObj.get('sch');
+        searchParam.gd =  queryObj.get('gd');
         searchParam.page = pageNum;
+
         const res = await request.get('/v1/members?' + makeQueryString(searchParam));
         const data = res.data;
         if(res.status === 200 && data.code === 'SUCC'){

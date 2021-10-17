@@ -43,7 +43,7 @@
                         </li>
                         <li>
                             <a class="sub_name"
-                               class:active_menu={$pathname === '/member'}
+                               class:active_menu={$pathname === '/member' || $pathname.includes('/member/detail')}
                                href="/member" >회원조회</a>
                         </li>
                   </ul>

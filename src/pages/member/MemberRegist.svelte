@@ -5,6 +5,7 @@
     import ErrorIcon from '../../components/ErrorIcon.svelte'
     import SuccessIcon from '../../components/SuccessIcon.svelte'
     import router from 'page'
+import page from 'page';
 
     const titleName = '회원 등록';
 
@@ -69,6 +70,7 @@
             console.log(res);
             if(res.status === 200 && res.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
+                page.replace('/member/detail/' + res.data.data.memberId);
             }
         })
         .catch(res => {

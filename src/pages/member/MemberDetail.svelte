@@ -122,6 +122,10 @@
             })
     }
 
+    onMount(async () => {
+        window.scrollTo(0,0);
+    })
+
 
     function bindMemberData(memberData){
         member.name.value = memberData.name;
@@ -246,10 +250,10 @@
         </div>
         <div class="form_line w10">
             <div class="form_group button_group">
-                <button class="success_btn submit w2" type="button" on:click={updateMember}>수정</button>
+                <button class="success_btn submit w2" type="button" on:click={updateMember}>회원 수정</button>
             </div>
             <div class="form_group button_group">
-                <button class="warn_btn submit w2" type="button" on:click={removeMember}>삭제</button>
+                <button class="warn_btn submit w2" type="button" on:click={removeMember}>회원 삭제</button>
             </div>
             <div class="form_group button_group stick_r">
                 <button class="list_btn submit w2" type="button" on:click={goToListPage}>목록</button>

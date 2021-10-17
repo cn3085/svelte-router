@@ -244,12 +244,12 @@ textarea {
 
 
 .success_btn.submit{
-  background-color: #91d656;
+  background-color: #ffea71;
 }
 
 .warn_btn.submit {
-  background-color: #ed314f;
-  color: white;
+  color: #ed314f;
+  border: 1px solid #ed314f;
 }
 
 .list_btn.submit {

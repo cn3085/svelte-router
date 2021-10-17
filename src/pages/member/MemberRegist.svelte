@@ -2,10 +2,11 @@
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
-    import ErrorIcon from '../../components/ErrorIcon.svelte'
-    import SuccessIcon from '../../components/SuccessIcon.svelte'
+    import ErrorIcon from '../../components/icon/ErrorIcon.svelte'
+    import SuccessIcon from '../../components/icon/SuccessIcon.svelte'
+    import ListIcon from '../../components/icon/ListIcon.svelte'
     import router from 'page'
-import page from 'page';
+    import page from 'page';
 
     const titleName = '회원 등록';
 
@@ -47,7 +48,7 @@ import page from 'page';
     }
 
 
-    function registMember(){
+    async function registMember(){
         const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
         
         if(emptyRequiredKey.length > 0){
@@ -55,30 +56,39 @@ import page from 'page';
             return false;
         }
 
-        const request = getAxios();
+        
+        try{
+            const request = getAxios();
+            const res = await request.post('/v1/members', {
+                name: member.name.value,
+                sex: member.sex.value,
+                birth: member.birth.value,
+                myPhoneNumber: member.myPhoneNumber.value,
+                parentPhoneNumber: member.parentPhoneNumber.value,
+                school: member.school.value,
+                grade: member.grade.value,
+                memo: member.memo.value
+            });
 
-        request.post('/v1/members', {
-            name: member.name.value,
-            sex: member.sex.value,
-            birth: member.birth.value,
-            myPhoneNumber: member.myPhoneNumber.value,
-            parentPhoneNumber: member.parentPhoneNumber.value,
-            school: member.school.value,
-            grade: member.grade.value,
-            memo: member.memo.value
-        }).then(res => {
-            console.log(res);
             if(res.status === 200 && res.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
                 page.replace('/member/detail/' + res.data.data.memberId);
             }
-        })
-        .catch(res => {
-            console.error(res);
-            router.replace('/login');
-        })
+        }catch(err){
+            console.log(err);
+            console.log( '>>', err.message);
+            console.log(err.response);
+            console.log(err.response.status);
+            if(err.response.status === 401){
+                alertError('로그인 후 시도해주세요.');
+                return;
+            }
+        }
     }
 
+    function goToListPage(){
+        page.show('/member');
+    }
 
     function duplicateCheck(){
 
@@ -202,9 +212,12 @@ import page from 'page';
                 </div>
             </div>
         </div>
-        <div class="form_line">
+        <div class="form_line w10">
             <div class="form_group button_group">
                 <button class="success_btn submit w4" type="button" on:click={registMember}>회원등록</button>
+            </div>
+            <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
+                <ListIcon width="1.8em"/>
             </div>
         </div>
     </div>

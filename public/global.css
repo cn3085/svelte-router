@@ -252,8 +252,8 @@ textarea {
   border: 1px solid #ed314f;
 }
 
-.list_btn.submit {
-  background-color: #ffea71;
+.list_btn {
+  cursor: pointer;
 }
 
 .submit:hover {

@@ -1,10 +1,10 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import { fade } from "svelte/transition";
-  import SuccessIcon from "./SuccessIcon.svelte";
-  import ErrorIcon from "./ErrorIcon.svelte";
-  import InfoIcon from "./InfoIcon.svelte";
-  import CloseIcon from "./CloseIcon.svelte";
+  import SuccessIcon from "./icon/SuccessIcon.svelte";
+  import ErrorIcon from "./icon/ErrorIcon.svelte";
+  import InfoIcon from "./icon/InfoIcon.svelte";
+  import CloseIcon from "./icon/CloseIcon.svelte";
   import { dismissToast } from "../js/toast_store";
 
   const dispatch = createEventDispatcher();

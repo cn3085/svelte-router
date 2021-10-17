@@ -2,7 +2,7 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import TrMember from '../../components/member/TrMember.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
-    import CloseIcon from "../../components/CloseIcon.svelte";
+    import CloseIcon from "../../components/icon/CloseIcon.svelte";
     import { getAxios } from '../../js/service/AuthAxios'
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
@@ -39,14 +39,14 @@
     let pageMaxNumber = 0;
 
     async function getList(pageNum){
-        
-        searchParam.nm =  queryObj.get('nm');
-        searchParam.st =  queryObj.get('st');
-        searchParam.ab =  queryObj.get('ab');
-        searchParam.mp =  queryObj.get('mp');
-        searchParam.pp =  queryObj.get('pp');
-        searchParam.sch =  queryObj.get('sch');
-        searchParam.gd =  queryObj.get('gd');
+
+        searchParam.nm =  queryObj.get('nm') ?? null;
+        searchParam.st =  queryObj.get('st') ?? '';
+        searchParam.ab =  queryObj.get('ab') ?? null;
+        searchParam.mp =  queryObj.get('mp') ?? null;
+        searchParam.pp =  queryObj.get('pp') ?? null;
+        searchParam.sch =  queryObj.get('sch') ?? null;
+        searchParam.gd =  queryObj.get('gd') ?? '';
         searchParam.page = pageNum;
 
         const res = await request.get('/v1/members?' + makeQueryString(searchParam));

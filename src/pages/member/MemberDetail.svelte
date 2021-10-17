@@ -2,6 +2,7 @@
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
+    import ListIcon from '../../components/icon/ListIcon.svelte'
     import router from 'page'
     import { onMount } from 'svelte';
     import page from 'page';
@@ -108,7 +109,6 @@
 
 
     function goToListPage(){
-        console.log(querystring);
         page.show('/member?' + querystring);
     }
 
@@ -255,8 +255,8 @@
             <div class="form_group button_group">
                 <button class="warn_btn submit w2" type="button" on:click={removeMember}>회원 삭제</button>
             </div>
-            <div class="form_group button_group stick_r">
-                <button class="list_btn submit w2" type="button" on:click={goToListPage}>목록</button>
+            <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
+                <ListIcon width="1.8em"/>
             </div>
         </div>
     </div>

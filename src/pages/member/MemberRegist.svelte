@@ -2,9 +2,12 @@
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
+    import ErrorIcon from '../../components/ErrorIcon.svelte'
     import router from 'page'
 
     const titleName = '회원 등록';
+
+    let myPhoneNumberDuplicate = undefined;
     
     let member = {
         name : {
@@ -77,7 +80,11 @@
     function duplicateCheck(){
         const request = getAxios();
         request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
-        .then(res => console.log(res))
+        .then(res => {
+            if(res.status === 200 && res.data.code === 'FAIL'){
+                alertError(3000, '이미 등록된 연락처입니다.');
+            }
+        })
         .catch(res => {
             console.error(res);
         })
@@ -154,6 +161,9 @@
                 </div>
                 <div class="input_form">
                     <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <div>
+                        <ErrorIcon/>
+                    </div>
                 </div>
             </div>
             <div class="form_group">

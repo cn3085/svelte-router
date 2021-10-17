@@ -7,34 +7,37 @@
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
     import { onMount, tick } from 'svelte';
-    import { parse } from "querystring";
     import page from 'page';
 
-
     export let querystring;
-    let queryObj = parse(querystring);
+
+    let queryObj = new URLSearchParams();
+
+    $ : {
+        console.log('query change!!', querystring);
+        queryObj = new URLSearchParams(querystring);
+        getList(queryObj.get('page'));
+    }
+
     const titleName = '회원 조회';
-
-
     
     let searchParam = {
-        nm: queryObj.nm ?? null,
-        st: queryObj.st ?? '',
-        ab: queryObj.ab ??null,
-        mp: queryObj.mp ??null,
-        pp: queryObj.pp ??null,
-        sch: queryObj.sch ??null,
-        gd: queryObj.gd ??'',
-        page: queryObj.page ??null
+        nm: queryObj.get('nm') ?? null,
+        st: queryObj.get('st') ?? '',
+        ab: queryObj.get('ab') ?? null,
+        mp: queryObj.get('mp') ?? null,
+        pp: queryObj.get('pp') ?? null,
+        sch: queryObj.get('sch') ?? null,
+        gd: queryObj.get('gd') ?? '',
+        page: queryObj.get('page') ?? null
     };
 
     const request = getAxios();
 
-    // let pageContent = null;
     let pageMaxNumber = 0;
 
-    async function getList(page){
-        searchParam.page = page;
+    async function getList(pageNum){
+        searchParam.page = pageNum;
         const res = await request.get('/v1/members?' + makeQueryString(searchParam));
         const data = res.data;
         if(res.status === 200 && data.code === 'SUCC'){
@@ -47,8 +50,19 @@
 
 
     async function searchMember(){
-        await getList();
-        await tick();
+        page.show('/member?' + makeQueryString(searchParam));
+    }
+
+    function movePage(pageNum){
+        let newQueryObj = new URLSearchParams(querystring);
+        newQueryObj.set('page', pageNum);
+        page.show('/member?' + newQueryObj.toString());
+    }
+
+    function enterSearch(e){
+        if(e.key === 'Enter'){
+            page.show('/member?' + makeQueryString(searchParam));
+        }
     }
 
     function clearBirthParam(){
@@ -56,16 +70,15 @@
         searchParam.bb = '';
     }
 
-    function enterSearch(e){
-        if(e.key === 'Enter'){
-            searchMember();
-        }
-    }
 
 
     onMount(async () => {
-        await getList();
+        // console.log('list mount...');
+        // await getList();
+        // await tick();
     })
+    
+
     
     function goToDetailPage(memberId){
         page.show('/member/detail/' + memberId + '?' + makeQueryString(searchParam));
@@ -189,7 +202,7 @@
 </table>
 <div id="page_navigation_wrapper">
     {#if $pageContent !== []}
-        <Pagination {getList}/>
+        <Pagination {movePage}/>
         <!-- <Pagination number = {$pageContent.number}
                     totalPages = {$pageContent.totalPages} 
                     first = {$pageContent.first}

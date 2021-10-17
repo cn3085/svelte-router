@@ -9,11 +9,11 @@
     // export let totalPages = 1;
     // export let first = false;
     // export let last = false;
-    export let getList;
+    export let movePage;
 
     async function goPage(clickedPage){
         // $pageable.showNumber = clickedPage;
-        await getList(clickedPage - 1);
+        await movePage(clickedPage - 1);
     }
 
 </script>

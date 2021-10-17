@@ -1,5 +1,6 @@
 <script>
   import router from 'page'
+  import { pathname } from "./js/pathname_store";
 
   import Toasts from "./components/Toasts.svelte";
   import About from './pages/About.svelte';
@@ -17,16 +18,21 @@
   router('/', () => page = Home)
   router('/about', () => page = About)
   router('/member', (ctx, next)=> {
-    params = ctx.params;  
-    console.log(ctx);
-    next();
-  }, () => page = MemberList)
-  router('/member/regist', () => page = MemberRegist)
-  router('/member/detail/:id', (ctx, next) => {
+    $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
-    console.log(params);
-    console.log(ctx);
+    next();
+  }, () => page = MemberList)
+  router('/member/regist', (ctx, next) => {
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
+    next();
+  }, () => page = MemberRegist)
+  router('/member/detail/:id', (ctx, next) => {
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
     next();
   }, () => page = MemberDetail)
   router('/login', () => page = Login)

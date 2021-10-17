@@ -108,6 +108,7 @@
 
 
     function goToListPage(){
+        console.log(querystring);
         page.show('/member?' + querystring);
     }
 

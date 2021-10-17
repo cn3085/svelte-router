@@ -1,4 +1,5 @@
 <script>
+    import { pathname } from "../js/pathname_store"
 </script>
 
 <nav id="nav">
@@ -15,17 +16,17 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="/member/regist" >회원등록</a>
+                          <a class="sub_name" href="/member/regist">회원등록</a>
                       </li>
                       <li>
-                          <a href="/member" >회원조회</a>
+                          <a class="sub_name" href="/member" >회원조회</a>
                       </li>
                   </ul>
               </div>
           </div>
       </li>
       <li>
-          <div class="main_menu active_menu">
+          <div class="main_menu" class:active_menu={$pathname.includes('/member')}>
               <div class="title">
                   <div class="menu_icon">
                       <img src="/images/common/member.png" alt="" srcset="">
@@ -36,10 +37,14 @@
               <div class="sub_menu">
                   <ul>
                         <li>
-                            <a href="/member/regist" >회원등록</a>
+                            <a class="sub_name"
+                               class:active_menu={$pathname.includes('/member/regist')}
+                               href="/member/regist" >회원등록</a>
                         </li>
                         <li>
-                            <a href="/member" >회원조회</a>
+                            <a class="sub_name"
+                               class:active_menu={$pathname === '/member'}
+                               href="/member" >회원조회</a>
                         </li>
                   </ul>
               </div>
@@ -189,5 +194,10 @@
 
 .sub_menu li{
     margin: 10px 0;
+}
+
+.sub_name.active_menu{
+    font-weight: bolder;
+    text-decoration: underline;
 }
 </style>

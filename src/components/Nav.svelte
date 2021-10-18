@@ -1,12 +1,21 @@
 <script>
     import { pathname } from "../js/pathname_store"
+
+    function toggleMenu(e){
+        let menuArea = e.currentTarget.closest('.main_menu');
+        if(menuArea.classList.contains('active_menu')){
+            menuArea.classList.remove('active_menu');
+        }else{
+            menuArea.classList.add('active_menu');
+        }
+    }
 </script>
 
 <nav id="nav">
   <ul>
       <li>
-          <div class="main_menu">
-              <div class="title">
+          <div class="main_menu active_menu">
+              <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/home.png" alt="" srcset="">
                   </div>
@@ -27,7 +36,7 @@
       </li>
       <li>
           <div class="main_menu" class:active_menu={$pathname.includes('/member')}>
-              <div class="title">
+              <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/member.png" alt="" srcset="">
                   </div>
@@ -52,7 +61,7 @@
       </li>
       <li>
           <div class="main_menu">
-              <div class="title">
+              <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/reservation.png" alt="" srcset="">
                   </div>
@@ -73,7 +82,7 @@
       </li>
       <li>
           <div class="main_menu">
-              <div class="title">
+              <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/contents.png" alt="" srcset="">
                   </div>
@@ -94,7 +103,7 @@
       </li>
       <li>
           <div class="main_menu">
-              <div class="title">
+              <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/stats.png" alt="" srcset="">
                   </div>
@@ -138,13 +147,15 @@
 }
 
 .main_menu{
+    transition: height ease .7s;
     margin-bottom: 8px;
     user-select: none;
+    overflow: hidden;
+    height: 46px;
 }
 
 .main_menu > .title {
     display: flex;
-    width: 100%;
     background-color: #ffea71;
     border-left: 5px solid #ffea71;
     padding: 11px 15px;
@@ -152,16 +163,20 @@
     opacity: 40%;
     align-items: center;
     cursor: pointer;
+    transition: opacity ease .7s;
 }
 
-.main_menu.active_menu > .title {
+.main_menu.active_menu {
+    height: 105px;
+}
+
+.main_menu.active_menu .title {
     opacity: 100%;
     background-color: #ffea71;
     border-left: 5px solid #fbd600;
 }
 .main_menu.active_menu .menu_arrow{
     transform: rotate(90deg);
-    transition: all ease .7s;
 }
 
 .menu_icon{
@@ -176,6 +191,7 @@
 }
 
 .menu_arrow{
+    transition: all ease .7s;
     font-weight: bolder;
 }
 
@@ -183,13 +199,8 @@
 .main_menu .sub_menu{
     padding-left: 50%;
     font-size: 12px;
-    max-height: 0px;
-    transition: max-height 1s ease;
-    overflow: hidden;
-}
-
-.main_menu.active_menu .sub_menu{
     max-height: 100%;
+    overflow: hidden;
 }
 
 .sub_menu li{

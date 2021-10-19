@@ -4,6 +4,7 @@
 
   import Toasts from "./components/Toasts.svelte";
   import About from './pages/About.svelte';
+  import Test from './pages/Test.svelte';
   import Home from './pages/Home.svelte';
   import Login from "./pages/login/Login.svelte";
   import MemberList from './pages/member/MemberList.svelte';
@@ -17,6 +18,7 @@
 
   router('/', () => page = Home)
   router('/about', () => page = About)
+  router('/test', () => page = Test)
   router('/member', (ctx, next)=> {
     $pathname = ctx.pathname;
     params = ctx.params;

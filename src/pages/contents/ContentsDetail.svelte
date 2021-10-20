@@ -12,7 +12,7 @@
 
     const memberId = params.id;
 
-    const titleName = '예약 조회';
+    const titleName = '콘텐츠 조회';
     
     let member = {
         name : {

@@ -2,17 +2,15 @@
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
+    import ErrorIcon from '../../components/icon/ErrorIcon.svelte'
+    import SuccessIcon from '../../components/icon/SuccessIcon.svelte'
     import ListIcon from '../../components/icon/ListIcon.svelte'
     import router from 'page'
-    import { onMount } from 'svelte';
     import page from 'page';
 
-    export let params;
-    export let querystring;
+    const titleName = '콘텐츠 등록';
 
-    const memberId = params.id;
-
-    const titleName = '예약 조회';
+    let isMyPhoneNumberDuplicate = undefined;
     
     let member = {
         name : {
@@ -50,7 +48,7 @@
     }
 
 
-    function updateMember(){
+    async function registMember(){
         const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
         
         if(emptyRequiredKey.length > 0){
@@ -58,103 +56,62 @@
             return false;
         }
 
-        if(!confirm('회원 정보를 수정하시겠습니까?')){
-            return false;
-        }
-
-        const request = getAxios();
-
-        request.put('/v1/members/' + memberId, {
-            name: member.name.value,
-            sex: member.sex.value,
-            birth: member.birth.value,
-            myPhoneNumber: member.myPhoneNumber.value,
-            parentPhoneNumber: member.parentPhoneNumber.value,
-            school: member.school.value,
-            grade: member.grade.value,
-            memo: member.memo.value
-        }).then(res => {
-            console.log(res);
-            if(res.status === 200 && res.data.code === 'SUCC'){
-                alertSuccess(3000, res.data.message);
-            }
-        })
-        .catch(res => {
-            console.error(res);
-            router.replace('/login');
-        })
-    }
-
-
-    function removeMember(){
-        if(!confirm('정말로 회원 정보를 삭제하시겠습니까?')){
-            return false;
-        }
-
-        const request = getAxios();
-
-        request.delete('/v1/members/' + memberId)
-        .then(res => {
-            console.log(res);
-            if(res.status === 200 && res.data.code === 'SUCC'){
-                alertSuccess(3000, res.data.message);
-                page.replace('/member')
-            }
-        })
-        .catch(res => {
-            console.error(res);
-            router.replace('/login');
-        })
-    }
-
-
-    function goToListPage(){
-        page.show('/member?' + querystring);
-    }
-
-
-    function duplicateCheck(){
-        const request = getAxios();
-        request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
-            .then(res => console.log(res))
-            .catch(res => {
-                console.error(res);
-            })
-    }
-
-    onMount(async () => {
-        window.scrollTo(0,0);
-    })
-
-
-    function bindMemberData(memberData){
-        member.name.value = memberData.name;
-        member.birth.value = memberData.birth;
-        member.grade.value = memberData.grade;
-        member.memo.value = memberData.memo;
-        member.myPhoneNumber.value = memberData.myPhoneNumber;
-        member.parentPhoneNumber.value = memberData.parentPhoneNumber;
-        member.school.value = memberData.school;
-        member.sex.value = memberData.sex;
-    }
-
-    onMount(async () => {
-        const request = getAxios();
-        request.get('/v1/members/' + memberId)
-            .then( res => {
-                if(res.status === 200 && res.data.code === 'SUCC'){
-                    console.log(res.data.data);
-                    bindMemberData(res.data.data);
-                }else{
-                    alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
-                }
-            })
-            .catch( res => {
-                console.error(res);
-                alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
+        
+        try{
+            const request = getAxios();
+            const res = await request.post('/v1/members', {
+                name: member.name.value,
+                sex: member.sex.value,
+                birth: member.birth.value,
+                myPhoneNumber: member.myPhoneNumber.value,
+                parentPhoneNumber: member.parentPhoneNumber.value,
+                school: member.school.value,
+                grade: member.grade.value,
+                memo: member.memo.value
             });
 
-    })
+            if(res.status === 200 && res.data.code === 'SUCC'){
+                alertSuccess(3000, res.data.message);
+                page.replace('/member/detail/' + res.data.data.memberId);
+            }
+        }catch(err){
+            console.log(err);
+            console.log( '>>', err.message);
+            console.log(err.response);
+            console.log(err.response.status);
+            if(err.response.status === 401){
+                alertError('로그인 후 시도해주세요.');
+                return;
+            }
+        }
+    }
+
+    function goToListPage(){
+        page.show('/member');
+    }
+
+    function duplicateCheck(){
+
+        let myPhoneNumberValue = member.myPhoneNumber.value;
+
+        if(myPhoneNumberValue === ''){
+            isMyPhoneNumberDuplicate = undefined;
+            return;
+        }
+        const request = getAxios();
+        request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
+        .then(res => {
+            if(res.status === 200 && res.data.code === 'FAIL'){
+                isMyPhoneNumberDuplicate = true;
+                alertError(3000, '이미 등록된 연락처입니다.');
+            }else if(res.status === 200 && res.data.code === 'SUCC'){
+                isMyPhoneNumberDuplicate = false;
+            }
+        })
+        .catch(res => {
+            console.error(res);
+        })
+    }
 </script>
 <ContentTitle {titleName}/>
 <div id="content_body">
@@ -227,6 +184,13 @@
                 </div>
                 <div class="input_form">
                     <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
+                        {#if isMyPhoneNumberDuplicate === true}
+                            <ErrorIcon/>
+                        {:else if isMyPhoneNumberDuplicate === false}
+                            <SuccessIcon/>
+                        {/if}
+                    </div>
                 </div>
             </div>
             <div class="form_group">
@@ -250,10 +214,7 @@
         </div>
         <div class="form_line w10">
             <div class="form_group button_group">
-                <button class="success_btn submit w2" type="button" on:click={updateMember}>회원 수정</button>
-            </div>
-            <div class="form_group button_group">
-                <button class="warn_btn submit w2" type="button" on:click={removeMember}>회원 삭제</button>
+                <button class="success_btn submit w4" type="button" on:click={registMember}>회원등록</button>
             </div>
             <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
                 <ListIcon width="1.8em"/>

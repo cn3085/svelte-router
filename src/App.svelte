@@ -14,6 +14,9 @@
   import ReservationList from './pages/reservation/ReservationList.svelte';
   import ReservationRegist from './pages/reservation/ReservationRegist.svelte';
   import ReservationDetail from './pages/reservation/ReservationDetail.svelte';
+  import ContentsList from './pages/contents/ContentsList.svelte';
+  import ContentsRegist from './pages/contents/ContentsRegist.svelte';
+  import ContentsDetail from './pages/contents/ContentsDetail.svelte';
 
   let page;
   let params;
@@ -22,6 +25,7 @@
   router('/', () => page = Home)
   router('/about', () => page = About)
   router('/test', () => page = Test)
+  //////////////////////////////////////////////////////회원
   router('/member', (ctx, next)=> {
     $pathname = ctx.pathname;
     params = ctx.params;
@@ -40,7 +44,7 @@
     querystring = ctx.querystring;
     next();
   }, () => page = MemberDetail)
-
+  //////////////////////////////////////////////////////예약
   router('/reservation', (ctx, next)=> {
     $pathname = ctx.pathname;
     params = ctx.params;
@@ -59,6 +63,26 @@
     querystring = ctx.querystring;
     next();
   }, () => page = ReservationDetail)
+  //////////////////////////////////////////////////////콘텐츠
+  router('/contents', (ctx, next)=> {
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
+    next();
+  }, () => page = ContentsList)
+  router('/contents/regist', (ctx, next) => {
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
+    next();
+  }, () => page = ContentsRegist)
+  router('/contents/detail/:id', (ctx, next) => {
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
+    next();
+  }, () => page = ContentsDetail)
+  ///////////////////////////////////////////////////////기본
   router('/login', () => page = Login)
   router('/*', () => page = Login) //ERROR페이지로 보내기
 

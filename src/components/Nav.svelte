@@ -90,10 +90,14 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" >회원등록</a>
+                          <a class="sub_name"
+                             class:active_menu={$pathname.includes('/contents/regist')}
+                             href="/contents/regist" >콘텐츠등록</a>
                       </li>
                       <li>
-                          <a href="http://" >회원조회</a>
+                          <a class="sub_name"
+                             class:active_menu={$pathname === '/contents' || $pathname.includes('/contents/detail')}
+                             href="/contents" >콘텐츠조회</a>
                       </li>
                   </ul>
               </div>

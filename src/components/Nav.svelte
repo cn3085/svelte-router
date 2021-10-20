@@ -2,19 +2,16 @@
     import { pathname } from "../js/pathname_store"
 
     function toggleMenu(e){
-        let menuArea = e.currentTarget.closest('.main_menu');
-        if(menuArea.classList.contains('active_menu')){
-            menuArea.classList.remove('active_menu');
-        }else{
-            menuArea.classList.add('active_menu');
-        }
+        document.querySelectorAll('.main_menu').forEach( ele => ele.classList.remove('active_menu'));
+        e.currentTarget.closest('.main_menu').classList.add('active_menu');
+
     }
 </script>
 
 <nav id="nav">
   <ul>
       <li>
-          <div class="main_menu active_menu">
+          <div class="main_menu">
               <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/home.png" alt="" srcset="">
@@ -25,10 +22,7 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a class="sub_name" href="/member/regist">회원등록</a>
-                      </li>
-                      <li>
-                          <a class="sub_name" href="/member" >회원조회</a>
+                          <a class="sub_name" href="/member/regist">예약 확인</a>
                       </li>
                   </ul>
               </div>
@@ -60,7 +54,7 @@
           </div>
       </li>
       <li>
-          <div class="main_menu">
+          <div class="main_menu" class:active_menu={$pathname.includes('/reservation')}>
               <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/reservation.png" alt="" srcset="">
@@ -71,10 +65,14 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" >회원등록</a>
+                          <a class="sub_name"
+                             class:active_menu={$pathname.includes('/reservation/regist')}
+                             href="/reservation/regist" >예약등록</a>
                       </li>
                       <li>
-                          <a href="http://" >회원조회</a>
+                          <a class="sub_name"
+                             class:active_menu={$pathname === '/reservation' || $pathname.includes('/reservation/detail')}
+                             href="/reservation" >예약조회</a>
                       </li>
                   </ul>
               </div>

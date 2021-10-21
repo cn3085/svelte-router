@@ -3,6 +3,7 @@
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import ListIcon from '../../components/common/icon/ListIcon.svelte'
+    import SwitchButton from '../../components/common/SwitchButton.svelte'
     import page from 'page';
 
     const titleName = '콘텐츠 등록';
@@ -87,7 +88,7 @@
                 </div>
                 <div class="input_form">
                     <label for="sex-type-m">
-                        남<input class="input w1" id="sex-type-m" type="radio" name="sexType" value="true" bind:group={contents.enableReservation.value}>
+                        <SwitchButton bind:checked={contents.enableReservation.value}/>
                     </label>
                 </div>
             </div>

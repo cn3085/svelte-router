@@ -91,7 +91,7 @@ textarea {
   height: 38px;
 }
 
-button{
+button {
   border: none;
 }
 
@@ -192,7 +192,6 @@ button {
   cursor: pointer;
 }
 
-
 /* .btn:hover {
 	  animation-name: button-hover;
 	  animation-duration: 0.2s;
@@ -231,10 +230,10 @@ textarea {
   margin-right: 15px;
 }
 
-.stick_r{
+.stick_r {
   float: right;
 }
-.stick_l{
+.stick_l {
   float: left;
 }
 
@@ -242,8 +241,7 @@ textarea {
   background: #ffea71;
 } */
 
-
-.success_btn.submit{
+.success_btn.submit {
   background-color: #ffea71;
 }
 

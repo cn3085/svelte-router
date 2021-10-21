@@ -6,7 +6,7 @@
     import { getAxios } from '../../js/service/AuthAxios'
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
-    import { onMount, tick } from 'svelte';
+    import config from "../../js/config";
     import page from 'page';
 
     export let querystring;
@@ -83,7 +83,7 @@
 
     function downloadExcel(){
         const form = document.createElement('form');
-        form.action = 'http://localhost:8088/view/excel/members';
+        form.action = config.excelURL + '/members';
         
         const input = document.createElement('input');
         input.name = 'format';

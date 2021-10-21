@@ -90,28 +90,6 @@
         page.show('/member');
     }
 
-    function duplicateCheck(){
-
-        let myPhoneNumberValue = member.myPhoneNumber.value;
-
-        if(myPhoneNumberValue === ''){
-            isMyPhoneNumberDuplicate = undefined;
-            return;
-        }
-        const request = getAxios();
-        request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
-        .then(res => {
-            if(res.status === 200 && res.data.code === 'FAIL'){
-                isMyPhoneNumberDuplicate = true;
-                alertError(3000, '이미 등록된 연락처입니다.');
-            }else if(res.status === 200 && res.data.code === 'SUCC'){
-                isMyPhoneNumberDuplicate = false;
-            }
-        })
-        .catch(res => {
-            console.error(res);
-        })
-    }
 </script>
 <ContentTitle {titleName}/>
 <div id="content_body">

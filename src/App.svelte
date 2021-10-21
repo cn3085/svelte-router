@@ -2,7 +2,7 @@
   import router from 'page'
   import { pathname } from "./js/pathname_store";
 
-  import Toasts from "./components/Toasts.svelte";
+  import Toasts from "./components/common/Toasts.svelte";
   import About from './pages/About.svelte';
   import Test from './pages/Test.svelte';
   import Home from './pages/Home.svelte';

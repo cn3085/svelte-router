@@ -2,8 +2,8 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import TrMember from '../../components/member/TrMember.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
-    import CloseIcon from "../../components/icon/CloseIcon.svelte";
-    import { getAxios } from '../../js/service/AuthAxios'
+    import CloseIcon from "../../components/common/icon/CloseIcon.svelte";
+    import { getAxios } from '../../js/service/AuthAxios';
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
     import { onMount, tick } from 'svelte';

@@ -79,7 +79,7 @@
           </div>
       </li>
       <li>
-          <div class="main_menu">
+          <div class="main_menu" class:active_menu={$pathname.includes('/contents')}>
               <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/contents.png" alt="" srcset="">

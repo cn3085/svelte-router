@@ -2,7 +2,7 @@
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
-    import ListIcon from '../../components/icon/ListIcon.svelte'
+    import ListIcon from '../../components/common/icon/ListIcon.svelte'
     import router from 'page'
     import { onMount } from 'svelte';
     import page from 'page';

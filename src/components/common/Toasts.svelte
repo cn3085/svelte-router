@@ -1,6 +1,6 @@
 <script>
-  import Toast from "./Toast.svelte";
-  import { dismissToast, toasts } from "../js/toast_store";
+  import Toast from "../common/Toast.svelte";
+  import { dismissToast, toasts } from "../../js/toast_store";
 </script>
 
 {#if $toasts}

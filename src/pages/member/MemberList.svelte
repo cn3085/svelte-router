@@ -81,13 +81,19 @@
         searchParam.bb = '';
     }
 
+    function downloadExcel(){
+        const form = document.createElement('form');
+        form.action = 'http://localhost:8088/view/excel/members';
+        
+        const input = document.createElement('input');
+        input.name = 'format';
+        input.value = 'xls';
 
+        form.appendChild(input);
 
-    onMount(async () => {
-        // console.log('list mount...');
-        // await getList();
-        // await tick();
-    })
+        document.body.appendChild(form);
+        form.submit();
+    }
     
 
     
@@ -181,7 +187,7 @@
         </div>
         <div class="form_group form_btn_group">
             <button class="search_btn submit w1" type="button" on:click={searchMember}>검색</button>
-            <button class="download_btn submit w1" type="button">Download</button>
+            <button class="download_btn submit w1" type="button" on:click={downloadExcel}>Download</button>
         </div>
     </div>
     

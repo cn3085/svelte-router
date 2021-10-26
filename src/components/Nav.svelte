@@ -124,6 +124,26 @@
               </div>
           </div>
       </li>
+      <li>
+          <div class="main_menu" class:active_menu={$pathname.includes('/setting')}>
+              <div class="title" on:click={toggleMenu}>
+                  <div class="menu_icon">
+                      <img src="/images/common/setting.png" alt="" srcset="">
+                  </div>
+                  <div class="menu_name">설정</div>
+                  <div class="menu_arrow">></div>
+              </div>
+              <div class="sub_menu">
+                  <ul>
+                      <li>
+                          <a class="sub_name"
+                             href="/setting"
+                             class:active_menu={$pathname === '/setting'}>설정</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </li>
   </ul>
 </nav>
 

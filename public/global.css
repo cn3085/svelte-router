@@ -259,3 +259,22 @@ textarea {
   font-weight: bolder;
   cursor: pointer;
 }
+
+input[type="color"] {
+  -webkit-appearance: none;
+  padding: 0;
+  border: none;
+  border-radius: 100%;
+  width: 38px;
+  height: 38px;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 100%;
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+}

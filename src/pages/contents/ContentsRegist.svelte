@@ -3,6 +3,7 @@
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import ListIcon from '../../components/common/icon/ListIcon.svelte'
+    import { requiredCheck } from "../../js/util/WebUtil";
     import SwitchButton from '../../components/common/SwitchButton.svelte'
     import page from 'page';
 
@@ -14,8 +15,8 @@
             require : true,
         },
         color : {
-            value : null,
-            require : true
+            value : getRandomColor(),
+            require : false
         },
         description : {
             value : null,
@@ -28,31 +29,38 @@
     }
 
 
-    async function registMember(){
-        const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
-        
-        if(emptyRequiredKey.length > 0){
-            alertError(5000, '이름, 색, 예약가능여부는 필수값입니다.');
-            return false;
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
         }
 
+        return color;
+    }
+
+
+    async function registContents(){
+        const emptyRequiredKey = requiredCheck(contents);
+        
+        if(emptyRequiredKey.length > 0){
+            alertError(5000, '이름, 예약가능여부는 필수값입니다.');
+            return false;
+        }
         
         try{
             const request = getAxios();
-            const res = await request.post('/v1/members', {
-                name: member.name.value,
-                sex: member.sex.value,
-                birth: member.birth.value,
-                myPhoneNumber: member.myPhoneNumber.value,
-                parentPhoneNumber: member.parentPhoneNumber.value,
-                school: member.school.value,
-                grade: member.grade.value,
-                memo: member.memo.value
+            const res = await request.post('/v1/contents', {
+                name: contents.name.value,
+                color: contents.color.value,
+                description: contents.description.value,
+                enableReservation: contents.enableReservation.value,
             });
 
             if(res.status === 200 && res.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
-                page.replace('/member/detail/' + res.data.data.memberId);
+                page.replace('/contents/detail/' + res.data.data.contentsId);
             }
         }catch(err){
             console.log(err);
@@ -67,7 +75,7 @@
     }
 
     function goToListPage(){
-        page.show('/member');
+        page.show('/contents');
     }
 </script>
 <ContentTitle {titleName}/>
@@ -97,6 +105,17 @@
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
+                    색 지정
+                </div>
+                <div class="input_form">
+                    <input class="input" type="color" bind:value={contents.color.value}>
+                </div>
+            </div>
+        </div>
+
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_name">
                     메모
                 </div>
                 <div class="input_form">
@@ -106,7 +125,7 @@
         </div>
         <div class="form_line w10">
             <div class="form_group button_group">
-                <button class="success_btn submit w4" type="button" on:click={registMember}>등록</button>
+                <button class="success_btn submit w4" type="button" on:click={registContents}>등록</button>
             </div>
             <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
                 <ListIcon width="1.8em"/>

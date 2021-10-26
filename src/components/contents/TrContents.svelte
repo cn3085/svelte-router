@@ -1,17 +1,20 @@
 <script>
+    import * as day from "../../js/util/TimeUtil";
     export let contentsId = 0;
     export let name = '';
     export let enableReservation = '';
+    export let regDate = '';
     export let i = 0;
     export let goToDetailPage;
 
 </script>
-<tr on:click={() => goToDetailPage(contentsId)}>
+<tr on:click={() => goToDetailPage(contentsId)} class:disabled_contents={enableReservation === false}>
     <td>{i}</td>
     <td>{name}</td>
     <td>
-        {enableReservation}
+        {enableReservation === true ? '가능' : '불가능'}
     </td>
+    <td>{day.formatting(regDate)}</td>
 </tr>
 <style>
     td{
@@ -40,5 +43,9 @@
     }
     tr:hover td:last-child {
         border-right: 1px solid #ffea71;
+    }
+
+    .disabled_contents {
+        opacity: 50%;
     }
 </style>

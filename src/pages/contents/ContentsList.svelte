@@ -2,11 +2,10 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import TrContents from '../../components/contents/TrContents.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
-    import CloseIcon from "../../components/common/icon/CloseIcon.svelte";
     import { getAxios } from '../../js/service/AuthAxios'
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
-    import { onMount } from 'svelte';
+    import config from "../../js/config";
     import page from 'page';
 
     export let querystring;
@@ -22,7 +21,7 @@
     
     let searchParam = {
         nm: null,
-        er: null,
+        er: '',
     };
 
     const request = getAxios();
@@ -32,7 +31,7 @@
     async function getList(pageNum){
 
         searchParam.nm =  queryObj.get('nm') ?? null;
-        searchParam.st =  queryObj.get('er') ?? null;
+        searchParam.er =  queryObj.get('er') ?? '';
         searchParam.page = pageNum;
 
         const res = await request.get('/v1/contents?' + makeQueryString(searchParam));
@@ -60,6 +59,11 @@
             page.show('/contents?' + makeQueryString(searchParam));
         }
     }
+
+
+    function downloadExcel(){
+        document.excel.submit();
+    }
     
     
     function goToDetailPage(contentsId){
@@ -82,7 +86,7 @@
         </div>
         <div class="form_group">
             <div class="form_name">
-                예약 가능 여부
+                예약 가능
             </div>
             <div class="input_form">
                 <label for="sex-type-m">
@@ -96,28 +100,26 @@
                 </label>
             </div>
         </div>
-    </div>
-    
-    <div class="form_line">
         <div class="form_group form_btn_group">
             <button class="search_btn submit w1" type="button" on:click={searchContents}>검색</button>
-            <button class="download_btn submit w1" type="button">Download</button>
+            <button class="download_btn submit w1" type="button" on:click={downloadExcel}>Download</button>
         </div>
     </div>
-    
 </div>
 
 <table>
     <thead>
         <th style="width: 5%;">No</th>
-        <th style="width: 75%;">이름</th>
+        <th style="width: 55%;">이름</th>
         <th style="width: 20%;">예약 가능여부</th>
+        <th style="width: 20%;">등록일</th>
     </thead>
     <tbody>
         {#each $pageContent as c, index}
             <TrContents contentsId= {c.contentsId}
                       name={c.name}
                       enableReservation = {c.enableReservation}
+                      regDate = {c.regDate}
                       i = {pageMaxNumber - index}
                       {goToDetailPage}/>
         {:else}
@@ -125,11 +127,18 @@
         {/each}
     </tbody>
 </table>
+
 <div id="page_navigation_wrapper">
     {#if $pageContent !== []}
         <Pagination {movePage}/>
     {/if}  
 </div>
+
+<form name="excel" action={config.excelURL + '/contents'} style="display:none;">
+    <input type="hidden" name="format" value="xls">
+    <input type="hidden" name="nm" bind:value={searchParam.nm}>
+    <input type="hidden" name="er" bind:value={searchParam.er}>
+</form>
 
 <style>
     table{

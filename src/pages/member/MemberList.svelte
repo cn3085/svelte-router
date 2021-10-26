@@ -14,7 +14,6 @@
     let queryObj = new URLSearchParams();
 
     $ : {
-        console.log('query change!!', querystring);
         queryObj = new URLSearchParams(querystring);
         getList(queryObj.get('page'));
     }
@@ -82,17 +81,7 @@
     }
 
     function downloadExcel(){
-        const form = document.createElement('form');
-        form.action = config.excelURL + '/members';
-        
-        const input = document.createElement('input');
-        input.name = 'format';
-        input.value = 'xls';
-
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-        form.submit();
+        document.excel.submit();
     }
     
 
@@ -227,6 +216,17 @@
                     {getList}/> -->
     {/if}  
 </div>
+
+<form name="excel" action={config.excelURL + '/members'} style="display:none;">
+    <input type="hidden" name="format" value="xls">
+    <input type="hidden" name="nm" bind:value={searchParam.nm}>
+    <input type="hidden" name="st" bind:value={searchParam.st}>
+    <input type="hidden" name="ab" bind:value={searchParam.ab}>
+    <input type="hidden" name="mp" bind:value={searchParam.mp}>
+    <input type="hidden" name="pp" bind:value={searchParam.pp}>
+    <input type="hidden" name="sch" bind:value={searchParam.sch}>
+    <input type="hidden" name="gd" bind:value={searchParam.gd}>
+</form>
 
 <style>
     table{

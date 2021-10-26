@@ -18,6 +18,7 @@
   import ContentsRegist from './pages/contents/ContentsRegist.svelte';
   import ContentsDetail from './pages/contents/ContentsDetail.svelte';
   import Setting from './pages/setting/Setting.svelte';
+  import TimeTable from './pages/timetable/TimeTable.svelte';
 
   let page;
   let params;
@@ -85,6 +86,8 @@
   }, () => page = ContentsDetail)
   ///////////////////////////////////////////////////////설정
   router('/setting', () => page = Setting)
+  ///////////////////////////////////////////////////////기본
+  router('/timetable', () => page = TimeTable)
   ///////////////////////////////////////////////////////기본
   router('/login', () => page = Login)
   router('/*', () => page = Login) //ERROR페이지로 보내기

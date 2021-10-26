@@ -1,5 +1,6 @@
 <script>
 import Login from "../pages/login/Login.svelte";
+import TimeTable from "../pages/timetable/TimeTable.svelte";
 import Header from "./Header.svelte";
 import Nav from "./Nav.svelte";
 export let contentComponent;
@@ -13,6 +14,9 @@ export let querystring;
 
 {#if contentComponent === Login}
     <Login></Login>
+{:else if contentComponent === TimeTable}
+    <!-- <Header /> -->
+    <TimeTable/>
 {:else}
     <Header />
     <Nav/>
@@ -24,7 +28,6 @@ export let querystring;
 <style>
     #content_area{
         margin-left: 17%;
-        /* border: 3px solid red; */
         width: 80%;
         margin-top: 70px;
         display: inline-block;

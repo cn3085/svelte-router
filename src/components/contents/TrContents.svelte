@@ -1,30 +1,17 @@
 <script>
-    import DotBlue from './DotBlue.svelte';
-    import DotRed from './DotRed.svelte';
-
-    export let memberId = 0;
+    export let contentsId = 0;
     export let name = '';
-    export let sex = '';
-    export let birth = '';
-    export let myPhoneNumber = '';
-    export let school = '';
+    export let enableReservation = '';
     export let i = 0;
     export let goToDetailPage;
 
 </script>
-<tr on:click={() => goToDetailPage(memberId)}>
+<tr on:click={() => goToDetailPage(contentsId)}>
     <td>{i}</td>
     <td>{name}</td>
     <td>
-        {#if sex === 'M'}
-            <DotBlue/>남
-        {:else if sex === 'W'}
-            <DotRed/>여
-        {/if}
+        {enableReservation}
     </td>
-    <td>{birth}</td>
-    <td>{myPhoneNumber ?? '-'}</td>
-    <td>{school ?? '-'}</td>
 </tr>
 <style>
     td{

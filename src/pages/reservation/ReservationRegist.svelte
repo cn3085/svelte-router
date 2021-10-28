@@ -6,8 +6,9 @@
     import ListIcon from '../../components/common/icon/ListIcon.svelte'
     import page from 'page';
     import { onMount } from 'svelte';
-import DotRed from '../../components/member/DotRed.svelte';
-import DotBlue from '../../components/member/DotBlue.svelte';
+    import DotRed from '../../components/member/DotRed.svelte';
+    import DotBlue from '../../components/member/DotBlue.svelte';
+    import CloseIcon from '../../components/common/icon/CloseIcon.svelte'
 
     const titleName = '예약 등록';
 
@@ -25,7 +26,14 @@ import DotBlue from '../../components/member/DotBlue.svelte';
     }
 
     let searchKeyword = '';
-    let selecedVersion = '';
+    let selectedMembers = [];
+
+    $: {
+        selectedMembers;
+        if(document.querySelector('#search_member_input') !== null){
+            document.querySelector('#search_member_input').value = '';
+        }
+    }
 
     async function searchFunction(){
         const request = getAxios();
@@ -33,12 +41,20 @@ import DotBlue from '../../components/member/DotBlue.svelte';
         return res.data.data;
     }
 
-    function valueFunction(value){
-        if(value !== ''){
-        selecedVersion = [...selecedVersion, value];
-        searchKeyword = '';
+    function valueFunction(member){
+        if(!member){
+            return;
         }
-        console.log(searchKeyword, selecedVersion);
+
+        const sameMember = selectedMembers.filter( m => m.memberId === member.memberId);
+        if(sameMember.length === 0){
+            selectedMembers = [...selectedMembers, member];
+        }
+        searchKeyword = '';
+    }
+
+    function removeMember(memberId){
+        selectedMembers = selectedMembers.filter( m => m.memberId !== memberId);
     }
 
     onMount( async () => {
@@ -163,16 +179,23 @@ import DotBlue from '../../components/member/DotBlue.svelte';
                 </div>
             </div>
             <div class="form_group">
-                <div class="form_name">
-                    성별<span class="necessary">*</span>
-                </div>
-                <div class="input_form">
-                    <label for="sex-type-m">
-                        남<input class="input w1" id="sex-type-m" type="radio" name="sexType" value="M" bind:group={member.sex.value}>
-                    </label>
-                    <label for="sex-type-w">
-                        여<input class="input w1" id="sex-type-w" type="radio" name="sexType" value="W" bind:group={member.sex.value}>
-                    </label>
+                <div class="input_form items_box">
+                    {#each  selectedMembers as m}
+                        <div class="join_member">
+                            {#if m.sex === 'M'}
+                                <DotBlue/>
+                                {:else}
+                                <DotRed/>
+                            {/if}
+                            <div>
+                                <div class="join_name">{m.name}</div>
+                                <div class="join_birth">{m.birth}</div>
+                            </div>
+                            <div class="remove_member_btn" on:click={() => removeMember(m.memberId)}>
+                                <CloseIcon width='0.6em'/>
+                            </div>
+                        </div>
+                    {/each}
                 </div>
             </div>
         </div>
@@ -210,24 +233,38 @@ import DotBlue from '../../components/member/DotBlue.svelte';
                 </div>
             </div>
         </div>
-        <div class="form_line">
-            
-            <div class="form_group">
-                <div class="form_name">
-                    연락처2
-                </div>
-                <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
-                </div>
-            </div>
-        </div>
+        
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
                     메모
                 </div>
                 <div class="input_form">
-                    <textarea class="input w8" cols="40" rows="40" bind:value={member.memo.value} maxlength="500"></textarea>
+                    <div class="time_line_box">
+                        <div class="time_line">
+                            <div class="a_time hour">
+                                <div class="time_number">10</div>
+                            </div>
+                            <div class="a_time">
+                                <div class="time_number"></div>
+                            </div>
+                            <div class="a_time">
+                                <div class="time_number">10</div>
+                            </div>
+                            <div class="a_time">
+                                <div class="time_number"></div>
+                            </div>
+                            <div class="a_time">
+                                <div class="time_number">20</div>
+                            </div>
+                            <div class="a_time">
+                                <div class="time_number"></div>
+                            </div>
+                            <div class="a_time half">
+                                <div class="time_number">30</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -287,5 +324,74 @@ import DotBlue from '../../components/member/DotBlue.svelte';
     }
     :global(.autocomplete-list-item .small_text){
         color: #bfbfbf !important;
+    }
+    .join_member{
+        display: flex;
+        align-items: center;
+        width: max-content;
+        height: 100%;
+        padding: 5px 10px;
+        margin: 10px 11px 0 0;
+        border-radius: 10px;
+        box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.16);
+        border: dashed 1px #c7c7c7;
+        background-color: #fff;
+    }
+    .join_member .join_name{
+        margin-right: 5px;
+    }
+    .join_member .join_birth{
+        font-size: 8px;
+        line-height: 8px;
+        color: #ababab;
+    }
+    .remove_member_btn{
+        cursor: pointer;
+        color: #ff4e4e;
+    }
+    .time_line_box{
+        height: 155px;
+        border: 1px solid black;
+        width: 900px;
+    }
+    .time_line{
+        display: flex;
+        align-items: flex-end;
+        margin: 0 20px;
+    }
+    .time_line .a_time{
+        width: 44px;
+        height: 8px;
+        margin-top: 20px;
+        border-bottom: 1px solid #a6a6a7;
+        border-left: 1px solid #a6a6a7;
+        position: relative;
+    }
+
+    .a_time .time_number{
+        color: #a6a6a7;
+        font-size: 10px;
+        position: inherit;
+        left: -7px;
+        top: -15px;
+    }
+    .a_time.hour{
+        height: 10px;
+        border-left: 1px solid black;
+    }
+    .a_time.hour .time_number{
+        color: black;
+        font-size: 16px;
+        left: -10px;
+        top: -22px;
+    }
+    .a_time.half{
+        height: 9px;
+    }
+    .a_time.half .time_number{
+        color: #7c7c7c;
+        font-size: 12px;
+        left: -8px;
+        top: -16px;
     }
 </style>

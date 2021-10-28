@@ -1,15 +1,11 @@
 <script>
-import Login from "../pages/login/Login.svelte";
-import TimeTable from "../pages/timetable/TimeTable.svelte";
-import Header from "./Header.svelte";
-import Nav from "./Nav.svelte";
-export let contentComponent;
-export let params;
-export let querystring;
-
-    if(contentComponent === Login){
-        console.log('yes');
-    }
+    import Login from "../pages/login/Login.svelte";
+    import TimeTable from "../pages/timetable/TimeTable.svelte";
+    import Header from "./Header.svelte";
+    import Nav from "./Nav.svelte";
+    export let contentComponent;
+    export let params;
+    export let querystring;
 </script>
 
 {#if contentComponent === Login}

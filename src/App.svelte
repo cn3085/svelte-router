@@ -17,6 +17,7 @@
   import ContentsList from './pages/contents/ContentsList.svelte';
   import ContentsRegist from './pages/contents/ContentsRegist.svelte';
   import ContentsDetail from './pages/contents/ContentsDetail.svelte';
+  import Statistics from './pages/statistics/Statistics.svelte';
   import Setting from './pages/setting/Setting.svelte';
   import TimeTable from './pages/timetable/TimeTable.svelte';
 
@@ -84,17 +85,17 @@
     querystring = ctx.querystring;
     next();
   }, () => page = ContentsDetail)
+  ///////////////////////////////////////////////////////통계
+  router('/statistics', () => page = Statistics)
   ///////////////////////////////////////////////////////설정
   router('/setting', () => page = Setting)
-  ///////////////////////////////////////////////////////기본
+  ///////////////////////////////////////////////////////예약표
   router('/timetable', () => page = TimeTable)
   ///////////////////////////////////////////////////////기본
   router('/login', () => page = Login)
   router('/*', () => page = Login) //ERROR페이지로 보내기
 
   router.start();
-
-  console.log('app render');
 </script>
 
 

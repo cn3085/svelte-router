@@ -2,16 +2,54 @@
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
-    import ErrorIcon from '../../components/common/icon/ErrorIcon.svelte'
-    import SuccessIcon from '../../components/common/icon/SuccessIcon.svelte'
+    import AutoComplete from 'simple-svelte-autocomplete';
     import ListIcon from '../../components/common/icon/ListIcon.svelte'
-    import router from 'page'
     import page from 'page';
+    import { onMount } from 'svelte';
+import DotRed from '../../components/member/DotRed.svelte';
+import DotBlue from '../../components/member/DotBlue.svelte';
 
     const titleName = '예약 등록';
 
-    let isMyPhoneNumberDuplicate = undefined;
+    let selectedContents = {};
+    let contentsList = [];
+
+    async function getContentsList(){
+        const request = getAxios();
+
+        const res = await request.get('/v1/contents/all?er=true');
+        if(res.status === 200 && res.data.code === 'SUCC'){
+            contentsList = res.data.data;
+            console.log(contentsList);
+        }
+    }
+
+    let searchKeyword = '';
+    let selecedVersion = '';
+
+    async function searchFunction(){
+        const request = getAxios();
+        const res = await request.get('/v1/members/all');
+        return res.data.data;
+    }
+
+    function valueFunction(value){
+        if(value !== ''){
+        selecedVersion = [...selecedVersion, value];
+        searchKeyword = '';
+        }
+        console.log(searchKeyword, selecedVersion);
+    }
+
+    onMount( async () => {
+        await getContentsList();
+    })
+
     
+    function selectContents(contents){
+        selectedContents = contents;
+    }
+
     let member = {
         name : {
             value : null,
@@ -97,10 +135,31 @@
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
-                    이름<span class="necessary">*</span>
+                    참여자
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.name.value} placeholder="이름을 입력하세요.">
+                    <AutoComplete
+                        id="search_member_input"
+                        inputId="search_member_input"
+                        bind:selectedItem={searchKeyword}
+                        searchFunction={searchFunction}
+                        valueFunction={valueFunction}
+                        labelFieldName="name"
+                        delay=200
+                        localFiltering=false
+                        noResultsText="검색 결과가 없습니다.">
+                        
+                        <div class="auto_result_box" slot="item" let:item={item} let:label={label}>
+                            {#if item.sex === 'M'}
+                                <DotBlue/>
+                                {:else}
+                                <DotRed/>
+                            {/if}
+                            {@html label.replaceAll('<b></b>', '')}
+                            <span class="small_text">({item.birth})</span>
+                        </div>
+
+                    </AutoComplete>
                 </div>
             </div>
             <div class="form_group">
@@ -120,57 +179,39 @@
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
-                    생년월일<span class="necessary">*</span>
+                    콘텐츠
                 </div>
-                <div class="input_form">
-                    <input class="input w4" type="date" max="9999-12-31"  bind:value={member.birth.value}>
-                </div>
-            </div>
-        </div>
-        <div class="form_line">
-            <div class="form_group">
-                <div class="form_name">
-                    학교
-                </div>
-                <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
-                </div>
-            </div>
-            <div class="form_group">
-                <div class="form_name">
-                    학년
-                </div>
-                <div class="input_form">
-                    <select class="input w2" bind:value={member.grade.value}>
-                        <option value="1" selected>1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                    </select>
+                <div class="input_form items_box">
+                    {#each contentsList as c}
+                        <button class="input w2 contents_item"
+                                class:selected_contents={selectedContents.contentsId === c.contentsId}
+                                on:click={() => selectContents(c)}>
+                                {c.name}
+                        </button>
+                    {/each}
                 </div>
             </div>
         </div>
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
-                    연락처
+                    시작시간
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
-                    <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
-                        {#if isMyPhoneNumberDuplicate === true}
-                            <ErrorIcon/>
-                        {:else if isMyPhoneNumberDuplicate === false}
-                            <SuccessIcon/>
-                        {/if}
-                    </div>
+                    <input class="input w2" type="time" maxlength="15" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
                 </div>
             </div>
+            <div class="form_group">
+                <div class="form_name">
+                    종료시간
+                </div>
+                <div class="input_form">
+                    <input class="input w2" type="time" maxlength="15" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
+                </div>
+            </div>
+        </div>
+        <div class="form_line">
+            
             <div class="form_group">
                 <div class="form_name">
                     연락처2
@@ -200,3 +241,51 @@
         </div>
     </div>
 </div>
+
+
+<style>
+    :global(#search_member_input){
+        padding: 1px 2px 1px 36px;
+        width: 264px;
+        border-radius: 5px;
+        box-shadow: 0 3px 5px 0 rgb(0 0 0 / 25%);
+        height: 38px;
+        border: 1px solid white;
+    }
+    :global(.autocomplete-list){
+        margin-top: 4px;
+        border: solid 1px #bfbfbf;
+        border-radius: 5px;
+    }
+    :global(.autocomplete-list-item .auto_result_box){
+        color: #bfbfbf !important;
+    }
+    :global(.autocomplete-list-item.selected){
+        color: #4c4c4e !important;
+        background-color: #ffea71 !important;
+    }
+    :global(.autocomplete-list-item.selected .auto_result_box){
+        color: #4c4c4e !important;
+        background-color: #ffea71 !important;
+    }
+    .items_box{
+        display: flex;
+        flex-wrap: wrap;
+        width: 700px;
+    }
+    .contents_item{
+        margin: 10px 20px 10px 0;
+    }
+    .selected_contents{
+        background-color: #ffea71;
+    }
+    .small_text{
+        font-size: 10px;
+    }
+    :global(.autocomplete-list-item.selected .small_text){
+        color: #4c4c4e !important;
+    }
+    :global(.autocomplete-list-item .small_text){
+        color: #bfbfbf !important;
+    }
+</style>

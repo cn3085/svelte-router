@@ -50,5 +50,7 @@
   };
 </script>
 
-<Line data={dataLine} options={{ responsive: true }}/>
+<div>
+  <Line data={dataLine} options={{ responsive: true }}/>
+</div>
 

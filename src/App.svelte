@@ -20,6 +20,7 @@
   import Statistics from './pages/statistics/Statistics.svelte';
   import Setting from './pages/setting/Setting.svelte';
   import TimeTable from './pages/timetable/TimeTable.svelte';
+  import Blog from './pages/Blog.svelte'; 
 
   let page;
   let params;
@@ -27,6 +28,7 @@
 
   router('/', () => page = Home)
   router('/about', () => page = About)
+  router('/blog', () => page = Blog)
   router('/test', () => page = Test)
   //////////////////////////////////////////////////////회원
   router('/member', (ctx, next)=> {

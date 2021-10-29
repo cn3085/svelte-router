@@ -1,6 +1,8 @@
 <script>
+import Blog from "../pages/Blog.svelte";
+
     import Login from "../pages/login/Login.svelte";
-import Statistics from "../pages/statistics/Statistics.svelte";
+    import Statistics from "../pages/statistics/Statistics.svelte";
     import TimeTable from "../pages/timetable/TimeTable.svelte";
     import Header from "./Header.svelte";
     import Nav from "./Nav.svelte";
@@ -14,6 +16,9 @@ import Statistics from "../pages/statistics/Statistics.svelte";
 {:else if contentComponent === TimeTable}
     <!-- <Header /> -->
     <TimeTable/>
+{:else if contentComponent === Blog}
+    <!-- <Header /> -->
+    <Blog/>
 {:else if contentComponent === Statistics}
     <!-- <Header /> -->
     <Statistics/>

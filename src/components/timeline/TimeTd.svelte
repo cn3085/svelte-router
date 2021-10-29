@@ -6,7 +6,7 @@
     .time_td{
         border-left: 1px dashed #a6a6a7;;
         height: 110px;
-        width: 44px;
+        width: 70px;
         flex-grow: 0;
         flex-shrink: 0;
         flex-basis: auto;

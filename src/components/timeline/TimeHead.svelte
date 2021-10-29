@@ -14,7 +14,7 @@
 
 <style>
     .time_head{
-        width: 44px;
+        width: 70px;
         height: 8px;
         margin-top: 20px;
         border-bottom: 1px solid #a6a6a7;

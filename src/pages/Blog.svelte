@@ -1,36 +1,38 @@
 <script>
   import dayjs from "dayjs";
+  import { formatting } from '../js/util/TimeUtil'
+  import { reservationTimeSelection } from "../js/reservation_store";
   import customParseFormat from "dayjs/plugin/customParseFormat";
   import TimeHead from "../components/timeline/TimeHead.svelte";
-import TimeTd from "../components/timeline/TimeTd.svelte";
+  import TimeTd from "../components/timeline/TimeTd.svelte";
 
   dayjs.extend(customParseFormat);
 
-  const start = '8:00:00';
-  const end = '20:00:00';
+  const start = '08:00:00';
+  const end = '09:00:00';
 
   const MINUTE_INTERVAL = 5;
 
   const startDate = dayjs(start, "HH:mm:ss");
   const endDate = dayjs(end, "HH:mm:ss");
 
-  console.log(startDate.add(MINUTE_INTERVAL, 'minute'));
+  let startDateStep = startDate;
+  let endDateStep;
+  let reservationTimeList = [];
 
-  let addMinuteTime = startDate;
-
-  let timeHeadList = [];
-
-  while(addMinuteTime.diff(endDate) <= 0){
-
-    timeHeadList.push({
-      h: addMinuteTime.get('h'),
-      m: addMinuteTime.get('m'),
+  while(startDateStep.diff(endDate) <= 0){
+    endDateStep = startDateStep.add(MINUTE_INTERVAL, 'minute');
+    
+    reservationTimeList.push({
+      state : 'NONE',
+      startDate: formatting(startDateStep),
+      endDate: formatting(endDateStep),
     });
 
-    addMinuteTime = addMinuteTime.add(MINUTE_INTERVAL, 'minute');
+    startDateStep = endDateStep;
   }
 
-  console.log(timeHeadList);
+  $reservationTimeSelection.timeList = reservationTimeList;
 </script>
 
 <div class="form_line">
@@ -41,14 +43,14 @@ import TimeTd from "../components/timeline/TimeTd.svelte";
       <div class="input_form">
           <div class="time_line_box">
               <div class="time_line">
-                {#each timeHeadList as th}
-                  <TimeHead h={th.h} m={th.m}/>
+                {#each reservationTimeList as th}
+                  <TimeHead startDate= {th.startDate}/>
                 {/each}
               </div>
               <div class="time_schedule">
                 <div class="time_schedule_line_box">
-                  {#each timeHeadList as th}
-                    <TimeTd m={th.m}/>
+                  {#each $reservationTimeSelection.timeList as th}
+                    <TimeTd {...th}/>
                   {/each}
                 </div>
                 <div class="time_schedule_content_box"></div>

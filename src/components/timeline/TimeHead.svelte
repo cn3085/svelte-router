@@ -1,6 +1,9 @@
 <script>
-    export let h = 0;
-    export let m = 0;
+    import dayjs from 'dayjs';
+    export let startDate = null;
+
+    const h = dayjs(startDate).get('h');
+    const m = dayjs(startDate).get('m');
 </script>
 <div class="time_head hour" class:hour={m === 0} class:half={m === 30}>
     <div class="time_number">

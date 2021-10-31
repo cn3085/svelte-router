@@ -7,7 +7,7 @@
     export let startDate = null;
     export let endDate = null;
 
-    const m = dayjs(startDate).get('m');
+    const m = dayjs(endDate).get('m');
 
     function selectTime(){
         if(state === 'FULL'){
@@ -24,7 +24,7 @@
 
 <style>
     .time_td{
-        border-left: 1px dashed #a6a6a7;;
+        border-right: 1px dashed #a6a6a7;;
         height: 110px;
         width: 70px;
         flex-grow: 0;
@@ -32,10 +32,10 @@
         flex-basis: auto;
     }
     .time_td.hour{
-        border-left: 1px solid black;
+        border-right: 1px solid black;
     }
     .time_td.half{
-        border-left: 1px dashed black;
+        border-right: 1px dashed black;
     }
     .time_td:hover{
         cursor: pointer;

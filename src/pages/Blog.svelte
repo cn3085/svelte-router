@@ -1,6 +1,6 @@
 <script>
   import dayjs from "dayjs";
-  import { formatting } from '../js/util/TimeUtil'
+  import { getFilledTimeArray } from "../js/service/TimeLineService";
   import { reservationTimeSelection } from "../js/reservation_store";
   import customParseFormat from "dayjs/plugin/customParseFormat";
   import TimeHead from "../components/timeline/TimeHead.svelte";
@@ -8,29 +8,15 @@
 
   dayjs.extend(customParseFormat);
 
-  const start = '08:00:00';
-  const end = '09:00:00';
+  const start = '09:30:00';
+  const end = '11:00:00';
 
   const MINUTE_INTERVAL = 5;
 
   const startDate = dayjs(start, "HH:mm:ss");
   const endDate = dayjs(end, "HH:mm:ss");
 
-  let startDateStep = startDate;
-  let endDateStep;
-  let reservationTimeList = [];
-
-  while(startDateStep.diff(endDate) <= 0){
-    endDateStep = startDateStep.add(MINUTE_INTERVAL, 'minute');
-    
-    reservationTimeList.push({
-      state : 'NONE',
-      startDate: formatting(startDateStep),
-      endDate: formatting(endDateStep),
-    });
-
-    startDateStep = endDateStep;
-  }
+  let reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
 
   $reservationTimeSelection.timeList = reservationTimeList;
 </script>

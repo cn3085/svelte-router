@@ -1,12 +1,15 @@
 <script>
   import dayjs from "dayjs";
-  import { getFilledTimeArray } from "../js/service/TimeLineService";
+  import { onMount } from "svelte";
   import { reservationTimeSelection } from "../js/reservation_store";
   import customParseFormat from "dayjs/plugin/customParseFormat";
   import TimeHead from "../components/timeline/TimeHead.svelte";
   import TimeTd from "../components/timeline/TimeTd.svelte";
-  import { onMount } from "svelte";
+  import { getDateTimeAtThisTime } from "../js/util/TimeUtil";
+  import { getFilledTimeArray } from "../js/service/TimeLineService";
   import * as SettingService from "../js/service/SettingService";
+  import * as ReservationService from "../js/service/ReservationService";
+import DotRed from "../components/member/DotRed.svelte";
 
   dayjs.extend(customParseFormat);
 
@@ -15,22 +18,43 @@
 
   const MINUTE_INTERVAL = 5;
   
-  const startDate = dayjs(start, "HH:mm");
-  const endDate = dayjs(end, "HH:mm");
+  let startDate  = dayjs(start, "HH:mm");
+  let endDate = dayjs(end, "HH:mm");
   
-  let reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+  let reservationTimeList = [];
   
-  $reservationTimeSelection.timeList = reservationTimeList;
+  let registedReservationList = [];
+
+  $: {
+    //setting값을 가져와서 timeline 그림
+    start;
+    end;
+    startDate = dayjs(start, "HH:mm");
+    endDate = dayjs(end, "HH:mm");
+
+    reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+    $reservationTimeSelection.timeList = reservationTimeList;
+  }
+  
   
   onMount( async () => {
+    //settings에서 오늘의 운영시간 가져옴
     const settingData = await SettingService.getSettingData();
     const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
-    
-    console.log(todayOperatingTime);
 
     start = todayOperatingTime.startTime;
     end = todayOperatingTime.endTime;
 
+    console.log(start, end);
+
+    //등록된 예약들 가져옴
+    registedReservationList = await ReservationService.getReservationList({
+      sdt: getDateTimeAtThisTime(start),
+      edt: getDateTimeAtThisTime(end),
+      cId: 600
+    });
+
+    console.log(registedReservationList);
   })
 </script>
 
@@ -57,6 +81,16 @@
                   {/each}
                 </div>
                 <div class="time_schedule_content_box"></div>
+                  {#each registedReservationList as r}
+                    <div class="regist" style="background-color:{r.contents.color};left:{71*2}px; width:{r.useMinute / 5 * 71 + 1}px" >
+                      <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>
+                      <div>
+                        <DotRed/>최왈왈
+                      </div>
+                      <div>외 1명</div>
+                    </div>
+                  {/each}
+                    
               </div>
           </div>
       </div>
@@ -92,6 +126,7 @@
     }
     .time_schedule{
       margin: 0 20px;
+      position: relative;
     }
 
     .time_schedule_line_box{
@@ -122,5 +157,10 @@
         flex-grow: 0;
         flex-shrink: 0;
         flex-basis: auto;
+    }
+    .regist{
+      position: absolute;
+      top: 0px;
+      height: 110px;
     }
 </style>

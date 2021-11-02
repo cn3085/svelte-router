@@ -35,6 +35,7 @@
 
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     $reservationTimeSelection.timeList = reservationTimeList;
+    $reservationTimeSelection.registedTimeList = registedReservationList;
   }
   
   
@@ -45,12 +46,6 @@
 
     start = todayOperatingTime.startTime;
     end = todayOperatingTime.endTime;
-
-    console.log({
-      sdt: getDateTimeAtThisTime(start),
-      edt: getDateTimeAtThisTime(end),
-      cId: 600
-    });
 
     //등록된 예약들 가져옴
     registedReservationList = await ReservationService.getReservationList({

@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import { formatting } from "./util/TimeUtil";
 import { alertError } from "../js/toast_store";
 
-export let startDate = writable(null);
-export let endDate = writable(null);
+export let startDate = writable(null); //선택된 시작시간
+export let endDate = writable(null); //선택된 종료시간
 export let timeList = writable([]);
 export let chooseStimeToggle = writable(true);
 export let registedTimeList = writable([]);
@@ -14,6 +14,7 @@ export let reservationTimeSelection = writable({
   endDate: null,
   timeList: [],
   chooseStimeToggle: true,
+  registedTimeList: [],
 });
 
 export function setTime(newSDate, newEDate) {
@@ -22,6 +23,9 @@ export function setTime(newSDate, newEDate) {
     let endDate = selection.endDate;
     let timeList = selection.timeList;
     let chooseStimeToggle = selection.chooseStimeToggle;
+    let registedTimeList = selection.registedTimeList;
+
+    console.log(selection);
 
     if (newEDate <= startDate) {
       startDate = newSDate;
@@ -41,12 +45,13 @@ export function setTime(newSDate, newEDate) {
     try {
       newAtimeList = timeList.map((time) => {
         if (time.startDate >= startDate && time.endDate <= endDate) {
-          //1. 시간 범위 안에 있는 칸들
-          if (time.state === "FULL") {
-            //1-1. FULL인 칸을 포함하면 안 된다
-            throw new Error("안돼");
+          for (let r of registedTimeList) {
+            //예약된 시간에 포함된느 칸이 있는지 체크
+            if (time.startDate >= r.startTime && time.endDate <= r.endTime) {
+              throw new Error(time.startDate + "~" + time.endDate);
+            }
           }
-          time.state = "CHOOSEN"; //1-2. 시간 범위 안에 있다면 선택된다
+          time.state = "CHOOSEN"; //1-2. 선택한 시간 사이에 있는 칸들은 모두 선택된다
         } else {
           if (time.state === "CHOOSEN") {
             //2. 이전에 선택됐던 칸들이 시간 범위 밖에 있다면
@@ -56,7 +61,7 @@ export function setTime(newSDate, newEDate) {
         return time;
       });
     } catch (e) {
-      console.log(e);
+      console.warn("already registed.", e);
       startDate = null;
       endDate = null;
       newAtimeList = timeList.map((time) => {
@@ -65,7 +70,7 @@ export function setTime(newSDate, newEDate) {
         }
         return time;
       });
-      alertError(3000, "안 돼요");
+      alertError(3000, "이미 예약된 시간이 포함되어 있습니다.");
     }
 
     return {
@@ -73,6 +78,7 @@ export function setTime(newSDate, newEDate) {
       endDate: endDate,
       timeList: newAtimeList,
       chooseStimeToggle: chooseStimeToggle,
+      registedTimeList: registedTimeList,
     };
   });
 }

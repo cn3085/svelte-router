@@ -22,7 +22,11 @@
 </script>
 
 <div class="time_registed" style="background-color:{color + '95'};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
-    <div>{dayjs(startTime).format('HH:mm')}~{dayjs(endTime).format('HH:mm')}</div>
+    <div>
+        {dayjs(startTime).format('HH:mm')}
+        <div style="display: inline-block;">~</div>
+        {dayjs(endTime).format('HH:mm')}
+    </div>
     <div class="member_name">
         {#if members[0].sex === 'M'}
             <DotBlue/>

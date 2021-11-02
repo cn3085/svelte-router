@@ -3,13 +3,14 @@
   import { onMount } from "svelte";
   import { reservationTimeSelection } from "../js/reservation_store";
   import customParseFormat from "dayjs/plugin/customParseFormat";
-  import TimeHead from "../components/timeline/TimeHead.svelte";
+  import TimeTh from "../components/timeline/TimeTh.svelte";
   import TimeTd from "../components/timeline/TimeTd.svelte";
   import { getDateTimeAtThisTime } from "../js/util/TimeUtil";
   import { getFilledTimeArray } from "../js/service/TimeLineService";
   import * as SettingService from "../js/service/SettingService";
   import * as ReservationService from "../js/service/ReservationService";
-import DotRed from "../components/member/DotRed.svelte";
+  import ReservationTd from '../components/timeline/ReservationTd.svelte'
+  import DotRed from "../components/member/DotRed.svelte";
 
   dayjs.extend(customParseFormat);
 
@@ -45,7 +46,11 @@ import DotRed from "../components/member/DotRed.svelte";
     start = todayOperatingTime.startTime;
     end = todayOperatingTime.endTime;
 
-    console.log(start, end);
+    console.log({
+      sdt: getDateTimeAtThisTime(start),
+      edt: getDateTimeAtThisTime(end),
+      cId: 600
+    });
 
     //등록된 예약들 가져옴
     registedReservationList = await ReservationService.getReservationList({
@@ -70,7 +75,7 @@ import DotRed from "../components/member/DotRed.svelte";
                   <div class="time_number">{('' + startDate.get('h')).padStart(2, '0')}</div>
                 </div>
                 {#each reservationTimeList as th}
-                  <TimeHead endDate= {th.endDate}/>
+                  <TimeTh endDate= {th.endDate}/>
                 {/each}
               </div>
               <div class="time_schedule">
@@ -82,15 +87,15 @@ import DotRed from "../components/member/DotRed.svelte";
                 </div>
                 <div class="time_schedule_content_box"></div>
                   {#each registedReservationList as r}
-                    <div class="regist" style="background-color:{r.contents.color};left:{71*2}px; width:{r.useMinute / 5 * 71 + 1}px" >
+                    <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} LINE_WIDTH={70} reservation={r}/>
+                    <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
                       <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>
                       <div>
                         <DotRed/>최왈왈
                       </div>
                       <div>외 1명</div>
-                    </div>
+                    </div> -->
                   {/each}
-                    
               </div>
           </div>
       </div>
@@ -157,10 +162,5 @@ import DotRed from "../components/member/DotRed.svelte";
         flex-grow: 0;
         flex-shrink: 0;
         flex-basis: auto;
-    }
-    .regist{
-      position: absolute;
-      top: 0px;
-      height: 110px;
     }
 </style>

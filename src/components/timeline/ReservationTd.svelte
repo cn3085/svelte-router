@@ -1,0 +1,95 @@
+<script>
+    import dayjs from 'dayjs';
+    import DotRed from '../../components/member/DotRed.svelte'
+    import DotBlue from '../../components/member/DotBlue.svelte'
+    import MembersBaloon from './MembersBaloon.svelte';
+
+    export let reservation = {};
+    export let todayStartDate = dayjs();
+    export let MINUTE_INTERVAL = 5;
+    export let LINE_WIDTH = 0;
+
+    const startTime = dayjs(reservation.startTime);
+    const endTime = dayjs(reservation.endTime);
+    const useMinute= reservation.useMinute;
+    const {color} = reservation.contents;
+    const members = reservation.members;
+
+    const leftCount = startTime.diff(todayStartDate, 'm') / MINUTE_INTERVAL;
+    const widthCount = useMinute / MINUTE_INTERVAL;
+
+    const membersCount = members.length;
+
+</script>
+
+<div class="time_registed" style="background-color:{color};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px" >
+    <div>{dayjs(startTime).format('HH:mm')}~{dayjs(endTime).format('HH:mm')}</div>
+    <div>
+        {#if members[0].sex === 'M'}
+            <DotBlue/>
+        {:else}
+            <DotRed/>
+        {/if}
+        {members[0].name}
+    </div>
+    {#if membersCount > 1}
+        <div>외 {membersCount - 1}명</div>    
+    {/if}
+    <MembersBaloon {members} />
+</div>
+
+<style>
+.time_registed{
+    box-sizing: border-box;
+    position: absolute;
+    top: 0px;
+    height: 110px;
+}
+</style>
+
+
+
+<!-- {
+    "reservationId": 3850,
+    "startTime": "2021-11-02 10:15:00",
+    "endTime": "2021-11-02 10:30:00",
+    "state": "OK",
+    "contents": {
+        "contentsId": 600,
+        "name": "플스Test",
+        "color": "#5781ff",
+        "description": null,
+        "enableReservation": true,
+        "notice": null,
+        "regDate": "2021-10-28T10:49:56.296",
+        "updDate": "2021-11-01T14:32:44.063"
+    },
+    "members": [
+        {
+            "memberId": 7169,
+            "name": "철수33",
+            "sex": "M",
+            "birth": "2001-01-23",
+            "myPhoneNumber": null,
+            "parentsPhoneNumber": null,
+            "address": null,
+            "school": null,
+            "grade": null,
+            "memo": null
+        },
+        {
+            "memberId": 7170,
+            "name": "철수34",
+            "sex": "M",
+            "birth": "2016-03-06",
+            "myPhoneNumber": null,
+            "parentsPhoneNumber": null,
+            "address": null,
+            "school": null,
+            "grade": null,
+            "memo": null
+        }
+    ],
+    "regDate": "2021-11-02T09:21:16.526",
+    "useMinute": 15
+} -->

@@ -17,6 +17,7 @@
 
 <style>
     .time_head{
+        box-sizing: border-box;
         width: 70px;
         height: 8px;
         margin-top: 20px;

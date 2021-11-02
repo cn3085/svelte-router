@@ -24,6 +24,7 @@
 
 <style>
     .time_td{
+        box-sizing: border-box;
         border-right: 1px dashed #a6a6a7;;
         height: 110px;
         width: 70px;

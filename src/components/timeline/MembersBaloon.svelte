@@ -3,28 +3,37 @@
     import DotBlue from '../../components/member/DotBlue.svelte'
 
     export let members = [];
+
+    let showMembers = members.slice(0, 6);
 </script>
 <div class="members_baloon">
-    {#each members as m}
+    {#each showMembers as m}
         <div class="member">
-            {#if m.sex === 'M'}
-                <DotBlue/>
-            {:else}
-                <DotRed/>
-            {/if}
-            <div>{m.name}</div>
+            <div class="name">
+                {#if m.sex === 'M'}
+                    <DotBlue/>
+                {:else}
+                    <DotRed/>
+                {/if}
+                {m.name}
+            </div>
             <div class="birth">({m.birth})</div>
         </div>
     {/each}
+    {#if members.length > 6}
+        <div class="etc">등 {members.length} 명</div>
+    {/if}
 </div>
 <style>
     .members_baloon{
         box-sizing: border-box;
         width: 130px;
         position: absolute;
+        padding: 0 10px;
         top: -25px;
-        left: calc(100% * 1/2);
+        left: calc(100% * 2/3);
         border-radius: 5px;
+        font-size: 13px;
     }
 
     .members_baloon .member{
@@ -34,6 +43,21 @@
 
     .member .birth{
         font-size: 10px;
+        font-weight: normal;
+    }
+    .member .name{
+        text-align: left;
+        width: 55%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0 auto;
+    }
+    .members_baloon .etc{
+        font-style: italic;
+        font-size: 10px;
+        font-weight: normal;
+        text-align: right;
     }
     :global(.time_registed .members_baloon) {
         display: none;

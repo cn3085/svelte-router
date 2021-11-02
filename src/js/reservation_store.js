@@ -7,6 +7,7 @@ export let startDate = writable(null);
 export let endDate = writable(null);
 export let timeList = writable([]);
 export let chooseStimeToggle = writable(true);
+export let registedTimeList = writable([]);
 
 export let reservationTimeSelection = writable({
   startDate: null,

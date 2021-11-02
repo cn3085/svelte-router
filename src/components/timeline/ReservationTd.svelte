@@ -19,12 +19,11 @@
     const widthCount = useMinute / MINUTE_INTERVAL;
 
     const membersCount = members.length;
-
 </script>
 
-<div class="time_registed" style="background-color:{color};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px" >
+<div class="time_registed" style="background-color:{color + '95'};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
     <div>{dayjs(startTime).format('HH:mm')}~{dayjs(endTime).format('HH:mm')}</div>
-    <div>
+    <div class="member_name">
         {#if members[0].sex === 'M'}
             <DotBlue/>
         {:else}
@@ -42,8 +41,24 @@
 .time_registed{
     box-sizing: border-box;
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-weight: bolder;
     top: 0px;
     height: 110px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px;
+    backdrop-filter: blur(1px);
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+}
+.time_registed .member_name{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 80%;
+    margin: 0 auto;
 }
 </style>
 

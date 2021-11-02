@@ -41,13 +41,17 @@
     .time_td:hover{
         cursor: pointer;
         background-color: #e6e6e6;
+        box-shadow: inset -2px -2px 6px rgba(255, 255, 255, .7),
+              inset -2px -2px 4px rgba(255, 255, 255, .5),
+              inset 2px 2px 2px rgba(255, 255, 255, .075),
+              inset 2px 2px 4px rgba(0, 0, 0, .15);
     }
     .time_td.none{
         background-color: none;
     }
 
     .time_td.choosen{
-        background-color: aquamarine;
+        background-color: #dddddd;
     }
 
     .time_td.full{

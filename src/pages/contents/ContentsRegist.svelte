@@ -1,5 +1,6 @@
 <script>
     import {getAxios} from '../../js/service/AuthAxios'
+    import { getRandomColor } from "../../js/util/WebUtil";
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import ListIcon from '../../components/common/icon/ListIcon.svelte'
@@ -26,18 +27,6 @@
             value : 'true',
             require : true
         }
-    }
-
-
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-
-        return color;
     }
 
 

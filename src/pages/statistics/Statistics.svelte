@@ -1,56 +1,182 @@
 <script>
-    import Line from 'svelte-chartjs/src/Line.svelte';
+  import Bar from 'svelte-chartjs/src/Bar.svelte';
 
-    let dataLine = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "My First dataset",
-        fill: true,
-        lineTension: 0.3,
-        backgroundColor: "rgba(225, 204,230, .3)",
-        borderColor: "rgb(205, 130, 158)",
-        borderCapStyle: "butt",
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: "miter",
-        pointBorderColor: "rgb(205, 130,1 58)",
-        pointBackgroundColor: "rgb(255, 255, 255)",
-        pointBorderWidth: 10,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgb(0, 0, 0)",
-        pointHoverBorderColor: "rgba(220, 220, 220,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40]
-      },
-      {
-        label: "My Second dataset",
-        fill: true,
-        lineTension: 0.3,
-        backgroundColor: "rgba(184, 185, 210, .3)",
-        borderColor: "rgb(35, 26, 136)",
-        borderCapStyle: "butt",
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: "miter",
-        pointBorderColor: "rgb(35, 26, 136)",
-        pointBackgroundColor: "rgb(255, 255, 255)",
-        pointBorderWidth: 10,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgb(0, 0, 0)",
-        pointHoverBorderColor: "rgba(220, 220, 220, 1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        data: [28, 48, 40, 19, 86, 27, 90]
+  const testData = [
+        {
+            "memberId": 7170,
+            "memberName": "철수34",
+            "allCount": 47,
+            "contents": [
+                {
+                    "contentsId": 598,
+                    "contentsName": "오락실Test",
+                    "color": "#f2ff38",
+                    "eachCount": 20
+                },
+                {
+                    "contentsId": 600,
+                    "contentsName": "플스Test",
+                    "color": "#5781ff",
+                    "eachCount": 15
+                },
+                {
+                    "contentsId": 599,
+                    "contentsName": "노래방Test",
+                    "color": "blue",
+                    "eachCount": 12
+                }
+            ]
+        },
+        {
+            "memberId": 7146,
+            "memberName": "철수10",
+            "allCount": 45,
+            "contents": [
+                {
+                    "contentsId": 598,
+                    "contentsName": "오락실Test",
+                    "color": "#f2ff38",
+                    "eachCount": 18
+                },
+                {
+                    "contentsId": 600,
+                    "contentsName": "플스Test",
+                    "color": "#5781ff",
+                    "eachCount": 17
+                },
+                {
+                    "contentsId": 599,
+                    "contentsName": "노래방Test",
+                    "color": "blue",
+                    "eachCount": 10
+                }
+            ]
+        },
+        {
+            "memberId": 7140,
+            "memberName": "철수4",
+            "allCount": 42,
+            "contents": [
+                {
+                    "contentsId": 600,
+                    "contentsName": "플스Test",
+                    "color": "#5781ff",
+                    "eachCount": 20
+                },
+                {
+                    "contentsId": 599,
+                    "contentsName": "노래방Test",
+                    "color": "blue",
+                    "eachCount": 13
+                },
+                {
+                    "contentsId": 598,
+                    "contentsName": "오락실Test",
+                    "color": "#f2ff38",
+                    "eachCount": 9
+                }
+            ]
+        },
+        {
+            "memberId": 7159,
+            "memberName": "철수23",
+            "allCount": 41,
+            "contents": [
+                {
+                    "contentsId": 600,
+                    "contentsName": "플스Test",
+                    "color": "#5781ff",
+                    "eachCount": 17
+                },
+                {
+                    "contentsId": 598,
+                    "contentsName": "오락실Test",
+                    "color": "#f2ff38",
+                    "eachCount": 15
+                },
+                {
+                    "contentsId": 599,
+                    "contentsName": "노래방Test",
+                    "color": "blue",
+                    "eachCount": 9
+                }
+            ]
+        },
+        {
+            "memberId": 7157,
+            "memberName": "철수21",
+            "allCount": 39,
+            "contents": [
+                {
+                    "contentsId": 600,
+                    "contentsName": "플스Test",
+                    "color": "#5781ff",
+                    "eachCount": 17
+                },
+                {
+                    "contentsId": 598,
+                    "contentsName": "오락실Test",
+                    "color": "#f2ff38",
+                    "eachCount": 11
+                },
+                {
+                    "contentsId": 599,
+                    "contentsName": "노래방Test",
+                    "color": "blue",
+                    "eachCount": 11
+                }
+            ]
+        }
+    ];
+
+  const memberNames = testData.map( d => d.memberName + ' (' +  d.allCount + '건)');
+
+  let contentsData = {};
+  
+  for(let t of testData){
+    for(let c of t.contents){
+      if(!contentsData[c.contentsId]){
+        contentsData[c.contentsId] = {};
       }
-    ]
+      let datasetElement = contentsData[c.contentsId];
+      datasetElement.label = c.contentsName;
+      if(!datasetElement['data']){
+        datasetElement['data'] = [];
+      }
+      datasetElement.data.push(c.eachCount);
+      if(!datasetElement['backgroundColor']){
+        datasetElement['backgroundColor'] = c.color + '90';
+      }
+    }
+  }
+
+  console.log(Object.values(contentsData));
+
+  let data = {
+    labels: memberNames,
+    datasets: [...Object.values(contentsData)]
   };
+
+  let options = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart - Stacked'
+      },
+    },
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true
+      }
+    }
+  }
 </script>
 
-<div>
-  <Line data={dataLine} options={{ responsive: true }}/>
+<div style="width:500px;">
+  <Bar {data} {options} />
 </div>
 

@@ -9,10 +9,12 @@
     import DotRed from '../../components/member/DotRed.svelte';
     import DotBlue from '../../components/member/DotBlue.svelte';
     import CloseIcon from '../../components/common/icon/CloseIcon.svelte'
+    import Blog from '../Blog.svelte';
+    import { reservationTimeSelection } from "../../js/reservation_store";
 
     const titleName = '예약 등록';
 
-    let selectedContents = {};
+    $ : selectedContents = null;
     let contentsList = [];
 
     async function getContentsList(){
@@ -62,43 +64,10 @@
     })
 
     
-    function selectContents(contents){
+    async function selectContents(contents){
         selectedContents = contents;
-    }
-
-    let member = {
-        name : {
-            value : null,
-            require : true,
-        },
-        sex : {
-            value : 'M',
-            require : true
-        },
-        birth : {
-            value : null,
-            require : true
-        },
-        myPhoneNumber : {
-            value : null,
-            require : false
-        },
-        parentPhoneNumber : {
-            value : null,
-            require : false
-        },
-        school : {
-            value : null,
-            require : false
-        },
-        grade : {
-            value : '1',
-            require : false
-        },
-        memo : {
-            value : null,
-            require : false
-        },
+        $reservationTimeSelection.registedTimeList =  await getRegistReservationList(contentsId);
+        console.log(selectedContents);
     }
 
 
@@ -207,7 +176,7 @@
                 <div class="input_form items_box">
                     {#each contentsList as c}
                         <button class="input w2 contents_item"
-                                class:selected_contents={selectedContents.contentsId === c.contentsId}
+                                class:selected_contents={selectedContents !== null && selectedContents.contentsId === c.contentsId}
                                 on:click={() => selectContents(c)}>
                                 {c.name}
                         </button>
@@ -221,7 +190,7 @@
                     시작시간
                 </div>
                 <div class="input_form">
-                    <input class="input w2" type="time" maxlength="15" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
+                    <input class="input w2" type="time" maxlength="15">
                 </div>
             </div>
             <div class="form_group">
@@ -229,7 +198,7 @@
                     종료시간
                 </div>
                 <div class="input_form">
-                    <input class="input w2" type="time" maxlength="15" bind:value={member.school.value} placeholder="학교명을 입력하세요.">
+                    <input class="input w2" type="time" maxlength="15">
                 </div>
             </div>
         </div>
@@ -237,34 +206,12 @@
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
-                    메모
+                    예약 시간
                 </div>
                 <div class="input_form">
-                    <div class="time_line_box">
-                        <div class="time_line">
-                            <div class="a_time hour">
-                                <div class="time_number">10</div>
-                            </div>
-                            <div class="a_time">
-                                <div class="time_number"></div>
-                            </div>
-                            <div class="a_time">
-                                <div class="time_number">10</div>
-                            </div>
-                            <div class="a_time">
-                                <div class="time_number"></div>
-                            </div>
-                            <div class="a_time">
-                                <div class="time_number">20</div>
-                            </div>
-                            <div class="a_time">
-                                <div class="time_number"></div>
-                            </div>
-                            <div class="a_time half">
-                                <div class="time_number">30</div>
-                            </div>
-                        </div>
-                    </div>
+                    {#if selectedContents !== null}
+                        <Blog bind:contentsId={selectedContents.contentsId}/>
+                    {/if}
                 </div>
             </div>
         </div>

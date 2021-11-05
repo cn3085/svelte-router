@@ -10,92 +10,91 @@
   import * as SettingService from "../js/service/SettingService";
   import * as ReservationService from "../js/service/ReservationService";
   import ReservationTd from '../components/timeline/ReservationTd.svelte'
-  import DotRed from "../components/member/DotRed.svelte";
 
   dayjs.extend(customParseFormat);
 
-  let start = '00:00';
-  let end = '00:00';
+  export let contentsId;
+
+  let operatingStartTime = '00:00:00';
+  let operatingEndTime = '00:00:00';
+
+  let startDate  = dayjs(operatingStartTime, "HH:mm");
+  let endDate = dayjs(operatingEndTime, "HH:mm");
 
   const MINUTE_INTERVAL = 5;
   
-  let startDate  = dayjs(start, "HH:mm");
-  let endDate = dayjs(end, "HH:mm");
-  
   let reservationTimeList = [];
-  
   let registedReservationList = [];
 
-  $: {
-    //setting값을 가져와서 timeline 그림
-    start;
-    end;
-    startDate = dayjs(start, "HH:mm");
-    endDate = dayjs(end, "HH:mm");
-
-    reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
-    $reservationTimeSelection.timeList = reservationTimeList;
-    $reservationTimeSelection.registedTimeList = registedReservationList;
+  // $: {
+  //   console.log('gogo');
+  //   reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+  //   $reservationTimeSelection.timeList = reservationTimeList;
+  //   getRegistReservationList(contentsId).then( (registedReservationList) =>{
+  //     //$reservationTimeSelection.registedTimeList = registedReservationList;
+  //     console.log($reservationTimeSelection.registedTimeList);
+  //   });
+  // }
+  
+  async function getRegistReservationList(contentsId){
+    return await ReservationService.getReservationList({
+      sdt: getDateTimeAtThisTime(operatingStartTime),
+      edt: getDateTimeAtThisTime(operatingEndTime),
+      cId: contentsId
+    })
   }
   
   
   onMount( async () => {
+    console.log('gogo');
     //settings에서 오늘의 운영시간 가져옴
     const settingData = await SettingService.getSettingData();
     const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
 
-    start = todayOperatingTime.startTime;
-    end = todayOperatingTime.endTime;
+    operatingStartTime = todayOperatingTime.startTime;
+    operatingEndTime = todayOperatingTime.endTime;
 
-    //등록된 예약들 가져옴
-    registedReservationList = await ReservationService.getReservationList({
-      sdt: getDateTimeAtThisTime(start),
-      edt: getDateTimeAtThisTime(end),
-      cId: 600
-    });
+    startDate = dayjs(operatingStartTime, "HH:mm");
+    endDate = dayjs(operatingEndTime, "HH:mm");
 
-    console.log(registedReservationList);
+    reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+    // registedReservationList = await getRegistReservationList(contentsId);
+    $reservationTimeSelection.timeList = reservationTimeList;
+    // $reservationTimeSelection.registedTimeList = registedReservationList;
   })
 </script>
 
-<div class="form_line">
-  <div class="form_group">
-      <div class="form_name">
-          time
-      </div>
-      <div class="input_form">
-          <div class="time_line_box">
-              <div class="time_line">
-                <div class="time_head start"> 
-                  <div class="time_number">{('' + startDate.get('h')).padStart(2, '0')}</div>
-                </div>
-                {#each reservationTimeList as th}
-                  <TimeTh endDate= {th.endDate}/>
-                {/each}
-              </div>
-              <div class="time_schedule">
-                <div class="time_schedule_line_box">
-                  <div class="time_td start"></div>
-                  {#each $reservationTimeSelection.timeList as th}
-                    <TimeTd {...th}/>
-                  {/each}
-                </div>
-                <div class="time_schedule_content_box"></div>
-                  {#each registedReservationList as r}
-                    <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} LINE_WIDTH={70} reservation={r}/>
-                    <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
-                      <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>
-                      <div>
-                        <DotRed/>최왈왈
-                      </div>
-                      <div>외 1명</div>
-                    </div> -->
-                  {/each}
-              </div>
+
+<div class="time_line_box">
+  <div class="time_line">
+    <div class="time_head start"> 
+      <div class="time_number">{('' + startDate.get('h')).padStart(2, '0')}</div>
+    </div>
+    {#each reservationTimeList as th}
+      <TimeTh endDate= {th.endDate}/>
+    {/each}
+  </div>
+  <div class="time_schedule">
+    <div class="time_schedule_line_box">
+      <div class="time_td start"></div>
+      {#each $reservationTimeSelection.timeList as th}
+        <TimeTd {...th}/>
+      {/each}
+    </div>
+    <div class="time_schedule_content_box"></div>
+      {#each registedReservationList as r}
+        <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} LINE_WIDTH={70} reservation={r}/>
+        <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
+          <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>
+          <div>
+            <DotRed/>최왈왈
           </div>
-      </div>
+          <div>외 1명</div>
+        </div> -->
+      {/each}
   </div>
 </div>
+      
 <style>
   .time_line_box{
         height: 155px;

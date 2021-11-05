@@ -344,51 +344,6 @@
         cursor: pointer;
         color: #ff4e4e;
     }
-    .time_line_box{
-        height: 155px;
-        border: 1px solid black;
-        width: 900px;
-    }
-    .time_line{
-        display: flex;
-        align-items: flex-end;
-        margin: 0 20px;
-    }
-    .time_line .a_time{
-        width: 44px;
-        height: 8px;
-        margin-top: 20px;
-        border-bottom: 1px solid #a6a6a7;
-        border-left: 1px solid #a6a6a7;
-        position: relative;
-    }
-
-    .a_time .time_number{
-        color: #a6a6a7;
-        font-size: 10px;
-        position: inherit;
-        left: -7px;
-        top: -15px;
-    }
-    .a_time.hour{
-        height: 10px;
-        border-left: 1px solid black;
-    }
-    .a_time.hour .time_number{
-        color: black;
-        font-size: 16px;
-        left: -10px;
-        top: -22px;
-    }
-    .a_time.half{
-        height: 9px;
-    }
-    .a_time.half .time_number{
-        color: #7c7c7c;
-        font-size: 12px;
-        left: -8px;
-        top: -16px;
-    }
     #loading{
         display: none;
         width: 100%;

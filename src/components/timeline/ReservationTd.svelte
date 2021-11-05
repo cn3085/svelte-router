@@ -9,16 +9,27 @@
     export let MINUTE_INTERVAL = 5;
     export let LINE_WIDTH = 0;
 
-    const startTime = dayjs(reservation.startTime);
-    const endTime = dayjs(reservation.endTime);
-    const useMinute= reservation.useMinute;
-    const {color} = reservation.contents;
-    const members = reservation.members;
+    let startTime;
+    let endTime;
+    let useMinute;
+    let color;
+    let members;
+    let leftCount;
+    let widthCount;
 
-    const leftCount = startTime.diff(todayStartDate, 'm') / MINUTE_INTERVAL;
-    const widthCount = useMinute / MINUTE_INTERVAL;
+   
+    $: {
+        startTime = dayjs(reservation.startTime);
+        endTime = dayjs(reservation.endTime);
+        useMinute= reservation.useMinute;
+        color = reservation.contents.color;
+        members = reservation.members;
+        leftCount = startTime.diff(todayStartDate, 'm') / MINUTE_INTERVAL;
+        widthCount = useMinute / MINUTE_INTERVAL;
+    }
 
-    const membersCount = members.length;
+
+    $: membersCount = members.length;
 </script>
 
 <div class="time_registed" style="background-color:{color + '95'};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">

@@ -5,62 +5,33 @@
   import customParseFormat from "dayjs/plugin/customParseFormat";
   import TimeTh from "../components/timeline/TimeTh.svelte";
   import TimeTd from "../components/timeline/TimeTd.svelte";
-  import { getDateTimeAtThisTime } from "../js/util/TimeUtil";
   import { getFilledTimeArray } from "../js/service/TimeLineService";
-  import * as SettingService from "../js/service/SettingService";
-  import * as ReservationService from "../js/service/ReservationService";
   import ReservationTd from '../components/timeline/ReservationTd.svelte'
 
   dayjs.extend(customParseFormat);
 
   export let contentsId;
+  export let operatingStartTime = '00:00:00';
+  export let operatingEndTime = '00:00:00';
 
-  let operatingStartTime = '00:00:00';
-  let operatingEndTime = '00:00:00';
+  const MINUTE_INTERVAL = 5;
+  let reservationTimeList = [];
 
   let startDate  = dayjs(operatingStartTime, "HH:mm");
   let endDate = dayjs(operatingEndTime, "HH:mm");
 
-  const MINUTE_INTERVAL = 5;
-  
-  let reservationTimeList = [];
-  let registedReservationList = [];
-
-  // $: {
-  //   console.log('gogo');
-  //   reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
-  //   $reservationTimeSelection.timeList = reservationTimeList;
-  //   getRegistReservationList(contentsId).then( (registedReservationList) =>{
-  //     //$reservationTimeSelection.registedTimeList = registedReservationList;
-  //     console.log($reservationTimeSelection.registedTimeList);
-  //   });
-  // }
-  
-  async function getRegistReservationList(contentsId){
-    return await ReservationService.getReservationList({
-      sdt: getDateTimeAtThisTime(operatingStartTime),
-      edt: getDateTimeAtThisTime(operatingEndTime),
-      cId: contentsId
-    })
+  $: {
+    console.log(123);
+    contentsId;
+    reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+    $reservationTimeSelection.timeList = reservationTimeList;
   }
+
   
   
   onMount( async () => {
-    console.log('gogo');
-    //settings에서 오늘의 운영시간 가져옴
-    const settingData = await SettingService.getSettingData();
-    const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
-
-    operatingStartTime = todayOperatingTime.startTime;
-    operatingEndTime = todayOperatingTime.endTime;
-
     startDate = dayjs(operatingStartTime, "HH:mm");
     endDate = dayjs(operatingEndTime, "HH:mm");
-
-    reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
-    // registedReservationList = await getRegistReservationList(contentsId);
-    $reservationTimeSelection.timeList = reservationTimeList;
-    // $reservationTimeSelection.registedTimeList = registedReservationList;
   })
 </script>
 
@@ -82,7 +53,7 @@
       {/each}
     </div>
     <div class="time_schedule_content_box"></div>
-      {#each registedReservationList as r}
+      {#each $reservationTimeSelection.registedTimeList as r}
         <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} LINE_WIDTH={70} reservation={r}/>
         <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
           <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>

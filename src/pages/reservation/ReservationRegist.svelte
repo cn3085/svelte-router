@@ -1,4 +1,6 @@
 <script>
+    import dayjs from 'dayjs'
+    import customParseFormat from "dayjs/plugin/customParseFormat";
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
     import ContentTitle from '../../components/common/ContentTitle.svelte'
@@ -11,19 +13,27 @@
     import CloseIcon from '../../components/common/icon/CloseIcon.svelte'
     import Blog from '../Blog.svelte';
     import { reservationTimeSelection } from "../../js/reservation_store";
+    import * as ReservationService from "../../js/service/ReservationService";
+    import { getDateTimeAtThisTime } from "../../js/util/TimeUtil";
+    import * as SettingService from "../../js/service/SettingService";
+
+    dayjs.extend(customParseFormat);
 
     const titleName = '예약 등록';
+    let operatingStartTime;
+    let operatingEndTime;
+    let startDate;
+    let endDate;
 
     $ : selectedContents = null;
-    let contentsList = [];
 
     async function getContentsList(){
         const request = getAxios();
 
         const res = await request.get('/v1/contents/all?er=true');
         if(res.status === 200 && res.data.code === 'SUCC'){
-            contentsList = res.data.data;
-            console.log(contentsList);
+            console.log(res.data.data);
+            return res.data.data;
         }
     }
 
@@ -59,15 +69,30 @@
         selectedMembers = selectedMembers.filter( m => m.memberId !== memberId);
     }
 
-    onMount( async () => {
-        await getContentsList();
+    onMount(async () => {
+        const settingData = await SettingService.getSettingData();
+        const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
+
+        operatingStartTime = todayOperatingTime.startTime;
+        operatingEndTime = todayOperatingTime.endTime;
+
+        startDate = dayjs(operatingStartTime, "HH:mm:ss");
+        endDate = dayjs(operatingEndTime, "HH:mm:ss");
     })
 
     
     async function selectContents(contents){
         selectedContents = contents;
-        $reservationTimeSelection.registedTimeList =  await getRegistReservationList(contentsId);
-        console.log(selectedContents);
+        $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId);
+        console.log($reservationTimeSelection.registedTimeList);
+    }
+
+    async function getRegistReservationList(contentsId){
+        return await ReservationService.getReservationList({
+        sdt: getDateTimeAtThisTime(operatingStartTime),
+        edt: getDateTimeAtThisTime(operatingEndTime),
+        cId: contentsId
+        })
     }
 
 
@@ -174,13 +199,17 @@
                     콘텐츠
                 </div>
                 <div class="input_form items_box">
-                    {#each contentsList as c}
-                        <button class="input w2 contents_item"
-                                class:selected_contents={selectedContents !== null && selectedContents.contentsId === c.contentsId}
-                                on:click={() => selectContents(c)}>
-                                {c.name}
-                        </button>
-                    {/each}
+                    {#await getContentsList()}
+                        <div>컨텐츠 정보를 불러오는 중입니다.</div>
+                    {:then contentsList} 
+                        {#each contentsList as c}
+                            <button class="input w2 contents_item"
+                                    class:selected_contents={selectedContents !== null && selectedContents.contentsId === c.contentsId}
+                                    on:click={() => selectContents(c)}>
+                                    {c.name}
+                            </button>
+                        {/each}
+                    {/await}
                 </div>
             </div>
         </div>
@@ -210,7 +239,7 @@
                 </div>
                 <div class="input_form">
                     {#if selectedContents !== null}
-                        <Blog bind:contentsId={selectedContents.contentsId}/>
+                        <Blog contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
                     {/if}
                 </div>
             </div>

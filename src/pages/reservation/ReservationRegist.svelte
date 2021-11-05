@@ -11,7 +11,7 @@
     import DotRed from '../../components/member/DotRed.svelte';
     import DotBlue from '../../components/member/DotBlue.svelte';
     import CloseIcon from '../../components/common/icon/CloseIcon.svelte'
-    import Blog from '../Blog.svelte';
+    import ReservationTimeLine from '../ReservationTimeLine.svelte';
     import { reservationTimeSelection } from "../../js/reservation_store";
     import * as ReservationService from "../../js/service/ReservationService";
     import { getDateTimeAtThisTime } from "../../js/util/TimeUtil";
@@ -83,7 +83,11 @@
     
     async function selectContents(contents){
         selectedContents = contents;
+        const loading = document.querySelector('#loading');
+        loading.style.display = 'block';
         $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId);
+        loading.style.display = 'none';
+
         console.log($reservationTimeSelection.registedTimeList);
     }
 
@@ -96,35 +100,49 @@
     }
 
 
-    async function registMember(){
-        const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
-        
-        if(emptyRequiredKey.length > 0){
-            alertError(5000, '이름, 성별, 생년월일은 필수값입니다.');
-            return false;
+    async function registReservation(){
+        const members = selectedMembers.map( m => {
+            return {
+                "memberId" : m.memberId
+            }
+        });
+
+        if(members === null || members.length < 1){
+            alertError(5000, '참여자를 1명 이상 선택해주세요.');
+            return;
+        }
+        if(selectedContents === null || !selectedContents.contentsId){
+            alertError(5000, '콘텐츠를 선택해주세요.');
+            return;
+        }
+        if($reservationTimeSelection.startDate == null || $reservationTimeSelection.endDate == null){
+            alertError(5000, '예약 시간을 선택해주세요.');
+            return;
         }
 
+        if(!confirm('예약을 등록하시겠습니까?')){
+            return false;
+        }
+        let requestBody = {
+            "startTime" : $reservationTimeSelection.startDate,
+            "endTime" : $reservationTimeSelection.endDate,
+            "contents" : {
+                "contentsId" : selectedContents.contentsId
+            },
+            "members" : members
+        }
         
+        console.log(requestBody);
         try{
             const request = getAxios();
-            const res = await request.post('/v1/members', {
-                name: member.name.value,
-                sex: member.sex.value,
-                birth: member.birth.value,
-                myPhoneNumber: member.myPhoneNumber.value,
-                parentPhoneNumber: member.parentPhoneNumber.value,
-                school: member.school.value,
-                grade: member.grade.value,
-                memo: member.memo.value
-            });
+            const res = await request.post('/v1/reservations', requestBody);
 
-            if(res.status === 200 && res.data.code === 'SUCC'){
+            if(res.status === 200 && res?.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
-                page.replace('/member/detail/' + res.data.data.memberId);
+                page.replace('/reservation/detail/' + res.data.data.reservationId);
             }
         }catch(err){
             console.log(err);
-            console.log( '>>', err.message);
             console.log(err.response);
             console.log(err.response.status);
             if(err.response.status === 401){
@@ -135,7 +153,7 @@
     }
 
     function goToListPage(){
-        page.show('/member');
+        page.show('/reservation');
     }
 
 </script>
@@ -219,7 +237,7 @@
                     시작시간
                 </div>
                 <div class="input_form">
-                    <input class="input w2" type="time" maxlength="15">
+                    <input class="input w2" type="time" maxlength="15" bind:value={$reservationTimeSelection.startTimeValue} readonly disabled>
                 </div>
             </div>
             <div class="form_group">
@@ -227,7 +245,7 @@
                     종료시간
                 </div>
                 <div class="input_form">
-                    <input class="input w2" type="time" maxlength="15">
+                    <input class="input w2" type="time" maxlength="15"  bind:value={$reservationTimeSelection.endTimeValue} readonly disabled>
                 </div>
             </div>
         </div>
@@ -238,15 +256,16 @@
                     예약 시간
                 </div>
                 <div class="input_form">
+                    <div id="loading"></div>
                     {#if selectedContents !== null}
-                        <Blog contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
+                        <ReservationTimeLine contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
                     {/if}
                 </div>
             </div>
         </div>
         <div class="form_line w10">
             <div class="form_group button_group">
-                <button class="success_btn submit w4" type="button" on:click={registMember}>회원등록</button>
+                <button class="success_btn submit w4" type="button" on:click={registReservation}>예약등록</button>
             </div>
             <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
                 <ListIcon width="1.8em"/>
@@ -369,5 +388,15 @@
         font-size: 12px;
         left: -8px;
         top: -16px;
+    }
+    #loading{
+        display: none;
+        width: 100%;
+        height: 155px;
+        position: absolute;
+        background: grey;
+        z-index: 1;
+        opacity: 0.4;
+        border-radius: 5px;
     }
 </style>

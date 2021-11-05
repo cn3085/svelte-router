@@ -1,5 +1,5 @@
 <script>
-import Blog from "../pages/Blog.svelte";
+import ReservationTimeLine from "../pages/ReservationTimeLine.svelte";
 
     import Login from "../pages/login/Login.svelte";
     import Statistics from "../pages/statistics/Statistics.svelte";
@@ -16,9 +16,9 @@ import Blog from "../pages/Blog.svelte";
 {:else if contentComponent === TimeTable}
     <!-- <Header /> -->
     <TimeTable/>
-{:else if contentComponent === Blog}
+{:else if contentComponent === ReservationTimeLine}
     <!-- <Header /> -->
-    <Blog/>
+    <ReservationTimeLine/>
 {:else if contentComponent === Statistics}
     <!-- <Header /> -->
     <Statistics/>

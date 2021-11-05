@@ -1,10 +1,11 @@
 import { writable } from "svelte/store";
-import dayjs from "dayjs";
-import { formatting } from "./util/TimeUtil";
 import { alertError } from "../js/toast_store";
+import dayjs from "dayjs";
 
-export let startDate = writable(null); //선택된 시작시간
-export let endDate = writable(null); //선택된 종료시간
+export let startDate = writable(null); //선택된 시작시간 객체
+export let endDate = writable(null); //선택된 종료시간 객체
+export let startTimeValue = writable(null);
+export let endTimeValue = writable(null);
 export let timeList = writable([]);
 export let chooseStimeToggle = writable(true);
 export let registedTimeList = writable([]);
@@ -12,6 +13,8 @@ export let registedTimeList = writable([]);
 export let reservationTimeSelection = writable({
   startDate: null,
   endDate: null,
+  startTimeValue: null,
+  endTimeValue: null,
   timeList: [],
   chooseStimeToggle: true,
   registedTimeList: [],
@@ -25,7 +28,6 @@ export function setTime(newSDate, newEDate) {
     let chooseStimeToggle = selection.chooseStimeToggle;
     let registedTimeList = selection.registedTimeList;
 
-    console.log(selection);
 
     if (newEDate <= startDate) {
       startDate = newSDate;
@@ -64,6 +66,8 @@ export function setTime(newSDate, newEDate) {
       console.warn("already registed.", e);
       startDate = null;
       endDate = null;
+      startTimeValue = null;
+      endTimeValue = null;
       newAtimeList = timeList.map((time) => {
         if (time.state === "CHOOSEN") {
           time.state = "NONE";
@@ -73,9 +77,22 @@ export function setTime(newSDate, newEDate) {
       alertError(3000, "이미 예약된 시간이 포함되어 있습니다.");
     }
 
+    
+    console.log({
+      startDate: startDate,
+      endDate: endDate,
+      startTimeValue: dayjs(startDate).format('HH:mm'),
+      endTimeValue: dayjs(endDate).format('HH:mm'),
+      timeList: newAtimeList,
+      chooseStimeToggle: chooseStimeToggle,
+      registedTimeList: registedTimeList,
+    });
+    
     return {
       startDate: startDate,
       endDate: endDate,
+      startTimeValue: dayjs(startDate).format('HH:mm'),
+      endTimeValue: dayjs(endDate).format('HH:mm'),
       timeList: newAtimeList,
       chooseStimeToggle: chooseStimeToggle,
       registedTimeList: registedTimeList,

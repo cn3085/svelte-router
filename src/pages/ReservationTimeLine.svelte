@@ -15,23 +15,33 @@
   export let operatingEndTime = '00:00:00';
 
   const MINUTE_INTERVAL = 5;
+  const LINE_WIDTH = 70;
   let reservationTimeList = [];
 
   let startDate  = dayjs(operatingStartTime, "HH:mm");
   let endDate = dayjs(operatingEndTime, "HH:mm");
 
   $: {
-    console.log(123);
     contentsId;
+    $reservationTimeSelection.startDate = null;
+    $reservationTimeSelection.endDate = null;
+    $reservationTimeSelection.startTimeValue = null;
+    $reservationTimeSelection.endTimeValue = null;
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     $reservationTimeSelection.timeList = reservationTimeList;
   }
 
   
+  function moveScroll(){
+    const timeLineBox = document.querySelector('.time_line_box');
+    const diffMinute = startDate.diff(dayjs(), 'm') * -1;
+    timeLineBox.scrollTo(diffMinute / MINUTE_INTERVAL * LINE_WIDTH, 0);
+  }
   
   onMount( async () => {
     startDate = dayjs(operatingStartTime, "HH:mm");
     endDate = dayjs(operatingEndTime, "HH:mm");
+    moveScroll();
   })
 </script>
 
@@ -54,7 +64,7 @@
     </div>
     <div class="time_schedule_content_box"></div>
       {#each $reservationTimeSelection.registedTimeList as r}
-        <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} LINE_WIDTH={70} reservation={r}/>
+        <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
         <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
           <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>
           <div>

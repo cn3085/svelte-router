@@ -1,33 +1,16 @@
 <script>
+    import { onMount } from 'svelte';
     import Bar from 'svelte-chartjs/src/Bar.svelte';
+    import { getTotalUseTimeContents } from "../../js/service/StatisticsService";
 
-    const testData = [
-        {
-            "CONTENTS_ID": 600,
-            "TOTAL": 12355,
-            "COLOR": "#5781ff",
-            "NAME": "플스Test"
-        },
-        {
-            "CONTENTS_ID": 598,
-            "TOTAL": 12269,
-            "COLOR": "#f2ff38",
-            "NAME": "오락실Test"
-        },
-        {
-            "CONTENTS_ID": 599,
-            "TOTAL": 11419,
-            "COLOR": "#ffcd56",
-            "NAME": "오락실"
-        }
-    ];
+    let contentsData = [];
 
-    const contentsNameLabels = testData.map( t => t.NAME);
-    const useMinuteDatas = testData.map( t => t.TOTAL );
-    const colorDatas = testData.map( t => t.COLOR);
+    $: contentsNameLabels = contentsData.map( t => t.NAME);
+    $: useMinuteDatas = contentsData.map( t => t.TOTAL );
+    $: colorDatas = contentsData.map( t => t.COLOR);
 
 
-    let data = {
+    $: data = {
         labels: contentsNameLabels,
         datasets: [
             {
@@ -51,6 +34,10 @@
         scales: {
         }
     }
+
+    onMount( async () => {
+        contentsData = await getTotalUseTimeContents();
+    })
 </script>
     
 <div style="width:500px;">

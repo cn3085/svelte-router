@@ -40,7 +40,7 @@
     }
     .time_td:hover{
         cursor: pointer;
-        background-color: #e6e6e6;
+        background-color: #f3f3f3;
         box-shadow: inset -2px -2px 6px rgba(255, 255, 255, .7),
               inset -2px -2px 4px rgba(255, 255, 255, .5),
               inset 2px 2px 2px rgba(255, 255, 255, .075),
@@ -51,7 +51,7 @@
     }
 
     .time_td.choosen{
-        background-color: #dddddd;
+        background-color: #e3e3e3;
     }
 
     .time_td.full{

@@ -6,6 +6,6 @@
 </script>
 
 <MostUsedMember/>
-<!-- <TotalUseTimeEachContents/>
+<TotalUseTimeEachContents/>
 <UsedAverageEachContents/>
-<UseTimeByMemberBirth/> -->
+<UseTimeByMemberBirth/>

@@ -4,7 +4,7 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import ListIcon from '../../components/common/icon/ListIcon.svelte'
     import router from 'page'
-    import { onMount } from 'svelte';
+    import { onMount, tick } from 'svelte';
     import page from 'page';
     import dayjs from 'dayjs'
     import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -12,8 +12,8 @@
     import DotRed from '../../components/member/DotRed.svelte';
     import DotBlue from '../../components/member/DotBlue.svelte';
     import CloseIcon from '../../components/common/icon/CloseIcon.svelte'
-    import ReservationTimeLine from '../ReservationTimeLine.svelte';
-    import { reservationTimeSelection, setTime } from "../../js/reservation_store";
+    import ReservationShowTimeLine from '../ReservationShowTimeLine.svelte';
+    import { reservationTimeSelection, setTime, initTime } from "../../js/reservation_store";
     import * as ReservationService from "../../js/service/ReservationService";
     import { getDateTimeAtThisTime } from "../../js/util/TimeUtil";
     import * as SettingService from "../../js/service/SettingService";
@@ -85,6 +85,21 @@
 
         startDate = dayjs(operatingStartTime, "HH:mm:ss");
         endDate = dayjs(operatingEndTime, "HH:mm:ss");
+
+        const request = getAxios();
+        request.get('/v1/reservations/' + reservationId)
+                .then( async res => {
+                    if(res.status === 200 && res.data.code === 'SUCC'){
+                        console.log(res.data.data);
+                        await bindReservationData(res.data.data);
+                    }else{
+                        alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
+                    }
+                })
+                .catch( res => {
+                    console.error(res);
+                    alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
+                });
     })
 
     
@@ -99,47 +114,68 @@
     }
 
     async function getRegistReservationList(contentsId){
-        return await ReservationService.getReservationList({
-        sdt: getDateTimeAtThisTime(operatingStartTime),
-        edt: getDateTimeAtThisTime(operatingEndTime),
-        cId: contentsId
-        })
+        const registedReservationList = await ReservationService.getReservationList({
+            sdt: getDateTimeAtThisTime(operatingStartTime),
+            edt: getDateTimeAtThisTime(operatingEndTime),
+            cId: contentsId
+        });
+        return registedReservationList.filter( r => r.reservationId != reservationId);
     }
 
 
-    function updateMember(){
-        const emptyRequiredKey = Object.keys(member).filter( key => member[key].require && !member[key].value);
-        
-        if(emptyRequiredKey.length > 0){
-            alertError(5000, '이름, 성별, 생년월일은 필수값입니다.');
-            return false;
-        }
-
-        if(!confirm('회원 정보를 수정하시겠습니까?')){
-            return false;
-        }
-
-        const request = getAxios();
-
-        request.put('/v1/members/' + reservationId, {
-            name: member.name.value,
-            sex: member.sex.value,
-            birth: member.birth.value,
-            myPhoneNumber: member.myPhoneNumber.value,
-            parentPhoneNumber: member.parentPhoneNumber.value,
-            school: member.school.value,
-            grade: member.grade.value,
-            memo: member.memo.value
-        }).then(res => {
-            console.log(res);
-            if(res.status === 200 && res.data.code === 'SUCC'){
-                alertSuccess(3000, res.data.message);
+    async function updateReservation(){
+        const members = selectedMembers.map( m => {
+            return {
+                "memberId" : m.memberId
             }
-        })
-        .catch(res => {
-            console.error(res);
-            router.replace('/login');
-        })
+        });
+
+        if(members === null || members.length < 1){
+            alertError(5000, '참여자를 1명 이상 선택해주세요.');
+            return;
+        }
+        if(selectedContents === null || !selectedContents.contentsId){
+            alertError(5000, '콘텐츠를 선택해주세요.');
+            return;
+        }
+        if($reservationTimeSelection.startDate == null || $reservationTimeSelection.endDate == null){
+            alertError(5000, '예약 시간을 선택해주세요.');
+            return;
+        }
+
+        if(!confirm('예약을 수정하시겠습니까?')){
+            return false;
+        }
+        let requestBody = {
+            "reservationId" : reservationId,
+            "state" : "OK",
+            "startTime" : $reservationTimeSelection.startDate,
+            "endTime" : $reservationTimeSelection.endDate,
+            "contents" : {
+                "contentsId" : selectedContents.contentsId
+            },
+            "members" : members
+        }
+        
+        try{
+            const request = getAxios();
+            const res = await request.put('/v1/reservations', requestBody);
+
+            if(res.status === 200 && res?.data.code === 'SUCC'){
+                alertSuccess(3000, res.data.message);
+                page.replace('/reservation/detail/' + res.data.data.reservationId);
+            }else{
+                alertError(5000, res.data.message);
+            }
+        }catch(err){
+            console.log(err);
+            console.log(err.response);
+            console.log(err.response.status);
+            if(err.response.status === 401){
+                alertError('로그인 후 시도해주세요.');
+                return;
+            }
+        }
     }
 
 
@@ -176,29 +212,12 @@
     })
 
 
-    function bindReservationData(reservationData){
+    async function bindReservationData(reservationData){
         selectedMembers = reservationData.members;
-        selectedContents = reservationData.contents;
-        setTime(reservationData.startTime, reservationData.endTime);
+        await selectContents(reservationData.contents);
+        await tick();
+        initTime(reservationData.startTime, reservationData.endTime);
     }
-
-    onMount(async () => {
-        const request = getAxios();
-        request.get('/v1/reservations/' + reservationId)
-            .then( res => {
-                if(res.status === 200 && res.data.code === 'SUCC'){
-                    console.log(res.data.data);
-                    bindReservationData(res.data.data);
-                }else{
-                    alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
-                }
-            })
-            .catch( res => {
-                console.error(res);
-                alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
-            });
-
-    })
 </script>
 <ContentTitle {titleName}/>
 <div id="content_body">
@@ -301,7 +320,7 @@
                 <div class="input_form">
                     <div id="loading"></div>
                     {#if selectedContents !== null}
-                        <ReservationTimeLine contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
+                        <ReservationShowTimeLine contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
                     {/if}
                 </div>
             </div>
@@ -309,10 +328,10 @@
         
         <div class="form_line w10">
             <div class="form_group button_group">
-                <button class="success_btn submit w2" type="button" on:click={updateMember}>수정</button>
+                <button class="success_btn submit w2" type="button" on:click={updateReservation}>예약 수정</button>
             </div>
             <div class="form_group button_group">
-                <button class="warn_btn submit w2" type="button" on:click={removeReservation}>삭제</button>
+                <button class="warn_btn submit w2" type="button" on:click={removeReservation}>예약 삭제</button>
             </div>
             <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
                 <ListIcon width="1.8em"/>

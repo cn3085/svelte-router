@@ -132,7 +132,6 @@
             "members" : members
         }
         
-        console.log(requestBody);
         try{
             const request = getAxios();
             const res = await request.post('/v1/reservations', requestBody);
@@ -140,6 +139,8 @@
             if(res.status === 200 && res?.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
                 page.replace('/reservation/detail/' + res.data.data.reservationId);
+            }else{
+                alertError(res.data.message);
             }
         }catch(err){
             console.log(err);

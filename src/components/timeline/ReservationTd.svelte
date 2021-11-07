@@ -32,7 +32,7 @@
     $: membersCount = members.length;
 </script>
 
-<div class="time_registed" style="background-color:{color + '95'};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
+<div class="time_registed" style="background-color:{color};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
     <div>
         {dayjs(startTime).format('HH:mm')}
         <div style="display: inline-block;">~</div>
@@ -64,9 +64,9 @@
     top: 0px;
     height: 110px;
     border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 5px;
+    /* border-radius: 5px; */
     backdrop-filter: blur(1px);
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+    /* box-shadow: 4px 4px 10px rgba(0,0,0,0.3); */
 }
 .time_registed .member_name{
     overflow: hidden;

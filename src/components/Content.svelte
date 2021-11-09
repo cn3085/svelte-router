@@ -6,6 +6,7 @@ import ReservationTimeLine from "../pages/ReservationTimeLine.svelte";
     import TimeTable from "../pages/timetable/TimeTable.svelte";
     import Header from "./Header.svelte";
     import Nav from "./Nav.svelte";
+    import ConfirmTest from "../pages/ConfirmTest.svelte";
     export let contentComponent;
     export let params;
     export let querystring;
@@ -16,9 +17,9 @@ import ReservationTimeLine from "../pages/ReservationTimeLine.svelte";
 {:else if contentComponent === TimeTable}
     <!-- <Header /> -->
     <TimeTable/>
-{:else if contentComponent === ReservationTimeLine}
+{:else if contentComponent === ConfirmTest}
     <!-- <Header /> -->
-    <ReservationTimeLine/>
+    <ConfirmTest/>
 {:else if contentComponent === Statistics}
     <!-- <Header /> -->
     <Statistics/>

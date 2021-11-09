@@ -1,20 +1,19 @@
 <script>
     import ContentTitle from '../../components/common/ContentTitle.svelte'
-    import TrMember from '../../components/member/TrMember.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
     import CloseIcon from "../../components/common/icon/CloseIcon.svelte";
     import { getAxios } from '../../js/service/AuthAxios';
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
-    import { onMount, tick } from 'svelte';
     import page from 'page';
+    import TrReservation from '../../components/reservation/TrReservation.svelte';
+import { tick } from 'svelte';
 
     export let querystring;
 
     let queryObj = new URLSearchParams();
 
     $ : {
-        console.log('query change!!', querystring);
         queryObj = new URLSearchParams(querystring);
         getList(queryObj.get('page'));
     }
@@ -22,13 +21,13 @@
     const titleName = '예약 조회';
     
     let searchParam = {
-        nm: null,
+        cName: null,
+        cId: null,
+        mName: null,
+        mId: null,
         st: '',
-        ab: null,
-        mp: null,
-        pp: null,
-        sch: null,
-        gd: '',
+        sdt: null,
+        edt: null,
         page: null
     };
 
@@ -40,16 +39,16 @@
 
     async function getList(pageNum){
 
-        searchParam.nm =  queryObj.get('nm') ?? null;
-        searchParam.st =  queryObj.get('st') ?? '';
-        searchParam.ab =  queryObj.get('ab') ?? null;
-        searchParam.mp =  queryObj.get('mp') ?? null;
-        searchParam.pp =  queryObj.get('pp') ?? null;
-        searchParam.sch =  queryObj.get('sch') ?? null;
-        searchParam.gd =  queryObj.get('gd') ?? '';
+        searchParam.cName =queryObj.get('cName') ?? null;
+        searchParam.cId =  queryObj.get('cId') ?? null;  
+        searchParam.mName =queryObj.get('mName') ?? null;
+        searchParam.mId =  queryObj.get('mId') ?? null;  
+        searchParam.st =   queryObj.get('st') ?? '';
+        searchParam.sdt =  queryObj.get('sdt') ?? null;
+        searchParam.edt =  queryObj.get('edt') ?? null;
         searchParam.page = pageNum;
 
-        const res = await request.get('/v1/members?' + makeQueryString(searchParam));
+        const res = await request.get('/v1/reservations?' + makeQueryString(searchParam));
         const data = res.data;
         if(res.status === 200 && data.code === 'SUCC'){
             console.log(data);
@@ -57,42 +56,33 @@
             $pageContent = data.data.content;
             setNumber(data.data.number, data.data.totalPages);
         }
+        await tick();
     }
 
 
-    async function searchMember(){
-        page.show('/member?' + makeQueryString(searchParam));
+    async function searchReservation(){
+        page.show('/reservation?' + makeQueryString(searchParam));
     }
 
     function movePage(pageNum){
         let newQueryObj = new URLSearchParams(querystring);
         newQueryObj.set('page', pageNum);
-        page.show('/member?' + newQueryObj.toString());
+        page.show('/reservation?' + newQueryObj.toString());
     }
 
     function enterSearch(e){
         if(e.key === 'Enter'){
-            page.show('/member?' + makeQueryString(searchParam));
+            page.show('/reservation?' + makeQueryString(searchParam));
         }
     }
 
-    function clearBirthParam(){
-        searchParam.ab = '';
-        searchParam.bb = '';
+    function clearDateParam(){
+        searchParam.sdt = '';
+        searchParam.edt = '';
     }
-
-
-
-    onMount(async () => {
-        // console.log('list mount...');
-        // await getList();
-        // await tick();
-    })
     
-
-    
-    function goToDetailPage(memberId){
-        page.show('/member/detail/' + memberId + '?' + makeQueryString(searchParam));
+    function goToDetailPage(reservationId){
+        page.show('/reservation/detail/' + reservationId + '?' + makeQueryString(searchParam));
     }
 
     
@@ -103,66 +93,15 @@
     <div class="form_line">
         <div class="form_group">
             <div class="form_name">
-                이름
+                회원이름
             </div>
             <div class="input_form">
-                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.nm} on:keyup={enterSearch} placeholder="이름을 입력하세요.">
+                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.mName} on:keyup={enterSearch} placeholder="이름을 입력하세요.">
             </div>
         </div>
         <div class="form_group">
             <div class="form_name">
-                성별
-            </div>
-            <div class="input_form">
-                <label for="sex-type-m">
-                    모두<input class="input w1 radio" id="sex-type-m" type="radio" name="sexType" value="" bind:group={searchParam.st}>
-                </label>
-                <label for="sex-type-m">
-                    남<input class="input w1 radio" id="sex-type-m" type="radio" name="sexType" value="M" bind:group={searchParam.st}>
-                </label>
-                <label for="sex-type-w">
-                    여<input class="input w1 radio" id="sex-type-w" type="radio" name="sexType" value="W" bind:group={searchParam.st}>
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="form_line">
-        <div class="form_group">
-            <div class="form_name">
-                연락처
-            </div>
-            <div class="input_form">
-                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.mp} on:keyup={enterSearch} placeholder="‘-’ 구분없이 입력하세요">
-            </div>
-        </div>
-        <div class="form_group">
-            <div class="form_name">
-                생년월일
-            </div>
-            <div class="input_form">
-                <input class="input w3" type="date" max="9999-12-31"  bind:value={searchParam.ab}>
-            </div>
-            <div class="middle_line">ㅡ</div>
-            <div class="input_form">
-                <input class="input w3" type="date" max="9999-12-31"  bind:value={searchParam.bb}>
-            </div>
-            <div id="birth_search_clear_wrapper" on:click={clearBirthParam}>
-                <CloseIcon width={'0.8em'}/>
-            </div>
-        </div>
-    </div>
-    <div class="form_line">
-        <div class="form_group">
-            <div class="form_name">
-                학교
-            </div>
-            <div class="input_form">
-                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.sch} on:keyup={enterSearch} placeholder="학교명을 입력하세요.">
-            </div>
-        </div>
-        <div class="form_group">
-            <div class="form_name">
-                학년
+                콘텐츠
             </div>
             <div class="input_form">
                 <select class="input w2" bind:value={searchParam.gd}>
@@ -179,33 +118,68 @@
                 </select>
             </div>
         </div>
+    </div>
+    <div class="form_line">
+        <div class="form_group">
+            <div class="form_name">
+                예약일
+            </div>
+            <div class="input_form">
+                <input class="input w3" type="date" max="9999-12-31"  bind:value={searchParam.sdt}>
+            </div>
+            <div class="middle_line">ㅡ</div>
+            <div class="input_form">
+                <input class="input w3" type="date" max="9999-12-31"  bind:value={searchParam.edt}>
+            </div>
+            <div id="r_search_clear_wrapper" on:click={clearDateParam}>
+                <CloseIcon width={'0.8em'}/>
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="form_name">
+                상태
+            </div>
+            <div class="input_form">
+                <label for="r-type">
+                    모두<input class="input w1 radio" id="r-type" type="radio" value="" bind:group={searchParam.st}>
+                </label>
+                <label for="r-type-ok">
+                    예약완료<input class="input w1 radio" id="r-type-ok" type="radio" value="OK" bind:group={searchParam.st}>
+                </label>
+                <label for="r-type-cancel">
+                    예약취소<input class="input w1 radio" id="r-type-cancel" type="radio" value="CANCLE" bind:group={searchParam.st}>
+                </label>
+            </div>
+        </div>
         <div class="form_group form_btn_group">
-            <button class="search_btn submit w1" type="button" on:click={searchMember}>검색</button>
+            <button class="search_btn submit w1" type="button" on:click={searchReservation}>검색</button>
             <button class="download_btn submit w1" type="button">Download</button>
         </div>
     </div>
-    
 </div>
 
 <table>
     <thead>
         <th style="width: 5%;">No</th>
-        <th style="width: 15%;">이름</th>
-        <th style="width: 20%;">성별</th>
-        <th style="width: 20%;">생년월일</th>
-        <th style="width: 20%;">연락처</th>
-        <th style="width: 20%;">학교</th>
+        <th style="width: 20%;">콘텐츠</th>
+        <th style="width: 30%;">참여자</th>
+        <th style="width: 10%;">예약날짜</th>
+        <th style="width: 15%;">예약시간</th>
+        <th style="width: 15%;">등록일</th>
+        <th style="width: 5%;">상태</th>
     </thead>
     <tbody>
-        {#each $pageContent as m, index}
-            <TrMember memberId= {m.memberId}
-                        name = {m.name}
-                        sex = {m.sex}
-                        birth = {m.birth}
-                        myPhoneNumber = {m.myPhoneNumber}
-                        school = {m.school}
-                        i = {pageMaxNumber - index}
-                        {goToDetailPage}/>
+        {#each $pageContent as r, index}
+            <TrReservation reservationId= {r.reservationId}
+                           contents = {r.contents}
+                           members = {r.members}
+                           startTime = {r.startTime}
+                           endTime = {r.endTime}
+                           useMinute = {r.useMinute}
+                           regDate = {r.regDate}
+                           state = {r.state}
+                           i = {pageMaxNumber - index}
+                           {goToDetailPage}/>
         {:else}
             <td colspan="6">데이터가 존재하지 않습니다.</td>
         {/each}
@@ -281,7 +255,7 @@
         width: 30px;
         margin-right: 15px;
     }
-    #birth_search_clear_wrapper{
+    #r_search_clear_wrapper{
         display: flex;
         align-items: center;
         margin-left: 15px;

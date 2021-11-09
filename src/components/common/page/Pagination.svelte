@@ -16,14 +16,19 @@
         await movePage(clickedPage - 1);
     }
 
+    
+    
+    
+    
+
 </script>
 <div id="page_navigation_area">
     <div id="page_before_area">
-        {#if $pageable.firstPageNum !== 1}
-            <div class="page_nav_btn svg_wrapper">
+        {#if $pageable.totalPages > 10 && $pageable.number > 9}
+            <div class="page_nav_btn svg_wrapper" on:click={() => goPage(0)}>
                     <IconGoFirst/>
             </div>
-            <div class="page_nav_btn svg_wrapper">
+            <div class="page_nav_btn svg_wrapper" on:click={() => goPage($pageable.pageNumbers.slice(0,1) - 1)}>
                     <IconGoBefore/>
             </div>
         {/if}
@@ -36,11 +41,11 @@
         {/each}
     </div>
     <div id="page_after_area">
-        {#if $pageable.pageNumbers.slice(-1) === $pageable.totalPages}
-            <div class="page_nav_btn svg_wrapper">
+        {#if $pageable.totalPages > 10 && $pageable.pageNumbers.slice(-1) != $pageable.totalPages}
+            <div class="page_nav_btn svg_wrapper" on:click={() => goPage(Number($pageable.pageNumbers.slice(-1)) + 1)}>
                 <IconGoAfter/>
             </div>
-            <div class="page_nav_btn svg_wrapper">
+            <div class="page_nav_btn svg_wrapper" on:click={() => goPage($pageable.totalPages)}>
                 <IconGoLast/>
             </div>
         {/if}

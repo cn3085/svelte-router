@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-export let pageContent = writable([]);
+export let pageContent = writable(null);
 export let pageable = writable({
     number : 0,
     totalPages : 1,

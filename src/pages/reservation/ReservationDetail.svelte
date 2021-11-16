@@ -320,7 +320,10 @@
                 <div class="input_form">
                     <div id="loading"></div>
                     {#if selectedContents !== null}
-                        <ReservationShowTimeLine contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
+                        <ReservationShowTimeLine contentsId={selectedContents.contentsId}
+                                                 showScrollDay={$reservationTimeSelection.startDate}
+                                                 {operatingStartTime}
+                                                 {operatingEndTime} />
                     {/if}
                 </div>
             </div>

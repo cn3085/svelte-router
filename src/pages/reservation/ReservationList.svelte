@@ -2,18 +2,21 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
     import CloseIcon from "../../components/common/icon/CloseIcon.svelte";
+    import { Chasing } from "svelte-loading-spinners";
     import { getAxios } from '../../js/service/AuthAxios';
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
     import page from 'page';
     import TrReservation from '../../components/reservation/TrReservation.svelte';
-import { tick } from 'svelte';
+    import { onMount, tick } from 'svelte';
+    
 
     export let querystring;
 
     let queryObj = new URLSearchParams();
 
     $ : {
+        $pageContent = null;
         queryObj = new URLSearchParams(querystring);
         getList(queryObj.get('page'));
     }
@@ -31,6 +34,8 @@ import { tick } from 'svelte';
         page: null
     };
 
+    let contentsList = null;
+
     console.log(searchParam);
 
     const request = getAxios();
@@ -40,7 +45,7 @@ import { tick } from 'svelte';
     async function getList(pageNum){
 
         searchParam.cName =queryObj.get('cName') ?? null;
-        searchParam.cId =  queryObj.get('cId') ?? null;  
+        searchParam.cId =  queryObj.get('cId') ?? '';  
         searchParam.mName =queryObj.get('mName') ?? null;
         searchParam.mId =  queryObj.get('mId') ?? null;  
         searchParam.st =   queryObj.get('st') ?? '';
@@ -48,7 +53,11 @@ import { tick } from 'svelte';
         searchParam.edt =  queryObj.get('edt') ?? null;
         searchParam.page = pageNum;
 
-        const res = await request.get('/v1/reservations?' + makeQueryString(searchParam));
+        let tempSearchParam = {...searchParam};
+        tempSearchParam.sdt = tempSearchParam.sdt ? tempSearchParam.sdt + ' 00:00:00' : null;
+        tempSearchParam.edt = tempSearchParam.edt ? tempSearchParam.edt + ' 00:00:00' : null;
+
+        const res = await request.get('/v1/reservations?' + makeQueryString(tempSearchParam));
         const data = res.data;
         if(res.status === 200 && data.code === 'SUCC'){
             console.log(data);
@@ -85,7 +94,21 @@ import { tick } from 'svelte';
         page.show('/reservation/detail/' + reservationId + '?' + makeQueryString(searchParam));
     }
 
-    
+    async function getContentsList(){
+        const request = getAxios();
+        
+        const res = await request.get('/v1/contents/all?er=true');
+        if(res.status === 200 && res.data.code === 'SUCC'){
+            console.log(res.data.data);
+            return res.data.data;
+        }else{
+            return [];
+        }
+    }
+
+    onMount( async () => {
+        contentsList = await getContentsList();
+    })
 </script>
 <ContentTitle {titleName}/>
 
@@ -104,17 +127,17 @@ import { tick } from 'svelte';
                 콘텐츠
             </div>
             <div class="input_form">
-                <select class="input w2" bind:value={searchParam.gd}>
-                    <option value="">선택 안 함</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
+                <select class="input w2" bind:value={searchParam.cId}>
+                    {#if contentsList === null}
+                        <option value="">loading...</option>
+                    {:else if contentsList.length < 1} 
+                        <option value="">없음</option>
+                    {:else}
+                        <option value="">선택 안 함</option>
+                        {#each contentsList as c}
+                            <option value={'' + c.contentsId}>{c.name}</option>
+                        {/each}
+                    {/if}
                 </select>
             </div>
         </div>
@@ -147,7 +170,7 @@ import { tick } from 'svelte';
                     예약완료<input class="input w1 radio" id="r-type-ok" type="radio" value="OK" bind:group={searchParam.st}>
                 </label>
                 <label for="r-type-cancel">
-                    예약취소<input class="input w1 radio" id="r-type-cancel" type="radio" value="CANCLE" bind:group={searchParam.st}>
+                    예약취소<input class="input w1 radio" id="r-type-cancel" type="radio" value="CANCEL" bind:group={searchParam.st}>
                 </label>
             </div>
         </div>
@@ -169,20 +192,28 @@ import { tick } from 'svelte';
         <th style="width: 5%;">상태</th>
     </thead>
     <tbody>
-        {#each $pageContent as r, index}
-            <TrReservation reservationId= {r.reservationId}
-                           contents = {r.contents}
-                           members = {r.members}
-                           startTime = {r.startTime}
-                           endTime = {r.endTime}
-                           useMinute = {r.useMinute}
-                           regDate = {r.regDate}
-                           state = {r.state}
-                           i = {pageMaxNumber - index}
-                           {goToDetailPage}/>
+        {#if $pageContent === null}
+            <td colspan="7" style="text-align: -webkit-center;height: 330px;">
+                <Chasing size={65} color={"#FFDC14"} unit={'px'} duration={'1s'}/>
+            </td>
+        {:else if $pageContent.length === 0}
+            <td colspan="6">
+                데이터가 없습니다.
+            </td>
         {:else}
-            <td colspan="6">데이터가 존재하지 않습니다.</td>
-        {/each}
+            {#each $pageContent as r, index}
+                <TrReservation reservationId= {r.reservationId}
+                            contents = {r.contents}
+                            members = {r.members}
+                            startTime = {r.startTime}
+                            endTime = {r.endTime}
+                            useMinute = {r.useMinute}
+                            regDate = {r.regDate}
+                            state = {r.state}
+                            i = {pageMaxNumber - index}
+                            {goToDetailPage}/>
+            {/each}
+        {/if}
     </tbody>
 </table>
 <div id="page_navigation_wrapper">

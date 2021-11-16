@@ -1,6 +1,6 @@
 <script>
   import dayjs from "dayjs";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import { reservationTimeSelection } from "../js/reservation_store";
   import customParseFormat from "dayjs/plugin/customParseFormat";
   import TimeTh from "../components/timeline/TimeTh.svelte";
@@ -13,6 +13,11 @@
   export let contentsId;
   export let operatingStartTime = '00:00:00';
   export let operatingEndTime = '00:00:00';
+  export let showScrollDay;
+  $: if(showScrollDay !== null){
+    console.log(dayjs(showScrollDay))
+    moveScroll(dayjs(showScrollDay));
+  }
 
   const MINUTE_INTERVAL = 5;
   const LINE_WIDTH = 70;
@@ -32,16 +37,17 @@
   }
 
   
-  function moveScroll(){
+  function moveScroll(showScrollDay){
     const timeLineBox = document.querySelector('.time_line_box');
-    const diffMinute = startDate.diff(dayjs(), 'm') * -1;
+    const diffMinute = startDate.diff(showScrollDay, 'm') * -1;
+    console.log(showScrollDay, diffMinute)
     timeLineBox.scrollTo(diffMinute / MINUTE_INTERVAL * LINE_WIDTH, 0);
   }
   
   onMount( async () => {
     startDate = dayjs(operatingStartTime, "HH:mm");
     endDate = dayjs(operatingEndTime, "HH:mm");
-    moveScroll();
+    // moveScroll();
   })
 </script>
 

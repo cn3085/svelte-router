@@ -34,7 +34,7 @@
   
   function moveScroll(){
     const timeLineBox = document.querySelector('.time_line_box');
-    const diffMinute = startDate.diff(dayjs(), 'm') * -1;
+    const diffMinute = startDate.diff(showScrollDay, 'm') * -1;
     timeLineBox.scrollTo(diffMinute / MINUTE_INTERVAL * LINE_WIDTH, 0);
   }
   

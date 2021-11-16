@@ -14,7 +14,9 @@
   export let operatingStartTime = '00:00:00';
   export let operatingEndTime = '00:00:00';
   export let showScrollDay;
-  $: if(showScrollDay !== null){
+  let scrollInit = false;
+  $: if(showScrollDay !== null && !scrollInit){
+    scrollInit = true;
     console.log(dayjs(showScrollDay))
     moveScroll(dayjs(showScrollDay));
   }
@@ -39,8 +41,9 @@
   
   function moveScroll(showScrollDay){
     const timeLineBox = document.querySelector('.time_line_box');
-    const diffMinute = startDate.diff(showScrollDay, 'm') * -1;
-    console.log(showScrollDay, diffMinute)
+    const converShowScrollDay = dayjs(startDate.format('YYYY-MM-DD'), showScrollDay.format('HH:mm'));
+    const diffMinute = startDate.diff(converShowScrollDay, 'm') * -1;
+    console.log(converShowScrollDay, diffMinute, diffMinute / MINUTE_INTERVAL * LINE_WIDTH)
     timeLineBox.scrollTo(diffMinute / MINUTE_INTERVAL * LINE_WIDTH, 0);
   }
   

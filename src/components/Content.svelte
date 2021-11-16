@@ -7,6 +7,7 @@ import ReservationTimeLine from "../pages/ReservationTimeLine.svelte";
     import Header from "./Header.svelte";
     import Nav from "./Nav.svelte";
     import ConfirmTest from "../pages/ConfirmTest.svelte";
+import Game from "../pages/game/Game.svelte";
     export let contentComponent;
     export let params;
     export let querystring;
@@ -17,6 +18,8 @@ import ReservationTimeLine from "../pages/ReservationTimeLine.svelte";
 {:else if contentComponent === TimeTable}
     <!-- <Header /> -->
     <TimeTable/>
+{:else if contentComponent === Game}
+    <Game/>
 {:else if contentComponent === ConfirmTest}
     <!-- <Header /> -->
     <ConfirmTest/>

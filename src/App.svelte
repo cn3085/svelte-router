@@ -22,6 +22,7 @@
   import TimeTable from './pages/timetable/TimeTable.svelte';
   import Confirm from './pages/Confirm.svelte';
   import ConfirmTest from './pages/ConfirmTest.svelte';
+  import Game from './pages/game/Game.svelte';
 
   let page;
   let params;
@@ -31,6 +32,7 @@
   router('/about', () => page = About)
   router('/blog', () => page = ConfirmTest)
   router('/test', () => page = Test)
+  router('/game', () => page = Game)
   //////////////////////////////////////////////////////회원
   router('/member', (ctx, next)=> {
     $pathname = ctx.pathname;

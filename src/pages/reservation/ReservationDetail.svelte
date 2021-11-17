@@ -76,6 +76,8 @@
         selectedMembers = selectedMembers.filter( m => m.memberId !== memberId);
     }
 
+
+    let promise;
     onMount(async () => {
         const settingData = await SettingService.getSettingData();
         const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
@@ -91,7 +93,7 @@
                 .then( async res => {
                     if(res.status === 200 && res.data.code === 'SUCC'){
                         console.log(res.data.data);
-                        await bindReservationData(res.data.data);
+                        promise = await bindReservationData(res.data.data);
                     }else{
                         alertError(5000, '해당 회원의 정보를 조회할 수 없습니다.');
                     }
@@ -320,7 +322,14 @@
                 <div class="input_form">
                     <div id="loading"></div>
                     {#if selectedContents !== null}
-                        <ReservationShowTimeLine contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
+                        {#await promise}
+                            로딩
+                        {:then p} 
+                            <ReservationShowTimeLine contentsId={selectedContents.contentsId}
+                                                    showScrollDay={$reservationTimeSelection.startDate}
+                                                    {operatingStartTime}
+                                                    {operatingEndTime} />
+                        {/await}
                     {/if}
                 </div>
             </div>

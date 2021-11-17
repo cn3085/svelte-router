@@ -2,6 +2,7 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import TrContents from '../../components/contents/TrContents.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
+    import { Chasing } from "svelte-loading-spinners";
     import { getAxios } from '../../js/service/AuthAxios'
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
@@ -13,6 +14,7 @@
     let queryObj = new URLSearchParams();
 
     $ : {
+        $pageContent = null;
         queryObj = new URLSearchParams(querystring);
         getList(queryObj.get('page'));
     }
@@ -115,16 +117,24 @@
         <th style="width: 20%;">등록일</th>
     </thead>
     <tbody>
-        {#each $pageContent as c, index}
-            <TrContents contentsId= {c.contentsId}
-                      name={c.name}
-                      enableReservation = {c.enableReservation}
-                      regDate = {c.regDate}
-                      i = {pageMaxNumber - index}
-                      {goToDetailPage}/>
+        {#if $pageContent === null}
+            <td colspan="4" style="text-align: -webkit-center;height: 330px;">
+                <Chasing size={65} color={"#FFDC14"} unit={'px'} duration={'1s'}/>
+            </td>
+        {:else if $pageContent.length === 0}
+            <td colspan="6">
+                데이터가 없습니다.
+            </td>
         {:else}
-            <td colspan="6">데이터가 존재하지 않습니다.</td>
-        {/each}
+            {#each $pageContent as c, index}
+                <TrContents contentsId= {c.contentsId}
+                        name={c.name}
+                        enableReservation = {c.enableReservation}
+                        regDate = {c.regDate}
+                        i = {pageMaxNumber - index}
+                        {goToDetailPage}/>
+            {/each}
+        {/if}
     </tbody>
 </table>
 

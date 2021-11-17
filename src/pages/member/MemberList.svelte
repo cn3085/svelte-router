@@ -2,18 +2,21 @@
     import ContentTitle from '../../components/common/ContentTitle.svelte'
     import TrMember from '../../components/member/TrMember.svelte'
     import Pagination from "../../components/common/page/Pagination.svelte";
+    import { Chasing } from "svelte-loading-spinners";
     import CloseIcon from "../../components/common/icon/CloseIcon.svelte";
     import { getAxios } from '../../js/service/AuthAxios'
     import { makeQueryString } from "../../js/util/WebUtil";
     import { pageContent, setNumber } from "../../js/page_store";
     import config from "../../js/config";
     import page from 'page';
+import { empty } from 'svelte/internal';
 
     export let querystring;
 
     let queryObj = new URLSearchParams();
 
     $ : {
+        $pageContent = null;
         queryObj = new URLSearchParams(querystring);
         getList(queryObj.get('page'));
     }
@@ -51,7 +54,6 @@
         const res = await request.get('/v1/members?' + makeQueryString(searchParam));
         const data = res.data;
         if(res.status === 200 && data.code === 'SUCC'){
-            console.log(data);
             pageMaxNumber = data.data.totalElements - (data.data.pageable.pageSize * data.data.number);
             $pageContent = data.data.content;
             setNumber(data.data.number, data.data.totalPages);
@@ -192,18 +194,26 @@
         <th style="width: 20%;">학교</th>
     </thead>
     <tbody>
-        {#each $pageContent as m, index}
-            <TrMember memberId= {m.memberId}
-                        name = {m.name}
-                        sex = {m.sex}
-                        birth = {m.birth}
-                        myPhoneNumber = {m.myPhoneNumber}
-                        school = {m.school}
-                        i = {pageMaxNumber - index}
-                        {goToDetailPage}/>
+        {#if $pageContent === null}
+            <td colspan="6" style="text-align: -webkit-center;height: 330px;">
+                <Chasing size={65} color={"#FFDC14"} unit={'px'} duration={'1s'}/>
+            </td>
+        {:else if $pageContent.length === 0}
+            <td colspan="6" style="text-align: -webkit-center;">
+                데이터가 없습니다.
+            </td>
         {:else}
-            <td colspan="6">데이터가 존재하지 않습니다.</td>
-        {/each}
+            {#each $pageContent as m, index}
+                <TrMember memberId= {m.memberId}
+                            name = {m.name}
+                            sex = {m.sex}
+                            birth = {m.birth}
+                            myPhoneNumber = {m.myPhoneNumber}
+                            school = {m.school}
+                            i = {pageMaxNumber - index}
+                            {goToDetailPage}/>
+            {/each}
+        {/if}
     </tbody>
 </table>
 <div id="page_navigation_wrapper">

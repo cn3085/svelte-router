@@ -121,11 +121,16 @@ export function initTime(newSDate, newEDate) {
 
     try {
       newAtimeList = timeList.map((time) => {
-        if (time.startDate >= startDate && time.endDate <= endDate) {
+        let startTimeOfTimes = dayjs(time.startDate).format('HH:mm');
+        let endTimeOfTimes = dayjs(time.endDate).format('HH:mm');
+        let startTime = dayjs(startDate).format('HH:mm');
+        let endTime = dayjs(endDate).format('HH:mm');
+        
+        if (startTimeOfTimes >= startTime && endTimeOfTimes <= endTime) {
           for (let r of registedTimeList) {
             //예약된 시간에 포함된느 칸이 있는지 체크
-            if (time.startDate >= r.startTime && time.endDate <= r.endTime) {
-              throw new Error(time.startDate + "~" + time.endDate);
+            if (startTimeOfTimes >= r.startTime && endTimeOfTimes <= r.endTime) {
+              throw new Error(startTimeOfTimes + "~" + endTimeOfTimes);
             }
           }
           time.state = "CHOOSEN"; //1-2. 선택한 시간 사이에 있는 칸들은 모두 선택된다

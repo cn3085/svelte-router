@@ -1,7 +1,8 @@
 <script>
     import Card from '../../components/game/Card.svelte'
+    import GyeolTimeOutLine from '../../components/game/GyeolTimeOutLine.svelte';
     import TimeOutLine from '../../components/game/TimeOutLine.svelte'
-    import { game, getNewRandomCard, backgroundColors, colors, shapes } from "../../js/game_store";
+    import { cards, point, getNewRandomCard, backgroundColors, colors, shapes } from "../../js/game_store";
 
     let allCards = [];
     const NUMBER_OF_CHOOSE_CARD = 9;
@@ -36,8 +37,12 @@
 </script>
 <section>
     <TimeOutLine/>
+    <GyeolTimeOutLine/>
+    <div>
+        {$point}
+    </div>
     <div id="card_area">
-        {#each $game.randomCards as card, i}
+        {#each $cards.randomCards as card, i}
             <Card id={i} shape={card.shape} color={card.color} background={card.background} clicked={card.clicked}/>
         {/each}
     </div>

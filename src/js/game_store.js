@@ -1,14 +1,36 @@
 import { writable } from "svelte/store";
 
-export let game = writable({
-  randomCards: [],
-});
-
 export const backgroundColors = ["black", "grey", "white"];
 export const colors = ["blue", "red", "yellow"];
 export const shapes = ["circle", "triangle", "square"];
 
-let selectedCardsIndexSet = new Set();
+export let point = writable(10);
+
+export let cards = writable({
+  randomCards: [],
+  winCards: [],
+});
+
+const MAX_TIME = 20;
+const MAX_WIDTH = 10;
+export const aSecondWidth = MAX_WIDTH / MAX_TIME;
+
+let hapList = [];
+
+export let time = writable({
+  intervalId: null,
+  timeLimit: MAX_TIME,
+  timeLimitWidth: 100, //aSecondWidth * timeLimit,
+});
+
+export let gyeolTime = writable({
+  isBonusTime: true,
+  intervalId: null,
+  timeLimit: 10,
+  timeLimitWidth: 100, //aSecondWidth * timeLimit,
+});
+
+let selectedCardsIndexList = [];
 
 // game.update( (beforeGame) => {
 //     let {allCards, randomCards} = beforeGame;
@@ -26,18 +48,16 @@ export function getNewRandomCard(allCards, NUMBER_OF_CHOOSE_CARD) {
     randomCards.push(randomCard);
   }
 
-  game.set({ randomCards: randomCards });
+  cards.set({ randomCards: randomCards, winCards: [] });
   setAllHab(randomCards);
 }
 
 function setAllHab(randomCards) {
   const numberOfSelectCard = 3;
-  let hapList = [];
 
   for (let i = 0; i < randomCards.length - numberOfSelectCard + 1; i++) {
     //배열 index를 위해  + 1
     for (let j = i + 1; j < randomCards.length - numberOfSelectCard + 2; j++) {
-      //어쩌고저쩌고
       for (
         let k = j + 1;
         k < randomCards.length - numberOfSelectCard + 3;
@@ -55,8 +75,8 @@ function setAllHab(randomCards) {
             convertToSCBTrinaryArray(third)
           )
         ) {
-          const hap = new Set([first, second, third]);
-          hapList.push(hap);
+          console.log(first, second, third);
+          hapList.push("" + i + j + k);
         }
       }
     }
@@ -96,22 +116,24 @@ function isHap(first, second, third) {
 
 export function selectCard(i) {
   //이미 선택한 카드면 그냥 return;
-  if (selectedCardsIndexSet.has(i)) {
+  if (selectedCardsIndexList.includes(i)) {
     return false;
   }
   //clicked update, selectedCards push
-  game.update((beforeGame) => {
-    let { randomCards } = beforeGame;
+  cards.update((beforeGame) => {
+    let { randomCards, winCards } = beforeGame;
     let card = randomCards[i];
     card.clicked = true;
-    selectedCardsIndexSet.add(i);
+    selectedCardsIndexList.push(i);
 
-    console.log(selectedCardsIndexSet, randomCards);
+    console.log(selectedCardsIndexList, randomCards);
 
     //3개째면 합 체크, clicked 초기화, selectedCards 초기화
-    if (selectedCardsIndexSet.size === 3) {
+    if (selectedCardsIndexList.length === 3) {
       //합체크
-      selectedCardsIndexSet.clear();
+      submitAnswer(winCards);
+
+      selectedCardsIndexList = [];
       let clickedInitCards = randomCards.map((c) => {
         return {
           ...c,
@@ -120,11 +142,129 @@ export function selectCard(i) {
       });
       return {
         randomCards: [...clickedInitCards],
+        winCards: winCards,
       };
     } else {
       return {
         randomCards: [...randomCards],
+        winCards: winCards,
       };
     }
   });
+}
+
+function submitAnswer(winCards) {
+  const answerKey = selectedCardsIndexList.sort().join("");
+  if (isHapAnswer(answerKey)) {
+    winCards.push(answerKey);
+    reward();
+    setGyeolBonus(true, 5);
+    startTimeGyeolTimeout();
+  } else {
+    penalty();
+  }
+}
+
+function isHapAnswer(answerKey) {
+  return hapList.includes(answerKey);
+}
+
+export function checkTimeout() {
+  time.update((before) => {
+    let { timeLimit, intervalId } = before;
+    if (timeLimit === 0) {
+      clearInterval(intervalId);
+      intervalId = null;
+      alert("timeout!!!");
+    }
+    return {
+      ...before,
+      intervalId: intervalId,
+    };
+  });
+}
+
+export function setIntervalId(newIntervalId) {
+  time.update((before) => {
+    return {
+      ...before,
+      intervalId: newIntervalId,
+    };
+  });
+}
+
+export function diminishSecond(second) {
+  time.update((before) => {
+    let newTimeLimit = before.timeLimit - second;
+    return {
+      ...before,
+      timeLimit: newTimeLimit,
+    };
+  });
+}
+
+function reward() {
+  point.update((before) => {
+    return before + 1;
+  });
+}
+
+function penalty() {
+  point.update((before) => {
+    return before - 2;
+  });
+}
+
+//결
+export function checkGyeolTimeout() {
+  gyeolTime.update((before) => {
+    let { timeLimit, intervalId } = before;
+    if (timeLimit === 0) {
+      clearInterval(intervalId);
+      setGyeolBonus(false, 5);
+      intervalId = null;
+      alert("timeout!!!");
+    }
+    return {
+      ...before,
+      intervalId: intervalId,
+    };
+  });
+}
+
+export function setGyeolBonus(isBonusTime, timeLimit) {
+  gyeolTime.update((before) => {
+    return {
+      ...before,
+      isBonusTime: isBonusTime,
+      timeLimit: timeLimit,
+    };
+  });
+}
+
+export function setGyeolIntervalId(newIntervalId) {
+  gyeolTime.update((before) => {
+    return {
+      ...before,
+      intervalId: newIntervalId,
+    };
+  });
+}
+
+export function diminishGyeolSecond(second) {
+  gyeolTime.update((before) => {
+    let newTimeLimit = before.timeLimit - second;
+    return {
+      ...before,
+      timeLimit: newTimeLimit,
+    };
+  });
+}
+
+export function startTimeGyeolTimeout() {
+  const intervalId = setInterval(() => {
+    diminishGyeolSecond(1);
+    checkGyeolTimeout();
+  }, 1000);
+  setGyeolIntervalId(intervalId);
 }

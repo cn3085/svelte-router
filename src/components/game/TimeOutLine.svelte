@@ -1,18 +1,22 @@
 <script>
 import { onMount } from "svelte";
+import { time, aSecondWidth, diminishSecond, checkTimeout, setIntervalId } from "../../js/game_store";
 
-
-    let timeoutId;
-    let timeLimit = 60;
-    width;
+    
+    $: timeLimitWidth = aSecondWidth * $time.timeLimit;
 
     onMount( async() => {
-
+        const intervalId = setInterval(() => {
+            diminishSecond(1);
+            checkTimeout();
+        }, 1000);
+        setIntervalId(intervalId);
     })
+
 </script>
 <section>
     <div id="timeout_bar">
-        <div id="timeout_remain"></div>
+        <div id="timeout_remain" style="width:{timeLimitWidth}%">{$time.timeLimit}초</div>
     </div>
 </section>
 

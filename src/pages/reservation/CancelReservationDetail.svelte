@@ -76,6 +76,34 @@
         selectedMembers = selectedMembers.filter( m => m.memberId !== memberId);
     }
 
+
+    let promise;
+    onMount(async () => {
+        const settingData = await SettingService.getSettingData();
+        const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
+
+        operatingStartTime = todayOperatingTime.startTime;
+        operatingEndTime = todayOperatingTime.endTime;
+
+        startDate = dayjs(operatingStartTime, "HH:mm:ss");
+        endDate = dayjs(operatingEndTime, "HH:mm:ss");
+
+        const request = getAxios();
+        request.get('/v1/reservations/' + reservationId)
+                .then( async res => {
+                    if(res.status === 200 && res.data.code === 'SUCC'){
+                        console.log(res.data.data);
+                        promise = await bindReservationData(res.data.data);
+                    }else{
+                        alertError(5000, '해당 예약의 정보를 조회할 수 없습니다.');
+                    }
+                })
+                .catch( res => {
+                    console.error(res);
+                    alertError(5000, '해당 예약의 정보를 조회할 수 없습니다.');
+                });
+    })
+
     
     async function selectContents(contents){
         selectedContents = contents;
@@ -180,43 +208,18 @@
     }
 
 
+
+    onMount(async () => {
+        window.scrollTo(0,0);
+    })
+
+
     async function bindReservationData(reservationData){
         selectedMembers = reservationData.members;
         await selectContents(reservationData.contents);
         initTime(reservationData.startTime, reservationData.endTime);
         await tick();
     }
-
-
-    let promise;
-    onMount(async () => {
-        const settingData = await SettingService.getSettingData();
-        const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
-
-        operatingStartTime = todayOperatingTime.startTime;
-        operatingEndTime = todayOperatingTime.endTime;
-
-        startDate = dayjs(operatingStartTime, "HH:mm:ss");
-        endDate = dayjs(operatingEndTime, "HH:mm:ss");
-
-        const request = getAxios();
-        request.get('/v1/reservations/' + reservationId)
-                .then( async res => {
-                    if(res.status === 200 && res.data.code === 'SUCC'){
-                        console.log(res.data.data);
-                        promise = await bindReservationData(res.data.data);
-                    }else{
-                        alertError(5000, '해당 예약의 정보를 조회할 수 없습니다.');
-                    }
-                })
-                .catch( res => {
-                    console.error(res);
-                    alertError(5000, '해당 예약의 정보를 조회할 수 없습니다.');
-                });
-
-        
-        window.scrollTo(0,0);
-    })
 </script>
 <ContentTitle {titleName}/>
 <div id="content_body">

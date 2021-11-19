@@ -38,8 +38,8 @@
     }
     .shape{
         box-sizing: border-box;
-        width: 120px;
-        height: 120px;
+        width: 70%;
+        height: 70%;
         border: 1px solid black;
     }
     .shape.blue{
@@ -57,10 +57,22 @@
     .shape.triangle{
         width: 0px;
         height: 0px;
-        border-bottom: 120px solid transparent;
-        border-left: 65px solid;
-        border-right: 65px solid;
+        border-bottom: 100px solid;
+        border-left: 45px solid transparent;
+        border-right: 45px solid transparent;
         color: initial;
+    }
+    .shape.triangle.blue{
+        background-color: transparent;
+        border-bottom-color: blue;
+    }
+    .shape.triangle.red{
+        background-color: transparent;
+        border-bottom-color: red;
+    }
+    .shape.triangle.yellow{
+        background-color: transparent;
+        border-bottom-color: yellow;
     }
     .shape.square{
     }

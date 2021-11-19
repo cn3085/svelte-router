@@ -2,37 +2,9 @@
     import Card from '../../components/game/Card.svelte'
     import GyeolTimeOutLine from '../../components/game/GyeolTimeOutLine.svelte';
     import TimeOutLine from '../../components/game/TimeOutLine.svelte'
-    import { cards, point, getNewRandomCard, backgroundColors, colors, shapes } from "../../js/game_store";
+    import { cards, point, init, submitGyeol } from "../../js/game_store";
 
-    let allCards = [];
-    const NUMBER_OF_CHOOSE_CARD = 9;
-
-    init();
-    
-    function init(){
-        fillAllCard();
-        getNewRandomCard(allCards, NUMBER_OF_CHOOSE_CARD);
-    }
-
-
-    function fillAllCard(){
-        let card = {};
-        let tempCards = [];
-        for(let b of backgroundColors){
-            for(let c of colors){
-                for(let s of shapes){
-                    card = {
-                        shape : s,
-                        color : c,
-                        background : b,
-                        clicked : false
-                    }
-                    tempCards.push(card);
-                }
-            }
-        }
-        allCards = tempCards;
-    }
+    init();    
 
 </script>
 <section>
@@ -46,6 +18,7 @@
             <Card id={i} shape={card.shape} color={card.color} background={card.background} clicked={card.clicked}/>
         {/each}
     </div>
+    <button on:click={submitGyeol}>결</button>
     
 </section>
 

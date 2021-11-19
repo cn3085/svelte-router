@@ -1,8 +1,16 @@
 import { writable } from "svelte/store";
 
+const NUMBER_OF_CHOOSE_CARD = 9;
+let allCards = [];
+
 export const backgroundColors = ["black", "grey", "white"];
 export const colors = ["blue", "red", "yellow"];
 export const shapes = ["circle", "triangle", "square"];
+
+const REWARD_HAP = 1;
+const PENALTY_HAP = 2;
+const REWARD_GYEOL = 3;
+const PENALTY_GYEOL = 3;
 
 export let point = writable(10);
 
@@ -10,6 +18,30 @@ export let cards = writable({
   randomCards: [],
   winCards: [],
 });
+
+export function init() {
+  fillAllCard();
+  getNewRandomCard(allCards, NUMBER_OF_CHOOSE_CARD);
+}
+
+function fillAllCard() {
+  let card = {};
+  let tempCards = [];
+  for (let b of backgroundColors) {
+    for (let c of colors) {
+      for (let s of shapes) {
+        card = {
+          shape: s,
+          color: c,
+          background: b,
+          clicked: false,
+        };
+        tempCards.push(card);
+      }
+    }
+  }
+  allCards = tempCards;
+}
 
 const MAX_TIME = 20;
 const MAX_WIDTH = 10;
@@ -131,7 +163,7 @@ export function selectCard(i) {
     //3개째면 합 체크, clicked 초기화, selectedCards 초기화
     if (selectedCardsIndexList.length === 3) {
       //합체크
-      submitAnswer(winCards);
+      submitHap(winCards);
 
       selectedCardsIndexList = [];
       let clickedInitCards = randomCards.map((c) => {
@@ -153,15 +185,15 @@ export function selectCard(i) {
   });
 }
 
-function submitAnswer(winCards) {
+function submitHap(winCards) {
   const answerKey = selectedCardsIndexList.sort().join("");
   if (isHapAnswer(answerKey)) {
     winCards.push(answerKey);
-    reward();
+    reward(REWARD_HAP);
     setGyeolBonus(true, 5);
     startTimeGyeolTimeout();
   } else {
-    penalty();
+    penalty(PENALTY_HAP);
   }
 }
 
@@ -203,15 +235,15 @@ export function diminishSecond(second) {
   });
 }
 
-function reward() {
+function reward(p) {
   point.update((before) => {
-    return before + 1;
+    return before + p;
   });
 }
 
-function penalty() {
+function penalty(p) {
   point.update((before) => {
-    return before - 2;
+    return before - p;
   });
 }
 
@@ -267,4 +299,15 @@ export function startTimeGyeolTimeout() {
     checkGyeolTimeout();
   }, 1000);
   setGyeolIntervalId(intervalId);
+}
+
+export function submitGyeol() {
+  cards.subscribe();
+  console.log(hapList, winCards);
+  if (hapList.length === winCards.length) {
+    reward(REWARD_GYEOL);
+    getNewRandomCard(allCards, NUMBER_OF_CHOOSE_CARD);
+  } else {
+    penalty(PENALTY_GYEOL);
+  }
 }

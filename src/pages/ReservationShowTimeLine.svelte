@@ -16,7 +16,7 @@
   export let showScrollDay;
   let scrollInit = false;
   $: if(showScrollDay !== null && !scrollInit){
-    scrollInit = true;
+    // scrollInit = true;
     console.log(dayjs(showScrollDay))
     moveScroll(dayjs(showScrollDay));
   }
@@ -36,21 +36,25 @@
     $reservationTimeSelection.endTimeValue = null;
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     $reservationTimeSelection.timeList = reservationTimeList;
+    console.log('$$$');
   }
 
   
-  function moveScroll(showScrollDay){
+  async function moveScroll(showScrollDay){
+    await tick();
     const timeLineBox = document.querySelector('.time_line_box');
-    const converShowScrollDay = dayjs(startDate.format('YYYY-MM-DD'), showScrollDay.format('HH:mm'));
-    const diffMinute = startDate.diff(converShowScrollDay, 'm') * -1;
-    console.log(converShowScrollDay, diffMinute, diffMinute / MINUTE_INTERVAL * LINE_WIDTH)
-    timeLineBox.scrollTo(diffMinute / MINUTE_INTERVAL * LINE_WIDTH, 0);
+    const CENTER_PADDING = -20;
+    if(timeLineBox){
+      const converShowScrollDay = dayjs(startDate.format('YYYY-MM-DD') + ' ' + showScrollDay.format('HH:mm'));
+      const diffMinute = startDate.diff(converShowScrollDay, 'm') * -1 + CENTER_PADDING;
+      console.log(converShowScrollDay, diffMinute, diffMinute / MINUTE_INTERVAL * LINE_WIDTH)
+      timeLineBox.scrollTo({left : diffMinute / MINUTE_INTERVAL * LINE_WIDTH, top: 0, behavior: 'smooth'});
+    }
   }
   
   onMount( async () => {
     startDate = dayjs(operatingStartTime, "HH:mm");
     endDate = dayjs(operatingEndTime, "HH:mm");
-    // moveScroll();
   })
 </script>
 

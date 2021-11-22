@@ -29,8 +29,6 @@
     
     let operatingStartTime;
     let operatingEndTime;
-    let startDate;
-    let endDate;
 
     $ : selectedContents = null;
 
@@ -77,20 +75,22 @@
     }
 
     
-    async function selectContents(contents){
-        selectedContents = contents;
+    async function selectContents(reservationData){
+        selectedContents = reservationData.contents;
+        const reservationDate = dayjs(reservationData.startTime).format('YYYY-MM-DD');
         const loading = document.querySelector('#loading');
         loading.style.display = 'block';
-        $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId);
+        $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId, reservationDate);
         loading.style.display = 'none';
 
         console.log($reservationTimeSelection.registedTimeList);
     }
 
-    async function getRegistReservationList(contentsId){
+    async function getRegistReservationList(contentsId, reservationDate){
+
         const registedReservationList = await ReservationService.getReservationList({
-            sdt: getDateTimeAtThisTime(operatingStartTime),
-            edt: getDateTimeAtThisTime(operatingEndTime),
+            sdt: reservationDate + ' ' + operatingStartTime,
+            edt: reservationDate + ' ' + operatingEndTime,
             cId: contentsId
         });
         return registedReservationList.filter( r => r.reservationId != reservationId);
@@ -182,7 +182,7 @@
 
     async function bindReservationData(reservationData){
         selectedMembers = reservationData.members;
-        await selectContents(reservationData.contents);
+        await selectContents(reservationData);
         initTime(reservationData.startTime, reservationData.endTime);
         await tick();
     }
@@ -195,9 +195,6 @@
 
         operatingStartTime = todayOperatingTime.startTime;
         operatingEndTime = todayOperatingTime.endTime;
-
-        startDate = dayjs(operatingStartTime, "HH:mm:ss");
-        endDate = dayjs(operatingEndTime, "HH:mm:ss");
 
         const request = getAxios();
         request.get('/v1/reservations/' + reservationId)

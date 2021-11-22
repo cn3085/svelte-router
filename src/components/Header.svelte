@@ -5,10 +5,10 @@
 <div id="header">
     <div class="top_logo_box">
         <div class="top_logo_sq">
-            <!-- <img src="/images/common/logo_sq.png" alt="logo_square"> -->
+            <img src="/images/common/logo_sq.png" alt="logo_square">
         </div>
         <div  class="top_logo_name">
-            <!-- <img src="/images/common/logo_name.png" alt="logo_name"> -->
+            <img src="/images/common/logo_name.png" alt="logo_name">
         </div>
     </div>
     <div class="top_logout_box">

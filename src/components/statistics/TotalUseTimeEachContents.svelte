@@ -27,7 +27,7 @@
         plugins: {
         title: {
             display: true,
-            text: 'Chart.js Bar Chart - Stacked'
+            text: '콘텐츠별 누적 사용시간'
         },
         },
         responsive: true,

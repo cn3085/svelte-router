@@ -47,7 +47,7 @@ $: options = {
     plugins: {
         title: {
             display: true,
-            text: 'Chart.js Bar Chart - Stacked'
+            text: '예약 많은 순위'
         },
     },
     responsive: true,

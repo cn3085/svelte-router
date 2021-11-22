@@ -23,7 +23,14 @@
   };
 
   let options = {
-    responsive: true
+    responsive: true,
+    plugins: {
+        title: {
+            display: true,
+            text: '콘텐츠별 평균 사용시간'
+        },
+    },
+    
   }
 
   onMount( async () => {

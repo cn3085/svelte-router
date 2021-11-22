@@ -21,6 +21,7 @@
 </script>
 <tr on:click={() => goToDetailPage(reservationId)} class:cancel={state === 'CANCEL'}>
     <td>{i}</td>
+    <td>{reservationId}</td>
     <td>{contents.name}</td>
     <td>{memberNames}</td>
     <td>{reservationDate}</td>

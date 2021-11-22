@@ -74,7 +74,7 @@
         plugins: {
             title: {
                 display: true,
-                text: 'Chart.js Bar Chart - Stacked'
+                text: '연령대별 사용시간'
             },
         },
         responsive: true,

@@ -184,8 +184,9 @@
 <table>
     <thead>
         <th style="width: 5%;">No</th>
+        <th style="width: 5%;">예약번호</th>
         <th style="width: 20%;">콘텐츠</th>
-        <th style="width: 30%;">참여자</th>
+        <th style="width: 20%;">참여자</th>
         <th style="width: 10%;">예약날짜</th>
         <th style="width: 15%;">예약시간</th>
         <th style="width: 15%;">등록일</th>

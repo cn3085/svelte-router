@@ -122,7 +122,8 @@ input {
 }
 
 .w8 {
-  width: 630px;
+  width: 690px;
+  box-sizing: border-box;
 }
 
 .w4 {
@@ -149,6 +150,11 @@ button.w1 {
 
 .input_form > input.w4,
 select.w4 {
+  padding: 1px 2px 1px 36px;
+}
+
+.input_form > input.w8,
+select.w8 {
   padding: 1px 2px 1px 36px;
 }
 
@@ -211,6 +217,7 @@ select option {
 }
 
 textarea {
+  box-sizing: border-box;
   resize: none;
   width: 665px;
   height: 300px;

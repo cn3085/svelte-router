@@ -35,6 +35,10 @@
             value : null,
             require : false
         },
+        address : {
+            value : null,
+            require : false
+        },
         school : {
             value : null,
             require : false
@@ -70,6 +74,7 @@
             birth: member.birth.value,
             myPhoneNumber: member.myPhoneNumber.value,
             parentPhoneNumber: member.parentPhoneNumber.value,
+            address: member.address.value,
             school: member.school.value,
             grade: member.grade.value,
             memo: member.memo.value
@@ -134,6 +139,7 @@
         member.memo.value = memberData.memo;
         member.myPhoneNumber.value = memberData.myPhoneNumber;
         member.parentPhoneNumber.value = memberData.parentPhoneNumber;
+        member.address.value = memberData.address;
         member.school.value = memberData.school;
         member.sex.value = memberData.sex;
     }
@@ -235,6 +241,16 @@
                 </div>
                 <div class="input_form">
                     <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                </div>
+            </div>
+        </div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_name">
+                    주소
+                </div>
+                <div class="input_form">
+                    <input class="input w8" type="text" maxlength="100" bind:value={member.address.value} placeholder="주소를 입력하세요.">
                 </div>
             </div>
         </div>

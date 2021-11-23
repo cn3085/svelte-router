@@ -33,6 +33,8 @@
     let originReservationStartTime;
     let originReservationEndTime;
 
+    let state = 'Y';
+
     $ : selectedContents = null;
 
     async function getContentsList(){
@@ -183,19 +185,42 @@
     }
 
 
-    function removeReservation(){
-        if(!confirm('정말로 회원 정보를 삭제하시겠습니까?')){
+    function cancelReservation(){
+        if(!confirm('정말로 예약을 취소하시겠습니까?')){
             return false;
         }
 
         const request = getAxios();
 
-        request.delete('/v1/members/' + reservationId)
+        request.put('/v1/reservations/' + reservationId + '/cancel')
         .then(res => {
             console.log(res);
             if(res.status === 200 && res.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
-                page.replace('/member')
+                // page.redirect('/reservation/detail/' + reservationId);
+                window.location.reload();
+            }
+        })
+        .catch(res => {
+            console.error(res);
+            router.replace('/login');
+        })
+    }
+
+
+    function removeReservation(){
+        if(!confirm('정말로 예약을 삭제하시겠습니까?')){
+            return false;
+        }
+
+        const request = getAxios();
+
+        request.delete('/v1/reservations/' + reservationId)
+        .then(res => {
+            console.log(res);
+            if(res.status === 200 && res.data.code === 'SUCC'){
+                alertSuccess(3000, res.data.message);
+                page.replace('/reservation')
             }
         })
         .catch(res => {
@@ -214,6 +239,7 @@
         selectedMembers = reservationData.members;
         originReservationStartTime = reservationData.startTime;
         originReservationEndTime = reservationData.endTime;
+        state = reservationData.state;
         await selectContents(reservationData.contents);
         initTime(reservationData.startTime, reservationData.endTime);
         await tick();
@@ -251,6 +277,7 @@
 <div id="content_body">
     <div class="form_content">
         <div class="form_line">
+            <div class:cancel_wrapper={state === 'CANCEL'}></div>
             <div class="form_group">
                 <div class="form_name">
                     참여자
@@ -302,6 +329,7 @@
             </div>
         </div>
         <div class="form_line">
+            <div class:cancel_wrapper={state === 'CANCEL'}></div>
             <div class="form_group">
                 <div class="form_name">
                     콘텐츠
@@ -322,6 +350,7 @@
             </div>
         </div>
         <div class="form_line">
+            <div class:cancel_wrapper={state === 'CANCEL'}></div>
             <div class="form_group">
                 <div class="form_name">
                     시작시간
@@ -341,6 +370,7 @@
         </div>
         
         <div class="form_line">
+            <div class:cancel_wrapper={state === 'CANCEL'}></div>
             <div class="form_group">
                 <div class="form_name">
                     예약 시간 - {dayjs(originReservationStartTime).format('YYYY-MM-DD')} ({dayjs(originReservationStartTime).format('HH:mm')} ~ {dayjs(originReservationEndTime).format('HH:mm')})
@@ -363,12 +393,18 @@
         </div>
         
         <div class="form_line w10">
-            <div class="form_group button_group">
-                <button class="success_btn submit w2" type="button" on:click={updateReservation}>예약 수정</button>
-            </div>
-            <div class="form_group button_group">
-                <button class="warn_btn submit w2" type="button" on:click={removeReservation}>예약 삭제</button>
-            </div>
+            {#if state === 'OK'}
+                <div class="form_group button_group">
+                    <button class="success_btn submit w2" type="button" on:click={updateReservation}>예약 수정</button>
+                </div>
+                <div class="form_group button_group">
+                    <button class="warn_btn submit w2" type="button" on:click={cancelReservation}>예약 취소</button>
+                </div>
+            {:else}
+                <div class="form_group button_group">
+                    <button class="warn_btn submit w2" type="button" on:click={removeReservation}>예약 삭제</button>
+                </div>
+            {/if}
             <div class="form_group button_group list_btn stick_r" on:click={goToListPage}>
                 <ListIcon width="1.8em"/>
             </div>
@@ -453,5 +489,15 @@
         z-index: 1;
         opacity: 0.4;
         border-radius: 5px;
+    }
+    .cancel_wrapper{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        cursor:not-allowed;
+    }
+    .form_line{
+        position: relative;
     }
 </style>

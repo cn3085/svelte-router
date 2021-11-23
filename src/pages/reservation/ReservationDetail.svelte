@@ -139,7 +139,7 @@
                 alertSuccess(3000, res.data.message);
                 page.replace('/reservation/detail/' + res.data.data.reservationId);
             }else{
-                alertError(5000, res.data.message);
+                handleExpectedException(res);
             }
         }catch(err){
             console.log(err);
@@ -149,6 +149,33 @@
                 alertError('로그인 후 시도해주세요.');
                 return;
             }
+        }
+    }
+
+
+    function handleExpectedException(res){
+        if(res.status === 200 && res?.data.code === 'R_RESTRICT_CONTENTS'){
+            alertError(5000, res.data.message);
+        }else if(res.status === 200 && res?.data.code === 'R_DOUBLE_BOOKING'){
+            alertError(5000, res.data.message)
+        }else if(res.status === 200 && res?.data.code === 'R_CONTAINS_ANOTHER_RESERVATION'){
+            const errorMembers = res.data.data;
+            const errMessage = errorMembers.map( m => {
+                const memberName = m.name;
+                const registedRservation = m.reservations.map( r => r.startTime + '~' + r.endTime + '/' + r.contents.name).join('');
+                return `${memberName} (${registedRservation})`;
+            }).join('\n');
+
+            alertError(10000, res.data.message, errMessage);
+        }else if(res.status === 200 && res?.data.code === 'R_OVERTIME_USE_MEMBER'){
+            const errorMembers = res.data.data;
+            const errMessage = errorMembers.map( m => {
+                return `${m.name}(${m.birth}) 현재까지 사용시간: ${m.usedMinute}분`;
+            }).join('\n');
+            
+            alertError(10000, res.data.message, errMessage);
+        }else{
+            alertError(10000, res.data.message, errMessage);
         }
     }
 

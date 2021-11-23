@@ -91,7 +91,12 @@
     next();
   }, () => page = ContentsDetail)
   ///////////////////////////////////////////////////////통계
-  router('/statistics', () => page = Statistics)
+  router('/statistics', (ctx, next) => {
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
+    next();
+  }, () => page = Statistics)
   ///////////////////////////////////////////////////////설정
   router('/setting', () => page = Setting)
   ///////////////////////////////////////////////////////예약표

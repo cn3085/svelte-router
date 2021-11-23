@@ -104,7 +104,7 @@
           </div>
       </li>
       <li>
-          <div class="main_menu">
+          <div class="main_menu" class:active_menu={$pathname.includes('/statistics')}>
               <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/stats.png" alt="" srcset="">
@@ -115,10 +115,7 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="http://" >회원등록</a>
-                      </li>
-                      <li>
-                          <a href="http://" >회원조회</a>
+                          <a href="/statistics" >통계</a>
                       </li>
                   </ul>
               </div>

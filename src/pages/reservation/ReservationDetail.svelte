@@ -30,6 +30,9 @@
     let operatingStartTime;
     let operatingEndTime;
 
+    let originReservationStartTime;
+    let originReservationEndTime;
+
     $ : selectedContents = null;
 
     async function getContentsList(){
@@ -75,9 +78,9 @@
     }
 
     
-    async function selectContents(reservationData){
-        selectedContents = reservationData.contents;
-        const reservationDate = dayjs(reservationData.startTime).format('YYYY-MM-DD');
+    async function selectContents(contents){
+        selectedContents = contents;
+        const reservationDate = dayjs(originReservationStartTime).format('YYYY-MM-DD');
         const loading = document.querySelector('#loading');
         loading.style.display = 'block';
         $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId, reservationDate);
@@ -209,7 +212,9 @@
 
     async function bindReservationData(reservationData){
         selectedMembers = reservationData.members;
-        await selectContents(reservationData);
+        originReservationStartTime = reservationData.startTime;
+        originReservationEndTime = reservationData.endTime;
+        await selectContents(reservationData.contents);
         initTime(reservationData.startTime, reservationData.endTime);
         await tick();
     }
@@ -338,7 +343,8 @@
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
-                    예약 시간
+                    예약 시간 - {dayjs(originReservationStartTime).format('YYYY-MM-DD')} ({dayjs(originReservationStartTime).format('HH:mm')} ~ {dayjs(originReservationEndTime).format('HH:mm')})
+                    
                 </div>
                 <div class="input_form">
                     <div id="loading"></div>

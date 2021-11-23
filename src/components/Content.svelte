@@ -23,9 +23,6 @@ import Game from "../pages/game/Game.svelte";
 {:else if contentComponent === ConfirmTest}
     <!-- <Header /> -->
     <ConfirmTest/>
-{:else if contentComponent === Statistics}
-    <!-- <Header /> -->
-    <Statistics/>
 {:else}
     <Header />
     <Nav/>

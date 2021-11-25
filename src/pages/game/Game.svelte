@@ -18,7 +18,7 @@
             <Card id={i} shape={card.shape} color={card.color} background={card.background} clicked={card.clicked}/>
         {/each}
     </div>
-    <button on:click={submitGyeol}>결</button>
+    <button on:click={() => submitGyeol($cards.winCards)}>결</button>
     
 </section>
 

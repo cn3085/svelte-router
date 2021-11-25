@@ -10,6 +10,7 @@ export const shapes = ["circle", "triangle", "square"];
 const REWARD_HAP = 1;
 const PENALTY_HAP = 2;
 const REWARD_GYEOL = 3;
+const REWARD_GYEOL_TIME = 300;
 const PENALTY_GYEOL = 3;
 
 export let point = writable(10);
@@ -225,9 +226,9 @@ export function setIntervalId(newIntervalId) {
   });
 }
 
-export function diminishSecond(second) {
+export function updateGameTime(second) {
   time.update((before) => {
-    let newTimeLimit = before.timeLimit - second;
+    let newTimeLimit = before.timeLimit + second;
     return {
       ...before,
       timeLimit: newTimeLimit,
@@ -301,11 +302,10 @@ export function startTimeGyeolTimeout() {
   setGyeolIntervalId(intervalId);
 }
 
-export function submitGyeol() {
-  cards.subscribe();
-  console.log(hapList, winCards);
+export function submitGyeol(winCards) {
   if (hapList.length === winCards.length) {
     reward(REWARD_GYEOL);
+    updateGameTime(REWARD_GYEOL_TIME);
     getNewRandomCard(allCards, NUMBER_OF_CHOOSE_CARD);
   } else {
     penalty(PENALTY_GYEOL);

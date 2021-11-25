@@ -1,13 +1,13 @@
 <script>
 import { onMount } from "svelte";
-import { time, aSecondWidth, diminishSecond, checkTimeout, setIntervalId } from "../../js/game_store";
+import { time, aSecondWidth, updateGameTime, checkTimeout, setIntervalId } from "../../js/game_store";
 
     
     $: timeLimitWidth = aSecondWidth * $time.timeLimit;
 
     onMount( async() => {
         const intervalId = setInterval(() => {
-            diminishSecond(1);
+            updateGameTime(-1);
             checkTimeout();
         }, 1000);
         setIntervalId(intervalId);

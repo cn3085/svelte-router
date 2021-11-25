@@ -5,7 +5,6 @@ import config from "../../js/config";
 let socket = null;
 
 
-
 onMount( async () => {
     socket = new WebSocket(config.socketURL);
 

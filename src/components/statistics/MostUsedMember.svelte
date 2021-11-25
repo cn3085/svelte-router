@@ -2,48 +2,50 @@
 import { onMount } from 'svelte';
 import Bar from 'svelte-chartjs/src/Bar.svelte';
 import { getMostUsedMember } from "../../js/service/StatisticsService";
-import { getAllContents } from '../../js/service/ContentsService'
 
-let searchParam = {
+export let contents = [];
+export let searchParam = {
     sd: '',
     ed: '',
-    cId: 0
+    cId: ''
 }
+
 let memberData = [];
 
 $: memberNames = memberData.map( d => d.memberName + ' (' +  d.allCount + '건)');
 
-let contentsData = {};
+let contentsDataList = [];
 $: {
-    contentsData = {};
-    for(let t of memberData){
-        for(let c of t.contents){
-            if(!contentsData[c.contentsId]){
-                contentsData[c.contentsId] = {};
-            }
-            let datasetElement = contentsData[c.contentsId];
-            datasetElement.label = c.contentsName;
-            if(!datasetElement['data']){
-                datasetElement['data'] = [];
-            }
-            datasetElement.data.push(c.eachCount);
-            if(!datasetElement['backgroundColor']){
-                datasetElement['backgroundColor'] = c.color + '90';
+    console.log('reload...');
+    contentsDataList = [];
+    for(let c of contents){
+        let contentsData = {};
+        contentsData.label = c.name;
+        contentsData.backgroundColor = c.color +'90';
+        contentsData.data = [];
+        for(let m of memberData){
+            let [memberContents] = m.contents.filter( mc => mc.contentsId === c.contentsId);
+            if(memberContents){
+                contentsData.data.push(memberContents.eachCount);
+            }else{
+                contentsData.data.push(0);
             }
         }
+        contentsDataList.push(contentsData);
     }
+}
+
+$ : {
+    search(searchParam.cId, searchParam.sd, searchParam.ed);
 }
 
 
 $: data = {
     labels: memberNames,
-    datasets: Object.values(contentsData)
+    datasets: contentsDataList
 };
-$ : {
-    console.log(data);
-}
 
-$: options = {
+const options = {
     plugins: {
         title: {
             display: true,
@@ -62,34 +64,14 @@ $: options = {
 }
 
 onMount( async () => {
-    search();
+    search(searchParam.cId, searchParam.sd, searchParam.ed);
 })
 
-async function search(){
-    memberData = await getMostUsedMember(searchParam.cId, searchParam.sd, searchParam.ed);
-    console.log(memberData);
+async function search(cId, sd, ed){
+    memberData = await getMostUsedMember(cId, sd, ed);
 }
 </script>
 
-<div>
-    <input type="date" bind:value={searchParam.sd}> 
-    <input type="date" bind:value={searchParam.ed}>
-
-    <select bind:value={searchParam.cId}>
-        <option value="">-----</option>
-        {#await getAllContents()}
-            <option>불러오는 중입니다.</option>
-        {:then contents} 
-            {#each contents as c}
-                <option value={c.contentsId}>{c.name}</option>
-            {/each}
-        {/await}
-    </select>
-
-    {searchParam.sd}
-    {searchParam.ed}
-    <button on:click={search}>검색</button>
-</div>
 <div style="width:500px;">
     <Bar {data} {options}/>
 </div>

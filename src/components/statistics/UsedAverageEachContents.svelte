@@ -4,6 +4,11 @@
     import { getUsingAverageContents } from "../../js/service/StatisticsService";
 
     let contentsData = [];
+    export let searchParam = {
+        sd: '',
+        ed: '',
+        cId: ''
+    }
 
     $: contentsNameLabels = contentsData.map( t => t.NAME);
     $: contentsAverageDatas = contentsData.map( t => t.AVERAGE);
@@ -34,8 +39,16 @@
   }
 
   onMount( async () => {
-    contentsData = await getUsingAverageContents();
+    search(searchParam.cId, searchParam.sd, searchParam.ed);
   })
+
+  $ : {
+      search(searchParam.cId, searchParam.sd, searchParam.ed);
+  }
+
+  async function search(cId, sd, ed){
+    contentsData = await getUsingAverageContents(cId, sd, ed);
+  }
 </script>
 
 

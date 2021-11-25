@@ -10,6 +10,12 @@
     let dataListWithGroupName = [];
     let groupData = {};
     let contentsNames = [];
+    export let searchParam = {
+        sd: '',
+        ed: '',
+        cId: ''
+    }
+
     $: {
         dataListWithGroupName = birthData.map( t => {
             const groupName = getAgeGroup(searchYear, t.YEAR);
@@ -89,8 +95,16 @@
     }
 
     onMount( async () => {
-        birthData = await getUsetimeByBirth();
+        search(searchParam.cId, searchParam.sd, searchParam.ed);
     })
+
+    $ : {
+        search(searchParam.cId, searchParam.sd, searchParam.ed);
+    }
+
+    async function search(cId, sd, ed){
+        birthData = await getUsetimeByBirth(cId, sd, ed);
+    }
 </script>
 
 {#each Object.entries(groupData) as entry}

@@ -28,3 +28,20 @@ export function getRandomColor() {
 
   return color;
 }
+
+export function oppositeColor(c){
+  console.log(c);
+  let result = '#';
+  let ch = '';
+  const list1 = '0123456789ABCDEF';
+  const list2 = 'FEDCBA9876543210';
+  for(let i = 1; i < c.length; i ++){
+      ch = c.charAt(i);
+      for(let n = 0; n < list1.length; n++){
+          if(ch == list1.charAt(n)){
+              result += list2.charAt(n);
+          }
+      }
+  }
+  return result;
+}

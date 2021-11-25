@@ -13,6 +13,7 @@
   export let contentsId;
   export let operatingStartTime = '00:00:00';
   export let operatingEndTime = '00:00:00';
+  let showScrollDay = dayjs();
 
   const MINUTE_INTERVAL = 5;
   const LINE_WIDTH = 70;
@@ -27,6 +28,7 @@
     $reservationTimeSelection.endDate = null;
     $reservationTimeSelection.startTimeValue = null;
     $reservationTimeSelection.endTimeValue = null;
+    console.log(startDate, endDate)
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     $reservationTimeSelection.timeList = reservationTimeList;
   }

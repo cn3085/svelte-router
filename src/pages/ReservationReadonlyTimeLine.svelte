@@ -1,0 +1,185 @@
+<script>
+  import dayjs from "dayjs";
+  import { onMount, tick } from "svelte";
+  import customParseFormat from "dayjs/plugin/customParseFormat";
+  import TimeTh from "../components/timeline/TimeTh.svelte";
+  import TimeTd from "../components/timeline/TimeTd.svelte";
+  import { getFilledTimeArray } from "../js/service/TimeLineService";
+  import * as ReservationService from "../js/service/ReservationService";
+  import { oppositeColor } from "../js/util/WebUtil";
+  import ReservationTd from '../components/timeline/ReservationTd.svelte'
+
+  dayjs.extend(customParseFormat);
+
+  export let contents = [];
+  export let reservationDay = '2021-11-25';
+  export let operatingStartTime = '00:00:00';
+  export let operatingEndTime = '00:00:00';
+  export let showScrollDay = dayjs();
+  let scrollInit = false;
+  $: if(showScrollDay !== null && !scrollInit){
+    moveScroll(dayjs(showScrollDay));
+  }
+
+  const MINUTE_INTERVAL = 5;
+  const LINE_WIDTH = 70;
+  let reservationTimeList = [];
+
+  let startDate  = dayjs(operatingStartTime, "HH:mm");
+  let endDate = dayjs(operatingEndTime, "HH:mm");
+
+  
+  async function moveScroll(showScrollDay){
+    await tick();
+    const timeLineBox = document.querySelector('.time_line_box');
+    const CENTER_PADDING = -20;
+    if(timeLineBox){
+      const converShowScrollDay = dayjs(startDate.format('YYYY-MM-DD') + ' ' + showScrollDay.format('HH:mm'));
+      const diffMinute = startDate.diff(converShowScrollDay, 'm') * -1 + CENTER_PADDING;
+      console.log(converShowScrollDay, diffMinute, diffMinute / MINUTE_INTERVAL * LINE_WIDTH)
+      timeLineBox.scrollTo({left : diffMinute / MINUTE_INTERVAL * LINE_WIDTH, top: 0, behavior: 'smooth'});
+    }
+  }
+
+  async function getRegistReservationList(contentsId, reservationDate){
+    const registedReservationList = await ReservationService.getReservationList({
+        sdt: reservationDate + ' ' + dayjs(startDate).format('HH:mm:ss'),
+        edt: reservationDate + ' ' + dayjs(endDate).format('HH:mm:ss'),
+        cId: contentsId
+    });
+    return registedReservationList;
+  }
+  
+  onMount( async () => {
+    startDate = dayjs(operatingStartTime, "HH:mm");
+    endDate = dayjs(operatingEndTime, "HH:mm");
+    reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+  })
+</script>
+
+  <div class="contents_time_line">
+    <div class="contents_name_box">
+      {#each contents as c}
+        <!-- <div class="contents_name" style="background:{c.color}; color:{oppositeColor(c.color)}">{c.name}</div> -->
+        <div class="contents_name" style="background:{c.color};">{c.name}</div>
+      {/each}
+    </div>
+
+    <div class="time_line_box">
+      <div class="time_line">
+        <div class="time_head start">
+          <div class="time_number">{('' + startDate.get('h')).padStart(2, '0')}</div>
+        </div>
+        {#each reservationTimeList as th}
+          <TimeTh endDate= {th.endDate}/>
+        {/each}
+      </div>
+
+      {#each contents as c}
+          <div class="time_schedule">
+            <div class="time_schedule_line_box">
+              <div class="time_td start"></div>
+              {#each reservationTimeList as th}
+                <TimeTd {...th}/>
+              {/each}
+            </div>
+            {#await getRegistReservationList(c.contentsId, reservationDay)}
+              loading...
+            {:then registedList} 
+            <div class="time_schedule_content_box"></div>
+              {#each registedList as r}
+                <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
+              {/each}
+              
+              {/await}
+            </div>
+      {/each}
+
+    </div>
+  </div>
+
+<style>
+  .contents_time_line{
+    display: flex;
+  }
+  .contents_name_box{
+    margin-top: 31px;
+  }
+  .time_line_box{
+        width: 100%;
+        height: 100%;
+        /* border: 1px solid black; */
+        overflow: scroll;
+        overflow-y: hidden;
+    }
+    .time_line{
+        display: flex;
+        width: 100%;
+        align-items: flex-end;
+        margin: 0 20px;
+    }
+    .time_line_box::-webkit-scrollbar {
+        height: 12px;
+    }
+    .time_line_box::-webkit-scrollbar-thumb {
+        background-color: #d1d1d1;
+        border-radius: 5px;
+        background-clip: padding-box;
+        border: 2px solid transparent;
+    }
+    .time_line_box::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        box-shadow: inset 0px 0px 5px white;
+    }
+    .time_schedule{
+      margin: 0 20px;
+      position: relative;
+    }
+
+    .time_schedule_line_box{
+      display: flex;
+    }
+    .time_head.start{
+        width: 0px;
+        height: 10px;
+        margin-top: 20px;
+        border-bottom: 1px solid black;
+        border-left: 1px solid black;
+        position: relative;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: auto;
+    }
+    .time_head.start .time_number{
+        position: inherit;
+        color: black;
+        font-size: 16px;
+        left: -9px;
+        top: -22px;
+    }
+    .time_td.start{
+        border-left: 1px solid black;
+        height: 110px;
+        width: 0px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: auto;
+        box-sizing: border-box;
+    }
+    .contents_name{
+      border-radius: 5px;
+      width: 120px;
+      height: 110px;
+      padding: 29px 17px;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-shadow:  -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+    }
+    :global(.time_td){
+      border-bottom: 1px solid #a6a6a7;
+    }
+</style>

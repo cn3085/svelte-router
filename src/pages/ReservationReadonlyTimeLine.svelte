@@ -16,7 +16,8 @@
   export let operatingEndTime = '00:00:00';
   export let showScrollDay = dayjs();
 
-  $: registedReservationList = {};
+  $: registedReservationMap = {};
+  let promiseList = [];
 
   let scrollInit = false;
   $: if(showScrollDay !== null && !scrollInit){
@@ -60,7 +61,15 @@
         edt: reservationDate + ' ' + dayjs(endDate).format('HH:mm:ss'),
         cId: contentsId
     });
-    registedReservationList.contentsId = registedReservationList;
+    registedReservationMap.contentsId = {data: registedReservationList};
+  }
+
+
+  async function getAllRegistedReservation(){
+    for( let c of contents){
+      const promise = getRegistReservationListTest(c.contentsId, reservationDay);
+      registedReservationMap.contentsId.promise = promise;
+    }
   }
 
 

@@ -15,6 +15,9 @@
   export let operatingStartTime = '00:00:00';
   export let operatingEndTime = '00:00:00';
   export let showScrollDay = dayjs();
+
+  $: registedReservationList = {};
+
   let scrollInit = false;
   $: if(showScrollDay !== null && !scrollInit){
     moveScroll(dayjs(showScrollDay));
@@ -48,6 +51,19 @@
     });
     return registedReservationList;
   }
+
+
+
+  async function getRegistReservationListTest(contentsId, reservationDate){
+    const registedReservationList = await ReservationService.getReservationList({
+        sdt: reservationDate + ' ' + dayjs(startDate).format('HH:mm:ss'),
+        edt: reservationDate + ' ' + dayjs(endDate).format('HH:mm:ss'),
+        cId: contentsId
+    });
+    registedReservationList.contentsId = registedReservationList;
+  }
+
+
   
   onMount( async () => {
     startDate = dayjs(operatingStartTime, "HH:mm");
@@ -59,7 +75,6 @@
   <div class="contents_time_line">
     <div class="contents_name_box">
       {#each contents as c}
-        <!-- <div class="contents_name" style="background:{c.color}; color:{oppositeColor(c.color)}">{c.name}</div> -->
         <div class="contents_name" style="background:{c.color};">{c.name}</div>
       {/each}
     </div>

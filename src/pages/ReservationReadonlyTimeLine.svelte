@@ -6,13 +6,12 @@
   import TimeTd from "../components/timeline/TimeTd.svelte";
   import { getFilledTimeArray } from "../js/service/TimeLineService";
   import * as ReservationService from "../js/service/ReservationService";
-  import { oppositeColor } from "../js/util/WebUtil";
   import ReservationTd from '../components/timeline/ReservationTd.svelte'
 
   dayjs.extend(customParseFormat);
 
   export let contents = [];
-  export let reservationDay = '2021-11-25';
+  export let reservationDay =  dayjs().format('YYYY-MM-DD');
   export let operatingStartTime = '00:00:00';
   export let operatingEndTime = '00:00:00';
   export let showScrollDay = dayjs();

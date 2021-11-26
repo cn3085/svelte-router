@@ -24,7 +24,8 @@
         useMinute= reservation.useMinute;
         color = reservation.contents.color;
         members = reservation.members;
-        leftCount = startTime.diff(todayStartDate, 'm') / MINUTE_INTERVAL;
+        let reservationDayDate = dayjs(startTime.format('YYYY-MM-DD') + ' ' + todayStartDate.format('HH:mm'));
+        leftCount = startTime.diff(reservationDayDate, 'm') / MINUTE_INTERVAL;
         widthCount = useMinute / MINUTE_INTERVAL;
     }
 

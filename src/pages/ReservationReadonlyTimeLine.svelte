@@ -1,6 +1,7 @@
 <script>
   import dayjs from "dayjs";
-  import { onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
+  import config from "../js/config";
   import customParseFormat from "dayjs/plugin/customParseFormat";
   import TimeTh from "../components/timeline/TimeTh.svelte";
   import TimeTd from "../components/timeline/TimeTd.svelte";
@@ -15,6 +16,8 @@
   export let operatingStartTime = '00:00:00';
   export let operatingEndTime = '00:00:00';
   export let showScrollDay = dayjs();
+
+  let socket;
 
   $: registedReservationMap = {};
 
@@ -61,7 +64,6 @@
         cId: contentsId
     }).then((data) => {
       registedReservationMap[contentsId].data = data;
-      console.log(registedReservationMap);
     })
   }
   
@@ -70,7 +72,6 @@
     for( let c of contents){
       const promise = getRegistReservationListTest(c.contentsId, reservationDay);
       registedReservationMap[c.contentsId] = {promise : promise};
-      console.log(registedReservationMap);
     }
   }
 
@@ -81,6 +82,36 @@
     endDate = dayjs(operatingEndTime, "HH:mm");
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     getAllRegistedReservation();
+
+    socket = new WebSocket(config.socketURL);
+
+    socket.onopen = function(e){
+      console.log('socket open.', e);
+    }
+      
+    socket.onmessage = function(e){
+      console.log('socket message', e);
+      console.log('socket message', e.data);
+      let contentsId = e.data;
+      getRegistReservationListTest(contentsId, reservationDay);
+    }
+
+    socket.onclose = function(e){
+        if(e.wasClean){
+            console.log('socket close. ', e.code, e.reason);
+        }else{
+            console.error('socker close on error. ', e);
+        }
+    }
+
+    socket.onerror = function(e){
+        console.error(e);
+    }
+  })
+
+  onDestroy( async () => {
+    console.log('destroy!!!!!!!!!!!');
+    socket.close();
   })
 </script>
 

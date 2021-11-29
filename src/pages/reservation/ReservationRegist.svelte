@@ -1,5 +1,6 @@
 <script>
     import dayjs from 'dayjs'
+    import config from "../../js/config";
     import customParseFormat from "dayjs/plugin/customParseFormat";
     import {getAxios} from '../../js/service/AuthAxios'
     import {alertError, alertSuccess} from '../../js/toast_store'
@@ -24,6 +25,8 @@
     let operatingEndTime;
     let startDate;
     let endDate;
+
+    let socket;
 
     $ : selectedContents = null;
 
@@ -68,18 +71,6 @@
     function removeMember(memberId){
         selectedMembers = selectedMembers.filter( m => m.memberId !== memberId);
     }
-
-    onMount(async () => {
-        const settingData = await SettingService.getSettingData();
-        const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
-
-        operatingStartTime = todayOperatingTime.startTime;
-        operatingEndTime = todayOperatingTime.endTime;
-
-        startDate = dayjs(operatingStartTime, "HH:mm:ss");
-        endDate = dayjs(operatingEndTime, "HH:mm:ss");
-    })
-
     
     async function selectContents(contents){
         selectedContents = contents;
@@ -138,6 +129,7 @@
 
             if(res.status === 200 && res?.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
+                socket.send(selectedContents.contentsId);
                 page.replace('/reservation/detail/' + res.data.data.reservationId);
             }else{
                 handleExpectedException(res);
@@ -182,6 +174,41 @@
     function goToListPage(){
         page.show('/reservation');
     }
+
+    
+    onMount(async () => {
+        const settingData = await SettingService.getSettingData();
+        const todayOperatingTime = SettingService.getTodayOperatingTime(settingData);
+
+        operatingStartTime = todayOperatingTime.startTime;
+        operatingEndTime = todayOperatingTime.endTime;
+
+        startDate = dayjs(operatingStartTime, "HH:mm:ss");
+        endDate = dayjs(operatingEndTime, "HH:mm:ss");
+
+
+        socket = new WebSocket(config.socketURL);
+
+        socket.onopen = function(e){
+            console.log('socket open.', e);	
+        }
+
+        socket.onmessage = function(e){
+            console.log('socket message', e);
+        }
+
+        socket.onclose = function(e){
+            if(e.wasClean){
+                console.log('socket close. ', e.code, e.reason);
+            }else{
+                console.error('socker close on error. ', e);
+            }
+        }
+
+        socket.onerror = function(e){
+            console.error(e);
+        }
+    })
 
 </script>
 <ContentTitle {titleName}/>

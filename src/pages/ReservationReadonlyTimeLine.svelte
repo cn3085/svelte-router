@@ -70,6 +70,7 @@
   
   function getAllRegistedReservation(){
     for( let c of contents){
+      console.log(c.contentsId, c.name);
       const promise = getRegistReservationListTest(c.contentsId, reservationDay);
       registedReservationMap[c.contentsId] = {promise : promise};
     }
@@ -132,7 +133,7 @@
         {/each}
       </div>
 
-      {#each Object.keys(registedReservationMap) as contentsId}
+      {#each contents as c}
           <div class="time_schedule">
             <div class="time_schedule_line_box">
               <div class="time_td start"></div>
@@ -140,15 +141,16 @@
                 <TimeTd {...th}/>
               {/each}
             </div>
-            {#await registedReservationMap[contentsId]?.promise}
+            {#await registedReservationMap[c.contentsId]?.promise}
               loading...
             {:then d} 
             <div class="time_schedule_content_box"></div>
-              {#each registedReservationMap[contentsId].data as r}
-                <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
-              {/each}
-              
-              {/await}
+              {#if registedReservationMap[c.contentsId]}
+                {#each registedReservationMap[c.contentsId].data as r}
+                  <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
+                {/each}
+              {/if}
+            {/await}
             </div>
       {/each}
 

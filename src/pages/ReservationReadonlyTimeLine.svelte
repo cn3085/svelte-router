@@ -17,7 +17,6 @@
   export let showScrollDay = dayjs();
 
   $: registedReservationMap = {};
-  let promiseList = [];
 
   let scrollInit = false;
   $: if(showScrollDay !== null && !scrollInit){
@@ -55,20 +54,23 @@
 
 
 
-  async function getRegistReservationListTest(contentsId, reservationDate){
-    const registedReservationList = await ReservationService.getReservationList({
+  function getRegistReservationListTest(contentsId, reservationDate){
+    return ReservationService.getReservationList({
         sdt: reservationDate + ' ' + dayjs(startDate).format('HH:mm:ss'),
         edt: reservationDate + ' ' + dayjs(endDate).format('HH:mm:ss'),
         cId: contentsId
-    });
-    registedReservationMap.contentsId = {data: registedReservationList};
+    }).then((data) => {
+      registedReservationMap[contentsId].data = data;
+      console.log(registedReservationMap);
+    })
   }
-
-
-  async function getAllRegistedReservation(){
+  
+  
+  function getAllRegistedReservation(){
     for( let c of contents){
       const promise = getRegistReservationListTest(c.contentsId, reservationDay);
-      registedReservationMap.contentsId.promise = promise;
+      registedReservationMap[c.contentsId] = {promise : promise};
+      console.log(registedReservationMap);
     }
   }
 
@@ -78,6 +80,7 @@
     startDate = dayjs(operatingStartTime, "HH:mm");
     endDate = dayjs(operatingEndTime, "HH:mm");
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
+    getAllRegistedReservation();
   })
 </script>
 
@@ -98,7 +101,7 @@
         {/each}
       </div>
 
-      {#each contents as c}
+      {#each Object.keys(registedReservationMap) as contentsId}
           <div class="time_schedule">
             <div class="time_schedule_line_box">
               <div class="time_td start"></div>
@@ -106,11 +109,11 @@
                 <TimeTd {...th}/>
               {/each}
             </div>
-            {#await getRegistReservationList(c.contentsId, reservationDay)}
+            {#await registedReservationMap[contentsId]?.promise}
               loading...
-            {:then registedList} 
+            {:then d} 
             <div class="time_schedule_content_box"></div>
-              {#each registedList as r}
+              {#each registedReservationMap[contentsId].data as r}
                 <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
               {/each}
               

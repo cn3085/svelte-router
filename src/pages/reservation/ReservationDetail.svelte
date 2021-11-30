@@ -167,7 +167,7 @@
             const errorMembers = res.data.data;
             const errMessage = errorMembers.map( m => {
                 const memberName = m.name;
-                const registedRservation = m.reservations.map( r => r.startTime + '~' + r.endTime + '/' + r.contents.name).join('');
+                const registedRservation = m.reservations.map( r => dayjs(r.startTime).format('HH:mm') + '~' + dayjs(r.endTime).format('HH:mm') + '/' + r.contents.name).join('');
                 return `${memberName} (${registedRservation})`;
             }).join('\n');
 

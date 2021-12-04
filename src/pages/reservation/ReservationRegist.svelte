@@ -156,18 +156,18 @@
                 const memberName = m.name;
                 const registedRservation = m.reservations.map( r => dayjs(r.startTime).format('HH:mm') + '~' + dayjs(r.endTime).format('HH:mm') + '/' + r.contents.name).join('');
                 return `${memberName} (${registedRservation})`;
-            }).join('\n');
+            }).join('<br/>');
 
             alertError(10000, res.data.message, errMessage);
         }else if(res.status === 200 && res?.data.code === 'R_OVERTIME_USE_MEMBER'){
             const errorMembers = res.data.data;
             const errMessage = errorMembers.map( m => {
                 return `${m.name}(${m.birth}) 현재까지 사용시간: ${m.usedMinute}분`;
-            }).join('\n');
+            }).join('<br/>');
             
             alertError(10000, res.data.message, errMessage);
         }else{
-            alertError(10000, res.data.message, errMessage);
+            alertError(10000, res.data.message);
         }
     }
 

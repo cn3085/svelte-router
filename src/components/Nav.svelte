@@ -115,7 +115,9 @@
               <div class="sub_menu">
                   <ul>
                       <li>
-                          <a href="/statistics" >통계</a>
+                          <a class="sub_name"
+                             class:active_menu={$pathname === '/statistics'}
+                             href="/statistics" >통계</a>
                       </li>
                   </ul>
               </div>
@@ -123,7 +125,7 @@
       </li>
       <li>
           <div class="main_menu" class:active_menu={$pathname.includes('/setting')}>
-              <div class="title" on:click={toggleMenu}>
+            <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/setting.png" alt="" srcset="">
                   </div>
@@ -134,8 +136,8 @@
                   <ul>
                       <li>
                           <a class="sub_name"
-                             href="/setting"
-                             class:active_menu={$pathname === '/setting'}>설정</a>
+                             class:active_menu={$pathname === '/setting'}
+                             href="/setting" >설정</a>
                       </li>
                   </ul>
               </div>

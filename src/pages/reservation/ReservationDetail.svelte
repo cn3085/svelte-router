@@ -6,7 +6,8 @@
     import router from 'page'
     import { onMount, tick } from 'svelte';
     import page from 'page';
-    import dayjs from 'dayjs'
+    import dayjs from 'dayjs';
+    import config from "../../js/config";
     import customParseFormat from "dayjs/plugin/customParseFormat";
     import AutoComplete from 'simple-svelte-autocomplete';
     import DotRed from '../../components/member/DotRed.svelte';
@@ -19,6 +20,7 @@
     import * as SettingService from "../../js/service/SettingService";
 
     dayjs.extend(customParseFormat);
+    let socket;
 
     export let params;
     export let querystring;
@@ -32,6 +34,7 @@
 
     let originReservationStartTime;
     let originReservationEndTime;
+    let originSelectedContents;
 
     let state = 'Y';
 
@@ -141,8 +144,16 @@
             const res = await request.put('/v1/reservations', requestBody);
 
             if(res.status === 200 && res?.data.code === 'SUCC'){
+                let oldSelectedContents = originSelectedContents.contentsId;
+
+                originReservationStartTime = $reservationTimeSelection.startDate;
+                originReservationEndTime = $reservationTimeSelection.endDate;
+                originSelectedContents = selectedContents;
+
+                socket.send(oldSelectedContents);
+                socket.send(selectedContents.contentsId);
+
                 alertSuccess(3000, res.data.message);
-                page.replace('/reservation/detail/' + res.data.data.reservationId);
             }else{
                 handleExpectedException(res);
             }
@@ -169,18 +180,18 @@
                 const memberName = m.name;
                 const registedRservation = m.reservations.map( r => dayjs(r.startTime).format('HH:mm') + '~' + dayjs(r.endTime).format('HH:mm') + '/' + r.contents.name).join('');
                 return `${memberName} (${registedRservation})`;
-            }).join('\n');
+            }).join('<br/>');
 
             alertError(10000, res.data.message, errMessage);
         }else if(res.status === 200 && res?.data.code === 'R_OVERTIME_USE_MEMBER'){
             const errorMembers = res.data.data;
             const errMessage = errorMembers.map( m => {
                 return `${m.name}(${m.birth}) 현재까지 사용시간: ${m.usedMinute}분`;
-            }).join('\n');
+            }).join('<br/>');
             
             alertError(10000, res.data.message, errMessage);
         }else{
-            alertError(10000, res.data.message, errMessage);
+            alertError(10000, res.data.message);
         }
     }
 
@@ -196,6 +207,7 @@
         .then(res => {
             console.log(res);
             if(res.status === 200 && res.data.code === 'SUCC'){
+                socket.send(originSelectedContents.contentsId);
                 alertSuccess(3000, res.data.message);
                 // page.redirect('/reservation/detail/' + reservationId);
                 window.location.reload();
@@ -239,6 +251,8 @@
         selectedMembers = reservationData.members;
         originReservationStartTime = reservationData.startTime;
         originReservationEndTime = reservationData.endTime;
+        originSelectedContents = reservationData.contents;
+
         state = reservationData.state;
         await selectContents(reservationData.contents);
         initTime(reservationData.startTime, reservationData.endTime);
@@ -271,6 +285,29 @@
 
         
         window.scrollTo(0,0);
+
+
+        socket = new WebSocket(config.socketURL);
+
+        socket.onopen = function(e){
+            console.log('socket open.', e);	
+        }
+
+        socket.onmessage = function(e){
+            console.log('socket message', e);
+        }
+
+        socket.onclose = function(e){
+            if(e.wasClean){
+                console.log('socket close. ', e.code, e.reason);
+            }else{
+                console.error('socker close on error. ', e);
+            }
+        }
+
+        socket.onerror = function(e){
+            console.error(e);
+        }
     })
 </script>
 <ContentTitle {titleName}/>
@@ -332,7 +369,7 @@
             <div class:cancel_wrapper={state === 'CANCEL'}></div>
             <div class="form_group">
                 <div class="form_name">
-                    콘텐츠
+                    콘텐츠 - {originSelectedContents?.name}
                 </div>
                 <div class="input_form items_box">
                     {#await getContentsList()}

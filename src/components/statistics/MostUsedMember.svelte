@@ -49,7 +49,7 @@ const options = {
     plugins: {
         title: {
             display: true,
-            text: '예약 많은 순위'
+            text: '콘텐츠별 최다 사용자'
         },
     },
     responsive: true,

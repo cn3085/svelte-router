@@ -33,7 +33,8 @@
     $: membersCount = members.length;
 </script>
 
-<div class="time_registed" style="background-color:{color}90;left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
+<div class="time_registed" style="background-color:{color}95;left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
+    <div class="label" style="border-top-color:{color}"></div>
     <div>
         {dayjs(startTime).format('HH:mm')}
         <div style="display: inline-block;">~</div>
@@ -75,6 +76,15 @@
     white-space: nowrap;
     width: 80%;
     margin: 0 auto;
+}
+.time_registed .label{
+    width: 0;
+    height: 0;
+    border-top: 20px solid;
+    border-right: 20px solid transparent;
+    position: absolute;
+    top: 3px;
+    left: 3px;
 }
 </style>
 

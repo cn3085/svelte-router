@@ -1,10 +1,11 @@
 import { getToken } from "./LoginService";
+import config from '../config'
 import axios from "axios";
 import page from "page";
 
 export function getAxios() {
   let instance = axios.create({
-    baseURL: "http://localhost:8088",
+    baseURL: config.rootURL,
     headers: {
       "X-AUTH-TOKEN": getToken(),
     },

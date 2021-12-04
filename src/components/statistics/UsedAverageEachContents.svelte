@@ -32,7 +32,7 @@
     plugins: {
         title: {
             display: true,
-            text: '콘텐츠별 평균 사용시간'
+            text: '콘텐츠별 평균 예약시간'
         },
     },
     

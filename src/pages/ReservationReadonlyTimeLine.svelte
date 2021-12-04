@@ -83,6 +83,7 @@
     endDate = dayjs(operatingEndTime, "HH:mm");
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     getAllRegistedReservation();
+    moveScrollPerMinute();
 
     socket = new WebSocket(config.socketURL);
 
@@ -112,10 +113,36 @@
 
   onDestroy( async () => {
     console.log('destroy!!!!!!!!!!!');
+    clearInterval(scrollIntervalId);
     socket.close();
   })
+
+  function motivationLeftContentsList(e){
+    const con = document.querySelector('.contents_name_box');
+    let top = e.target.scrollTop;
+    con.scrollTo(0, top);
+    
+    const time = document.querySelector('.time_line');
+    let left = e.target.scrollLeft;
+    time.scrollTo(left, 0);
+  }
+
+  let scrollIntervalId;
+  function moveScrollPerMinute(){
+    scrollIntervalId = setInterval(() => {
+      moveScroll(dayjs())
+    }, 1000 * 60 * 5);
+  }
 </script>
 
+  <div class="time_line">
+    <div class="time_head start">
+      <div class="time_number">{('' + startDate.get('h')).padStart(2, '0')}</div>
+    </div>
+    {#each reservationTimeList as th}
+      <TimeTh endDate= {th.endDate}/>
+    {/each}
+  </div>
   <div class="contents_time_line">
     <div class="contents_name_box">
       {#each contents as c}
@@ -123,15 +150,7 @@
       {/each}
     </div>
 
-    <div class="time_line_box">
-      <div class="time_line">
-        <div class="time_head start">
-          <div class="time_number">{('' + startDate.get('h')).padStart(2, '0')}</div>
-        </div>
-        {#each reservationTimeList as th}
-          <TimeTh endDate= {th.endDate}/>
-        {/each}
-      </div>
+    <div class="time_line_box" on:scroll={motivationLeftContentsList}>
 
       {#each contents as c}
           <div class="time_schedule">
@@ -158,91 +177,94 @@
   </div>
 
 <style>
+  body{
+    overflow: hidden;
+  }
   .contents_time_line{
     display: flex;
   }
   .contents_name_box{
     margin-top: 31px;
+    height: 964px;
+    overflow: hidden;
   }
   .time_line_box{
-        width: 100%;
-        height: 100%;
-        /* border: 1px solid black; */
-        overflow: scroll;
-        overflow-y: hidden;
-    }
-    .time_line{
-        position: fixed;
-        display: flex;
-        width: 100%;
-        align-items: flex-end;
-        margin: 0 20px;
-    }
-    .time_line_box::-webkit-scrollbar {
-      height: 12px;
-    }
-    .time_line_box::-webkit-scrollbar-thumb {
-      background-color: #d1d1d1;
-      border-radius: 5px;
-      background-clip: padding-box;
-      border: 2px solid transparent;
-    }
-    .time_line_box::-webkit-scrollbar-track {
-      background-color: #f1f1f1;
-      border-radius: 5px;
-      box-shadow: inset 0px 0px 5px white;
-    }
-    .time_schedule{
-      margin: 0 20px;
-      position: relative;
-    }
-    
-    .time_schedule_line_box{
-      display: flex;
-    }
-    .time_head.start{
-      width: 0px;
-      height: 10px;
-      margin-top: 20px;
-      border-bottom: 1px solid black;
-      border-left: 1px solid black;
-      position: relative;
-      flex-grow: 0;
-      flex-shrink: 0;
-      flex-basis: auto;
-    }
-    .time_head.start .time_number{
-      position: inherit;
-      color: black;
-      font-size: 16px;
-      left: -9px;
-      top: -22px;
-    }
-    .time_td.start{
-      border-left: 1px solid black;
-      height: 110px;
-      width: 0px;
-      flex-grow: 0;
-      flex-shrink: 0;
-      flex-basis: auto;
-      box-sizing: border-box;
-    }
-    .contents_name{
-      border-radius: 5px;
-      width: 120px;
-      height: 110px;
-      padding: 29px 17px;
-      flex-shrink: 0;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-shadow:  -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-    }
-    :global(.time_td){
-      border-bottom: 1px solid #a6a6a7;
-    }
-    :global(.time_line_box > .time_schedule:nth-child(2)) {
+      width: 1780px;
+      height: 976px;
+      /* border: 1px solid black; */
+      overflow: scroll;
       margin-top: 31px;
-    }
-  </style>
+  }
+  .time_line{
+      position: fixed;
+      display: flex;
+      width: 1780px;
+      overflow: hidden;
+      align-items: flex-end;
+      margin: 0 20px;
+      margin-left: 140px;
+  }
+  .time_line_box::-webkit-scrollbar {
+    height: 12px;
+  }
+  .time_line_box::-webkit-scrollbar-thumb {
+    background-color: #d1d1d1;
+    border-radius: 5px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+  .time_line_box::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 5px white;
+  }
+  .time_schedule{
+    margin: 0 20px;
+    position: relative;
+  }
+  .time_schedule_line_box{
+    display: flex;
+  }
+  .time_head.start{
+    width: 0px;
+    height: 10px;
+    margin-top: 20px;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    position: relative;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
+  }
+  .time_head.start .time_number{
+    position: inherit;
+    color: black;
+    font-size: 16px;
+    left: -9px;
+    top: -22px;
+  }
+  .time_td.start{
+    border-left: 1px solid black;
+    height: 110px;
+    width: 0px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
+    box-sizing: border-box;
+  }
+  .contents_name{
+    border-radius: 5px;
+    width: 120px;
+    height: 110px;
+    padding: 29px 17px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow:  -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+  }
+  :global(.time_td){
+    border-bottom: 1px solid #a6a6a7;
+  }
+</style>

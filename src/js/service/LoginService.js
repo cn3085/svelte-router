@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from '../config'
 
 export const TOKEN_NAME = 'YOUTHCAFEAPPLICATION';
 
@@ -9,7 +10,7 @@ export function getToken(){
 
 export async function doLogin(loginData){
     try{
-        const response = await axios.post('http://localhost:8088/v1/user/login', loginData);
+        const response = await axios.post(config.rootURL + '/v1/user/login', loginData);
         const {code, message, data:token} = response.data;
         if(code === 'SUCC'){
             window.sessionStorage.setItem(TOKEN_NAME, token);

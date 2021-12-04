@@ -28,7 +28,7 @@ onMount( async () => {
 </script>
 
 
-<div>
+<div id="time_table_area">
     {#await promise}
         loading...
     {:then d} 
@@ -37,3 +37,9 @@ onMount( async () => {
                                      {operatingEndTime} />
     {/await}
 </div>
+
+<style>
+    #time_table_area{
+        margin-top: 70px;
+    }
+</style>

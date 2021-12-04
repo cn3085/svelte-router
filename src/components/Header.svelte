@@ -1,18 +1,23 @@
 <script>
+    import page from 'page';
     import {doLogout} from '../js/service/LoginService'
+
+    function goHome(){
+        page.show('/');
+    }
 </script>
 
 <div id="header">
     <div class="top_logo_box">
-        <div class="top_logo_sq">
-            <!-- <img src="/images/common/logo_sq.png" alt="logo_square"> -->
+        <div class="top_logo_sq" on:click={goHome}>
+            <img src="/images/common/logo_sq.png" alt="logo_square">
         </div>
-        <div  class="top_logo_name">
-            <!-- <img src="/images/common/logo_name.png" alt="logo_name"> -->
+        <div  class="top_logo_name" on:click={goHome}>
+            <img src="/images/common/logo_name.png" alt="logo_name">
         </div>
     </div>
     <div class="top_logout_box">
-        <p class="logout_btn" on:click={doLogout}>로그아웃</p>
+        <!-- <p class="logout_btn" on:click={doLogout}>로그아웃</p> -->
     </div>
 </div>
 
@@ -36,10 +41,12 @@
 .top_logo_sq{
     width: 45px;
     margin: 6px 25px;
+    cursor: pointer;
 }
 
 .top_logo_name{
     width: 150px;
+    cursor: pointer;
 }
 .top_logout_box{
     margin-left: auto;

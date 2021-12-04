@@ -108,8 +108,13 @@
 </script>
 
 {#each Object.entries(groupData) as entry}
-    <div style="width:500px;">
-        <p>{entry[0]}</p>
+    <div style="flex:1 1 40%">
+        <p style="font-weight:bolder;">{entry[0]}</p>
         <Bar data={toChartJsData(entry[1])} {options} />
     </div>
 {/each}
+
+
+<style>
+
+</style>

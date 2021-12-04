@@ -33,7 +33,7 @@
     $: membersCount = members.length;
 </script>
 
-<div class="time_registed" style="background-color:{color};left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
+<div class="time_registed" style="background-color:{color}90;left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
     <div>
         {dayjs(startTime).format('HH:mm')}
         <div style="display: inline-block;">~</div>

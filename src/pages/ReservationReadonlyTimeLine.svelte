@@ -172,59 +172,60 @@
         overflow-y: hidden;
     }
     .time_line{
+        position: fixed;
         display: flex;
         width: 100%;
         align-items: flex-end;
         margin: 0 20px;
     }
     .time_line_box::-webkit-scrollbar {
-        height: 12px;
+      height: 12px;
     }
     .time_line_box::-webkit-scrollbar-thumb {
-        background-color: #d1d1d1;
-        border-radius: 5px;
-        background-clip: padding-box;
-        border: 2px solid transparent;
+      background-color: #d1d1d1;
+      border-radius: 5px;
+      background-clip: padding-box;
+      border: 2px solid transparent;
     }
     .time_line_box::-webkit-scrollbar-track {
-        background-color: #f1f1f1;
-        border-radius: 5px;
-        box-shadow: inset 0px 0px 5px white;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      box-shadow: inset 0px 0px 5px white;
     }
     .time_schedule{
       margin: 0 20px;
       position: relative;
     }
-
+    
     .time_schedule_line_box{
       display: flex;
     }
     .time_head.start{
-        width: 0px;
-        height: 10px;
-        margin-top: 20px;
-        border-bottom: 1px solid black;
-        border-left: 1px solid black;
-        position: relative;
-        flex-grow: 0;
-        flex-shrink: 0;
-        flex-basis: auto;
+      width: 0px;
+      height: 10px;
+      margin-top: 20px;
+      border-bottom: 1px solid black;
+      border-left: 1px solid black;
+      position: relative;
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: auto;
     }
     .time_head.start .time_number{
-        position: inherit;
-        color: black;
-        font-size: 16px;
-        left: -9px;
-        top: -22px;
+      position: inherit;
+      color: black;
+      font-size: 16px;
+      left: -9px;
+      top: -22px;
     }
     .time_td.start{
-        border-left: 1px solid black;
-        height: 110px;
-        width: 0px;
-        flex-grow: 0;
-        flex-shrink: 0;
-        flex-basis: auto;
-        box-sizing: border-box;
+      border-left: 1px solid black;
+      height: 110px;
+      width: 0px;
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: auto;
+      box-sizing: border-box;
     }
     .contents_name{
       border-radius: 5px;
@@ -241,4 +242,7 @@
     :global(.time_td){
       border-bottom: 1px solid #a6a6a7;
     }
-</style>
+    :global(.time_line_box > .time_schedule:nth-child(2)) {
+      margin-top: 31px;
+    }
+  </style>

@@ -15,7 +15,7 @@
         on:dismiss={() => dismissToast(t.id)}
       >
         <p class="toast_title">{t.title}</p>
-        <p class="toast_message">{t.message}</p>
+        <p class="toast_message">{@html t.message}</p>
       </Toast>
     {/each}
   </div>

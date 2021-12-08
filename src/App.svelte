@@ -23,30 +23,37 @@
   import Confirm from './pages/Confirm.svelte';
   import ConfirmTest from './pages/ConfirmTest.svelte';
   import Game from './pages/game/Game.svelte';
+  import { isLogin } from './js/service/LoginService';
 
   let page;
   let params;
   let querystring;
 
-  router('/', () => page = Home)
+  router('/', (ctx, next) => {
+    isLogin();
+    next();
+  }, () => page = Home)
   router('/about', () => page = About)
   router('/blog', () => page = ConfirmTest)
   router('/test', () => page = Test)
   router('/game', () => page = Game)
   //////////////////////////////////////////////////////회원
   router('/member', (ctx, next)=> {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = MemberList)
   router('/member/regist', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = MemberRegist)
   router('/member/detail/:id', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
@@ -54,18 +61,21 @@
   }, () => page = MemberDetail)
   //////////////////////////////////////////////////////예약
   router('/reservation', (ctx, next)=> {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = ReservationList)
   router('/reservation/regist', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = ReservationRegist)
   router('/reservation/detail/:id', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
@@ -73,18 +83,21 @@
   }, () => page = ReservationDetail)
   //////////////////////////////////////////////////////콘텐츠
   router('/contents', (ctx, next)=> {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = ContentsList)
   router('/contents/regist', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = ContentsRegist)
   router('/contents/detail/:id', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
@@ -92,13 +105,17 @@
   }, () => page = ContentsDetail)
   ///////////////////////////////////////////////////////통계
   router('/statistics', (ctx, next) => {
+    isLogin();
     $pathname = ctx.pathname;
     params = ctx.params;
     querystring = ctx.querystring;
     next();
   }, () => page = Statistics)
   ///////////////////////////////////////////////////////설정
-  router('/setting', () => page = Setting)
+  router('/setting', (ctx, next) => {
+    isLogin();
+    next();
+  }, () => page = Setting)
   ///////////////////////////////////////////////////////예약표
   router('/timetable', () => page = TimeTable)
   ///////////////////////////////////////////////////////기본

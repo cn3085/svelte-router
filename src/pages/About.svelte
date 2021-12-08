@@ -3,6 +3,7 @@
   import DotBlue from "../components/member/DotBlue.svelte";
   import DotRed from "../components/member/DotRed.svelte";
   import  axios from "axios";
+import { getAxios } from '../js/service/AuthAxios';
 
   let searchKeyword = '';
   $: selecedVersion = [];
@@ -15,16 +16,22 @@
 
 
   async function searchFunction(){
-    const res = await axios.get('https://hdolt.tovair.com/stadmin/system/route/list?brn_code=SOD');
+    const request = getAxios();
+    const res = await request.get('/v1/members/all');
+    console.log(res.data.data);
     return res.data.data;
   }
 
-  function valueFunction(value){
-    if(value !== ''){
-      selecedVersion = [...selecedVersion, value];
-      searchKeyword = '';
+  function valueFunction(member){
+    if(!member){
+        return;
     }
-    console.log(searchKeyword, selecedVersion);
+
+    const sameMember = selectedMembers.filter( m => m.memberId === member.memberId);
+    if(sameMember.length === 0){
+        selectedMembers = [...selectedMembers, member];
+    }
+    searchKeyword = '';
   }
   
   function clearInput(value){
@@ -41,8 +48,7 @@
   bind:selectedItem={searchKeyword}
   searchFunction={searchFunction}
   valueFunction={valueFunction}
-  labelFieldName="version"
-  delay=200
+  labelFieldName="name"
   localFiltering=false
   noResultsText="검색 결과가 없습니다."
   onChange={clearInput}>

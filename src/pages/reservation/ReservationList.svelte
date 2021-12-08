@@ -9,6 +9,7 @@
     import page from 'page';
     import TrReservation from '../../components/reservation/TrReservation.svelte';
     import { onMount, tick } from 'svelte';
+import config from '../../js/config';
     
 
     export let querystring;
@@ -106,6 +107,16 @@
         }
     }
 
+    function downloadExcel(){
+        if(document.excel.sdt.value !== ''){
+            document.excel.sdt.value = document.excel.sdt.value + ' 00:00:00';
+        }
+        if(document.excel.edt.value !== ''){
+            document.excel.edt.value = document.excel.edt.value + ' 00:00:00';
+        }
+        document.excel.submit();
+    }
+
     onMount( async () => {
         contentsList = await getContentsList();
     })
@@ -176,7 +187,7 @@
         </div>
         <div class="form_group form_btn_group">
             <button class="search_btn submit w1" type="button" on:click={searchReservation}>검색</button>
-            <button class="download_btn submit w1" type="button">Download</button>
+            <button class="download_btn submit w1" type="button"  on:click={downloadExcel}>Download</button>
         </div>
     </div>
 </div>
@@ -227,6 +238,17 @@
                     {getList}/> -->
     {/if}  
 </div>
+
+<form name="excel" action={config.excelURL + '/reservations'} style="display:none;">
+    <input type="hidden" name="format" value="xls">
+    <input type="hidden" name="cName" bind:value={searchParam.cName}>
+    <input type="hidden" name="cId" bind:value={searchParam.cId}>
+    <input type="hidden" name="mName" bind:value={searchParam.mName}>
+    <input type="hidden" name="mId" bind:value={searchParam.mId}>
+    <input type="hidden" name="st" bind:value={searchParam.st}>
+    <input type="hidden" name="sdt" bind:value={searchParam.sdt}>
+    <input type="hidden" name="edt" bind:value={searchParam.edt}>
+</form>
 
 <style>
     table{

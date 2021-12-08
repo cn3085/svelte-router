@@ -227,7 +227,6 @@
                         searchFunction={searchFunction}
                         valueFunction={valueFunction}
                         labelFieldName="name"
-                        delay=200
                         localFiltering=false
                         noResultsText="검색 결과가 없습니다.">
                         

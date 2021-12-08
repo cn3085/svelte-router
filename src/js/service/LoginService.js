@@ -4,7 +4,7 @@ import config from '../config'
 export const TOKEN_NAME = 'YOUTHCAFEAPPLICATION';
 
 export function getToken(){
-    const loginToken = window.sessionStorage.getItem(TOKEN_NAME);
+    const loginToken = window.localStorage.getItem(TOKEN_NAME);
     return loginToken;
 }
 
@@ -13,7 +13,7 @@ export async function doLogin(loginData){
         const response = await axios.post(config.rootURL + '/v1/user/login', loginData);
         const {code, message, data:token} = response.data;
         if(code === 'SUCC'){
-            window.sessionStorage.setItem(TOKEN_NAME, token);
+            window.localStorage.setItem(TOKEN_NAME, token);
         }
         return {
             code: code,
@@ -31,7 +31,7 @@ export async function doLogin(loginData){
 
 
 export function doLogout(){
-    window.sessionStorage.removeItem(TOKEN_NAME);
+    window.localStorage.removeItem(TOKEN_NAME);
     window.location.href = '/';
 
 }

@@ -3,7 +3,7 @@
     import DotRed from '../../components/member/DotRed.svelte'
     import DotBlue from '../../components/member/DotBlue.svelte'
     import MembersBaloon from './MembersBaloon.svelte';
-
+    import page from 'page';
     export let reservation = {};
     export let todayStartDate = dayjs();
     export let MINUTE_INTERVAL = 5;
@@ -13,7 +13,7 @@
     let endTime;
     let useMinute;
     let color;
-    let members;
+    $: members = [];
     let leftCount;
     let widthCount;
 
@@ -27,14 +27,20 @@
         let reservationDayDate = dayjs(startTime.format('YYYY-MM-DD') + ' ' + todayStartDate.format('HH:mm'));
         leftCount = startTime.diff(reservationDayDate, 'm') / MINUTE_INTERVAL;
         widthCount = useMinute / MINUTE_INTERVAL;
+
+        // console.log(reservation.reservationId, members)
     }
 
 
     $: membersCount = members.length;
+
+    function showThisReservationPage(){
+        window.open('/reservation/detail/' + reservation.reservationId);
+    }
 </script>
 
 <div class="time_registed" style="background-color:{color}95;left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
-    <div class="label" style="border-top-color:{color}"></div>
+    <div class="label" style="border-top-color:{color}" on:click={showThisReservationPage}></div>
     <div>
         {dayjs(startTime).format('HH:mm')}
         <div style="display: inline-block;">~</div>
@@ -78,6 +84,7 @@
     margin: 0 auto;
 }
 .time_registed .label{
+    cursor: pointer;
     width: 0;
     height: 0;
     border-top: 20px solid;

@@ -16,6 +16,10 @@ export function getAxios() {
       return response;
     },
     (error) => {
+      if (error.response === 'undefined') {
+        console.log(error);
+        return;
+      }
       if (error.response.status === 401) {
         page.replace("/login");
         return;

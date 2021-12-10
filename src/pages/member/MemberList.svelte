@@ -34,7 +34,6 @@ import { empty } from 'svelte/internal';
         page: null
     };
 
-    console.log(searchParam);
 
     const request = getAxios();
 
@@ -129,7 +128,7 @@ import { empty } from 'svelte/internal';
                 연락처
             </div>
             <div class="input_form">
-                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.mp} on:keyup={enterSearch} placeholder="‘-’ 구분없이 입력하세요">
+                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.mp} on:keyup={enterSearch} placeholder="연락처를 입력하세요.">
             </div>
         </div>
         <div class="form_group">

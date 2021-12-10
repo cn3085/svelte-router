@@ -37,8 +37,6 @@ import config from '../../js/config';
 
     let contentsList = null;
 
-    console.log(searchParam);
-
     const request = getAxios();
 
     let pageMaxNumber = 0;

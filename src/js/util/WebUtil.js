@@ -30,7 +30,6 @@ export function getRandomColor() {
 }
 
 export function oppositeColor(c){
-  console.log(c);
   let result = '#';
   let ch = '';
   const list1 = '0123456789ABCDEF';

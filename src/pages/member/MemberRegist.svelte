@@ -81,10 +81,7 @@
             }
         }catch(err){
             console.log(err);
-            console.log( '>>', err.message);
-            console.log(err.response);
-            console.log(err.response.status);
-            if(err.response.status === 401){
+            if(err.response?.status === 401){
                 alertError('로그인 후 시도해주세요.');
                 return;
             }
@@ -188,7 +185,7 @@
                     연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="연락처를 입력하세요.">
                     <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
                         {#if isMyPhoneNumberDuplicate === true}
                             <ErrorIcon/>
@@ -203,7 +200,7 @@
                     연락처2
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="연락처를 입력하세요.">
                 </div>
             </div>
         </div>

@@ -19,7 +19,6 @@
 
   function resumeDismiss() {
     setTimeout(() => dismissToast(id), remainTime);
-    console.log("resume", remainTime);
   }
 
   function pauseDismiss() {

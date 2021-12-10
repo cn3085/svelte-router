@@ -10,7 +10,7 @@ export async function getMostUsedMember(cId, sd, ed) {
     ed: ed,
   });
 
-  console.log(queryString);
+  // console.log(queryString);
 
   const res = await request.get(
     "/v1/statistics/most-used-member?" + queryString

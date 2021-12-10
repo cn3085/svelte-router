@@ -17,7 +17,6 @@
   let scrollInit = false;
   $: if(showScrollDay !== null && !scrollInit){
     // scrollInit = true;
-    console.log(dayjs(showScrollDay))
     moveScroll(dayjs(showScrollDay));
   }
 
@@ -47,7 +46,7 @@
     if(timeLineBox){
       const converShowScrollDay = dayjs(startDate.format('YYYY-MM-DD') + ' ' + showScrollDay.format('HH:mm'));
       const diffMinute = startDate.diff(converShowScrollDay, 'm') * -1 + CENTER_PADDING;
-      console.log(converShowScrollDay, diffMinute, diffMinute / MINUTE_INTERVAL * LINE_WIDTH)
+      // console.log(converShowScrollDay, diffMinute, diffMinute / MINUTE_INTERVAL * LINE_WIDTH)
       timeLineBox.scrollTo({left : diffMinute / MINUTE_INTERVAL * LINE_WIDTH, top: 0, behavior: 'smooth'});
     }
   }
@@ -76,7 +75,7 @@
       {/each}
     </div>
     <div class="time_schedule_content_box"></div>
-      {#each $reservationTimeSelection.registedTimeList as r}
+      {#each $reservationTimeSelection.registedTimeList as r (r.reservationId)}
         <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
         <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
           <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>

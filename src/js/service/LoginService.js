@@ -5,7 +5,8 @@ import page from "page";
 export const TOKEN_NAME = "YOUTHCAFEAPPLICATION";
 
 export function isLogin() {
-  if (getToken() !== undefined || getToken() !== null || getToken() !== "") {
+  const token = getToken();
+  if (token === undefined || token === null || token === "") {
     page.redirect("/login");
   }
 }

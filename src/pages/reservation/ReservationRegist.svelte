@@ -35,7 +35,6 @@
 
         const res = await request.get('/v1/contents/all?er=true');
         if(res.status === 200 && res.data.code === 'SUCC'){
-            console.log(res.data.data);
             return res.data.data;
         }
     }
@@ -79,7 +78,7 @@
         $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId);
         loading.style.display = 'none';
 
-        console.log($reservationTimeSelection.registedTimeList);
+        // console.log($reservationTimeSelection.registedTimeList);
     }
 
     async function getRegistReservationList(contentsId){
@@ -136,9 +135,7 @@
             }
         }catch(err){
             console.log(err);
-            console.log(err.response);
-            console.log(err.response.status);
-            if(err.response.status === 401){
+            if(err.response?.status === 401){
                 alertError('로그인 후 시도해주세요.');
                 return;
             }

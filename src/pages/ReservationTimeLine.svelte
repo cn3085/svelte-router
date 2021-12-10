@@ -28,7 +28,6 @@
     $reservationTimeSelection.endDate = null;
     $reservationTimeSelection.startTimeValue = null;
     $reservationTimeSelection.endTimeValue = null;
-    console.log(startDate, endDate)
     reservationTimeList = getFilledTimeArray(startDate, endDate, MINUTE_INTERVAL);
     $reservationTimeSelection.timeList = reservationTimeList;
   }
@@ -65,7 +64,7 @@
       {/each}
     </div>
     <div class="time_schedule_content_box"></div>
-      {#each $reservationTimeSelection.registedTimeList as r}
+      {#each $reservationTimeSelection.registedTimeList as r (r.reservationId)}
         <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
         <!-- <div class="time_registed" style="background-color:{r.contents.color};left:{70*2}px; width:{r.useMinute / 5 * 70}px" >
           <div>{dayjs(r.startTime).format('HH:mm')} {dayjs(r.endTime).format('HH:mm')}</div>

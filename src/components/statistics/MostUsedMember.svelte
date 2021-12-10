@@ -16,7 +16,6 @@ $: memberNames = memberData.map( d => d.memberName + ' (' +  d.allCount + '건)'
 
 let contentsDataList = [];
 $: {
-    console.log('reload...');
     contentsDataList = [];
     for(let c of contents){
         let contentsData = {};
@@ -69,6 +68,7 @@ onMount( async () => {
 
 async function search(cId, sd, ed){
     memberData = await getMostUsedMember(cId, sd, ed);
+    // console.log(memberData);
 }
 </script>
 

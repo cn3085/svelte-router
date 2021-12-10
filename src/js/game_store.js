@@ -108,13 +108,13 @@ function setAllHab(randomCards) {
             convertToSCBTrinaryArray(third)
           )
         ) {
-          console.log(first, second, third);
+          // console.log(first, second, third);
           hapList.push("" + i + j + k);
         }
       }
     }
   }
-  console.log(hapList);
+  // console.log(hapList);
 }
 
 function convertToSCBTrinaryArray({ shape, color, background }) {
@@ -159,7 +159,7 @@ export function selectCard(i) {
     card.clicked = true;
     selectedCardsIndexList.push(i);
 
-    console.log(selectedCardsIndexList, randomCards);
+    // console.log(selectedCardsIndexList, randomCards);
 
     //3개째면 합 체크, clicked 초기화, selectedCards 초기화
     if (selectedCardsIndexList.length === 3) {

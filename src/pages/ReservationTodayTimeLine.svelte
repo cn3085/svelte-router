@@ -26,6 +26,11 @@
     moveScroll(dayjs(showScrollDay));
   }
 
+  $: {
+    reservationDay;
+    getAllRegistedReservation();
+  }
+
   const MINUTE_INTERVAL = 5;
   const LINE_WIDTH = 70;
   let reservationTimeList = [];
@@ -45,7 +50,6 @@
       timeLineBox.scrollTo({left : diffMinute / MINUTE_INTERVAL * LINE_WIDTH, top: 0, behavior: 'smooth'});
     }
   }
-
 
 
   function getRegistReservationList(contentsId, reservationDate){
@@ -84,6 +88,7 @@
       
     socket.onmessage = function(e){
       console.log('socket message', e);
+      console.log('socket message', e.data);
       let contentsId = e.data;
       getRegistReservationList(contentsId, reservationDay);
     }
@@ -150,11 +155,10 @@
               {/each}
             </div>
             {#await registedReservationMap[c.contentsId]?.promise}
-              loading...
             {:then d} 
             <div class="time_schedule_content_box"></div>
               {#if registedReservationMap[c.contentsId]}
-                {#each registedReservationMap[c.contentsId].data as r (r.reservationId)}
+                {#each registedReservationMap[c.contentsId].data as r}
                   <ReservationTd {MINUTE_INTERVAL} todayStartDate={startDate} {LINE_WIDTH} reservation={r}/>
                 {/each}
               {/if}
@@ -174,12 +178,14 @@
   }
   .contents_name_box{
     margin-top: 31px;
-    height: 964px;
+    height: 698px;
     overflow: hidden;
+    flex-shrink: 0;
   }
   .time_line_box{
-      width: 1780px;
-      height: 976px;
+      flex-shrink: 0;
+      width: 1270px;
+      height: 710px;
       /* border: 1px solid black; */
       overflow: scroll;
       margin-top: 31px;
@@ -187,7 +193,7 @@
   .time_line{
       position: fixed;
       display: flex;
-      width: 1780px;
+      width: 1260px;
       overflow: hidden;
       align-items: flex-end;
       margin: 0 20px;

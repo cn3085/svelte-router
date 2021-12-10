@@ -32,7 +32,9 @@
     let operatingStartTime;
     let operatingEndTime;
 
+    let originReservationStartDate;
     let originReservationStartTime;
+    let originReservationEndDate;
     let originReservationEndTime;
     let originSelectedContents;
 
@@ -45,7 +47,6 @@
 
         const res = await request.get('/v1/contents/all?er=true');
         if(res.status === 200 && res.data.code === 'SUCC'){
-            console.log(res.data.data);
             return res.data.data;
         }
     }
@@ -85,7 +86,7 @@
     
     async function selectContents(contents){
         selectedContents = contents;
-        const reservationDate = dayjs(originReservationStartTime).format('YYYY-MM-DD');
+        const reservationDate = originReservationStartDate;
         const loading = document.querySelector('#loading');
         loading.style.display = 'block';
         $reservationTimeSelection.registedTimeList =  await getRegistReservationList(selectedContents.contentsId, reservationDate);
@@ -131,8 +132,8 @@
         let requestBody = {
             "reservationId" : reservationId,
             "state" : "OK",
-            "startTime" : $reservationTimeSelection.startDate,
-            "endTime" : $reservationTimeSelection.endDate,
+            "startTime" : `${originReservationStartDate} ${$reservationTimeSelection.startTimeValue}:00`,
+            "endTime" : `${originReservationStartDate} ${$reservationTimeSelection.endTimeValue}:00`,
             "contents" : {
                 "contentsId" : selectedContents.contentsId
             },
@@ -146,8 +147,10 @@
             if(res.status === 200 && res?.data.code === 'SUCC'){
                 let oldSelectedContents = originSelectedContents.contentsId;
 
-                originReservationStartTime = $reservationTimeSelection.startDate;
-                originReservationEndTime = $reservationTimeSelection.endDate;
+                originReservationStartTime = $reservationTimeSelection.startTimeValue;
+                
+                originReservationEndTime = $reservationTimeSelection.endTimeValue;
+                
                 originSelectedContents = selectedContents;
 
                 socket.send(oldSelectedContents);
@@ -159,9 +162,7 @@
             }
         }catch(err){
             console.log(err);
-            console.log(err.response);
-            console.log(err.response.status);
-            if(err.response.status === 401){
+            if(err.response?.status === 401){
                 alertError('로그인 후 시도해주세요.');
                 return;
             }
@@ -205,7 +206,6 @@
 
         request.put('/v1/reservations/' + reservationId + '/cancel')
         .then(res => {
-            console.log(res);
             if(res.status === 200 && res.data.code === 'SUCC'){
                 socket.send(originSelectedContents.contentsId);
                 alertSuccess(3000, res.data.message);
@@ -229,7 +229,6 @@
 
         request.delete('/v1/reservations/' + reservationId)
         .then(res => {
-            console.log(res);
             if(res.status === 200 && res.data.code === 'SUCC'){
                 alertSuccess(3000, res.data.message);
                 page.replace('/reservation')
@@ -249,8 +248,13 @@
 
     async function bindReservationData(reservationData){
         selectedMembers = reservationData.members;
-        originReservationStartTime = reservationData.startTime;
-        originReservationEndTime = reservationData.endTime;
+
+        originReservationStartDate = dayjs(reservationData.startTime).format('YYYY-MM-DD');
+        originReservationStartTime = dayjs(reservationData.startTime).format('HH:mm');
+
+        originReservationEndDate = dayjs(reservationData.endTime).format('YYYY-MM-DD');
+        originReservationEndTime = dayjs(reservationData.endTime).format('HH:mm');
+
         originSelectedContents = reservationData.contents;
 
         state = reservationData.state;
@@ -272,7 +276,6 @@
         request.get('/v1/reservations/' + reservationId)
                 .then( async res => {
                     if(res.status === 200 && res.data.code === 'SUCC'){
-                        console.log(res.data.data);
                         promise = await bindReservationData(res.data.data);
                     }else{
                         alertError(5000, '해당 예약의 정보를 조회할 수 없습니다.');
@@ -410,7 +413,7 @@
             <div class:cancel_wrapper={state === 'CANCEL'}></div>
             <div class="form_group">
                 <div class="form_name">
-                    예약 시간 - {dayjs(originReservationStartTime).format('YYYY-MM-DD')} ({dayjs(originReservationStartTime).format('HH:mm')} ~ {dayjs(originReservationEndTime).format('HH:mm')})
+                    예약 시간 - {originReservationStartDate} ({originReservationStartTime} ~ {originReservationEndTime})
                     
                 </div>
                 <div class="input_form">

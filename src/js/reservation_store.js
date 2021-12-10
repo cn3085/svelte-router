@@ -29,7 +29,6 @@ export function setTime(newSDate, newEDate) {
     let chooseStimeToggle = selection.chooseStimeToggle;
     let registedTimeList = selection.registedTimeList;
 
-    console.log('before chooseStimeToggle:' + chooseStimeToggle)
     if (newEDate <= startDate) {
       startDate = newSDate;
       endDate = newEDate;
@@ -80,15 +79,15 @@ export function setTime(newSDate, newEDate) {
     }
 
     
-    console.log({
-      startDate: startDate,
-      endDate: endDate,
-      startTimeValue: dayjs(startDate).format('HH:mm'),
-      endTimeValue: dayjs(endDate).format('HH:mm'),
-      timeList: newAtimeList,
-      chooseStimeToggle: chooseStimeToggle,
-      registedTimeList: registedTimeList,
-    });
+    // console.log({
+    //   startDate: startDate,
+    //   endDate: endDate,
+    //   startTimeValue: dayjs(startDate).format('HH:mm'),
+    //   endTimeValue: dayjs(endDate).format('HH:mm'),
+    //   timeList: newAtimeList,
+    //   chooseStimeToggle: chooseStimeToggle,
+    //   registedTimeList: registedTimeList,
+    // });
     
     return {
       startDate: startDate,
@@ -158,15 +157,15 @@ export function initTime(newSDate, newEDate) {
     }
 
     
-    console.log({
-      startDate: startDate,
-      endDate: endDate,
-      startTimeValue: dayjs(startDate).format('HH:mm'),
-      endTimeValue: dayjs(endDate).format('HH:mm'),
-      timeList: newAtimeList,
-      chooseStimeToggle: chooseStimeToggle,
-      registedTimeList: registedTimeList,
-    });
+    // console.log({
+    //   startDate: startDate,
+    //   endDate: endDate,
+    //   startTimeValue: dayjs(startDate).format('HH:mm'),
+    //   endTimeValue: dayjs(endDate).format('HH:mm'),
+    //   timeList: newAtimeList,
+    //   chooseStimeToggle: chooseStimeToggle,
+    //   registedTimeList: registedTimeList,
+    // });
     
     return {
       startDate: startDate,

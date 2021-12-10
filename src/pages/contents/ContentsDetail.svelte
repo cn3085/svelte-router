@@ -37,10 +37,7 @@
 
 
     function updateContents(){
-        console.log(contents);
         const emptyRequiredKey = requiredCheck(contents);
-
-        console.log(emptyRequiredKey);
         
         if(emptyRequiredKey.length > 0){
             alertError(5000, '이름, 예약가능여부는 필수값입니다.');

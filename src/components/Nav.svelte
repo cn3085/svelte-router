@@ -10,7 +10,7 @@
 
 <nav id="nav">
   <ul>
-      <li>
+      <!-- <li>
           <div class="main_menu">
               <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
@@ -27,34 +27,10 @@
                   </ul>
               </div>
           </div>
-      </li>
+      </li> -->
+      
       <li>
-          <div class="main_menu" class:active_menu={$pathname.includes('/member')}>
-              <div class="title" on:click={toggleMenu}>
-                  <div class="menu_icon">
-                      <img src="/images/common/member.png" alt="" srcset="">
-                  </div>
-                  <div class="menu_name">회원관리</div>
-                  <div class="menu_arrow">></div>
-              </div>
-              <div class="sub_menu">
-                  <ul>
-                        <li>
-                            <a class="sub_name"
-                               class:active_menu={$pathname.includes('/member/regist')}
-                               href="/member/regist" >회원등록</a>
-                        </li>
-                        <li>
-                            <a class="sub_name"
-                               class:active_menu={$pathname === '/member' || $pathname.includes('/member/detail')}
-                               href="/member" >회원조회</a>
-                        </li>
-                  </ul>
-              </div>
-          </div>
-      </li>
-      <li>
-          <div class="main_menu" class:active_menu={$pathname.includes('/reservation')}>
+          <div class="main_menu" class:active_menu={$pathname === '/' || $pathname.includes('/reservation')}>
               <div class="title" on:click={toggleMenu}>
                   <div class="menu_icon">
                       <img src="/images/common/reservation.png" alt="" srcset="">
@@ -66,6 +42,11 @@
                   <ul>
                       <li>
                           <a class="sub_name"
+                             class:active_menu={$pathname === '/' || $pathname.includes('/reservation/today')}
+                             href="/reservation/today" >오늘의 예약</a>
+                      </li>
+                      <li>
+                          <a class="sub_name"
                              class:active_menu={$pathname.includes('/reservation/regist')}
                              href="/reservation/regist" >예약등록</a>
                       </li>
@@ -74,9 +55,39 @@
                              class:active_menu={$pathname === '/reservation' || $pathname.includes('/reservation/detail')}
                              href="/reservation" >예약조회</a>
                       </li>
+                      <li>
+                          <a class="sub_name"
+                             class:active_menu={$pathname === '/timetable'}
+                             href="/timetable" >예약화면</a>
+                      </li>
                   </ul>
               </div>
           </div>
+      </li>
+      <li>
+        <div class="main_menu" class:active_menu={$pathname.includes('/member')}>
+            <div class="title" on:click={toggleMenu}>
+                <div class="menu_icon">
+                    <img src="/images/common/member.png" alt="" srcset="">
+                </div>
+                <div class="menu_name">회원관리</div>
+                <div class="menu_arrow">></div>
+            </div>
+            <div class="sub_menu">
+                <ul>
+                      <li>
+                          <a class="sub_name"
+                             class:active_menu={$pathname.includes('/member/regist')}
+                             href="/member/regist" >회원등록</a>
+                      </li>
+                      <li>
+                          <a class="sub_name"
+                             class:active_menu={$pathname === '/member' || $pathname.includes('/member/detail')}
+                             href="/member" >회원조회</a>
+                      </li>
+                </ul>
+            </div>
+        </div>
       </li>
       <li>
           <div class="main_menu" class:active_menu={$pathname.includes('/contents')}>
@@ -188,7 +199,7 @@
 }
 
 .main_menu.active_menu {
-    height: 105px;
+    height: auto;
 }
 
 .main_menu.active_menu .title {

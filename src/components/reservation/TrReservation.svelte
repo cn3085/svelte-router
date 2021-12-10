@@ -11,7 +11,7 @@
     export let i = 0;
     export let goToDetailPage;
 
-    console.log(reservationId ,contents ,members ,startTime ,endTime ,useMinute ,regDate ,state);
+    // console.log(reservationId ,contents ,members ,startTime ,endTime ,useMinute ,regDate ,state);
 
     let memberNames = members.map( m => m.name).join(',');
     let reservationDate = dayjs(startTime).format('YYYY-MM-DD');

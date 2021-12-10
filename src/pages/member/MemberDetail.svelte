@@ -232,7 +232,7 @@
                     연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="연락처를 입력하세요.">
                 </div>
             </div>
             <div class="form_group">
@@ -240,7 +240,7 @@
                     연락처2
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="‘-’ 구분없이 입력하세요">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="연락처를 입력하세요.">
                 </div>
             </div>
         </div>

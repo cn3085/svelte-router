@@ -1,8 +1,5 @@
 <script>
-import ReservationTimeLine from "../pages/ReservationTimeLine.svelte";
-
     import Login from "../pages/login/Login.svelte";
-    import Statistics from "../pages/statistics/Statistics.svelte";
     import TimeTable from "../pages/timetable/TimeTable.svelte";
     import Header from "./Header.svelte";
     import Nav from "./Nav.svelte";

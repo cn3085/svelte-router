@@ -22,7 +22,7 @@
             t['groupName'] = groupName;
             return t;
         })
-        console.log(dataListWithGroupName);
+        console.log('!!!!!!!!!!!!!!!');
 
         contentsNames = Array.from(new Set(dataListWithGroupName.map( d => d.NAME)));
 
@@ -104,6 +104,7 @@
 
     async function search(cId, sd, ed){
         birthData = await getUsetimeByBirth(cId, sd, ed);
+        groupData = {};
     }
 </script>
 

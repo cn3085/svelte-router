@@ -4,7 +4,7 @@ import { makeQueryString } from "../util/WebUtil";
 export async function getReservationList(searchParam) {
   const request = getAxios();
 
-  console.log(makeQueryString(searchParam));
+  // console.log(makeQueryString(searchParam));
   const res = await request.get("/v1/reservations/contents-timeline?" + makeQueryString(searchParam));
   const data = res.data;
   if (res.status === 200 && data.code === "SUCC") {

@@ -53,10 +53,7 @@
             }
         }catch(err){
             console.log(err);
-            console.log( '>>', err.message);
-            console.log(err.response);
-            console.log(err.response.status);
-            if(err.response.status === 401){
+            if(err.response?.status === 401){
                 alertError('로그인 후 시도해주세요.');
                 return;
             }

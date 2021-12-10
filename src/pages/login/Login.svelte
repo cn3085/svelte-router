@@ -1,28 +1,29 @@
 <script>
+    import page from 'page';
     import {doLogin} from '../../js/service/LoginService';
     import { isUserLogin } from '../../js/service/UserStore.js';
+    import { alertInfo } from '../../js/toast_store';
     
     let username="";
     let password="";
 
     async function submitLogin(){
         if(!username){
-            alert('아이디를 입력해주세요.');
+            alertInfo(3000, '아이디를 입력해주세요.');
             return;
         }
         if(!password){
-            alert('비밀번호를 입력해주세요.');
+            alertInfo(3000, '비밀번호를 입력해주세요.');
             return;
         }
 
         const {code, message} = await doLogin({userId:username, password: password});
 
-        //if(code === 'SUCC'){
-        if(true){
+        if(code === 'SUCC'){
             $isUserLogin = true;
-            window.location.href = '/#/home'
+            page.show('/');
         }else{
-            alert(message);
+            alertInfo(3000, message);
         }
     }
 </script>

@@ -24,6 +24,7 @@
   import ConfirmTest from './pages/ConfirmTest.svelte';
   import Game from './pages/game/Game.svelte';
   import { isLogin } from './js/service/LoginService';
+  import TodayReservationTable from './pages/reservation/TodayReservationTable.svelte';
 
   let page;
   let params;
@@ -31,8 +32,9 @@
 
   router('/', (ctx, next) => {
     isLogin();
+    $pathname = ctx.pathname;
     next();
-  }, () => page = Home)
+  }, () => page = TodayReservationTable)
   router('/about', () => page = About)
   router('/blog', () => page = ConfirmTest)
   router('/test', () => page = Test)
@@ -67,6 +69,13 @@
     querystring = ctx.querystring;
     next();
   }, () => page = ReservationList)
+  router('/reservation/today', (ctx, next)=> {
+    isLogin();
+    $pathname = ctx.pathname;
+    params = ctx.params;
+    querystring = ctx.querystring;
+    next();
+  }, () => page = TodayReservationTable)
   router('/reservation/regist', (ctx, next) => {
     isLogin();
     $pathname = ctx.pathname;
@@ -114,6 +123,7 @@
   ///////////////////////////////////////////////////////설정
   router('/setting', (ctx, next) => {
     isLogin();
+    $pathname = ctx.pathname;
     next();
   }, () => page = Setting)
   ///////////////////////////////////////////////////////예약표

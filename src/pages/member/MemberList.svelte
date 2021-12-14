@@ -128,7 +128,7 @@ import { empty } from 'svelte/internal';
                 연락처
             </div>
             <div class="input_form">
-                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.mp} on:keyup={enterSearch} placeholder="연락처를 입력하세요.">
+                <input class="input w4" type="text" maxlength="15" bind:value={searchParam.mp} on:keyup={enterSearch} placeholder="본인 연락처를 입력하세요.">
             </div>
         </div>
         <div class="form_group">
@@ -189,7 +189,7 @@ import { empty } from 'svelte/internal';
         <th style="width: 15%;">이름</th>
         <th style="width: 20%;">성별</th>
         <th style="width: 20%;">생년월일</th>
-        <th style="width: 20%;">연락처</th>
+        <th style="width: 20%;">본인 연락처</th>
         <th style="width: 20%;">학교</th>
     </thead>
     <tbody>

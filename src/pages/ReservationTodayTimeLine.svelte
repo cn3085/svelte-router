@@ -140,7 +140,7 @@
   <div class="contents_time_line">
     <div class="contents_name_box">
       {#each contents as c}
-        <div class="contents_name" style="background:{c.color};">{c.name}</div>
+        <div class="contents_name" style="background:{c.color};">{@html c.name.replaceAll(' ', '<br/>')}</div>
       {/each}
     </div>
 
@@ -249,6 +249,8 @@
     box-sizing: border-box;
   }
   .contents_name{
+    text-align: center;
+    font-weight: bolder;
     border-radius: 5px;
     width: 120px;
     height: 110px;

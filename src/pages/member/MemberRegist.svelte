@@ -182,10 +182,10 @@
         <div class="form_line">
             <div class="form_group">
                 <div class="form_name">
-                    연락처
+                    본인 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="본인 연락처를 입력하세요.">
                     <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
                         {#if isMyPhoneNumberDuplicate === true}
                             <ErrorIcon/>
@@ -197,10 +197,10 @@
             </div>
             <div class="form_group">
                 <div class="form_name">
-                    연락처2
+                    보호자 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
                 </div>
             </div>
         </div>

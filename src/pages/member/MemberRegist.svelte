@@ -29,7 +29,7 @@
             value : null,
             require : false
         },
-        parentPhoneNumber : {
+        parentsPhoneNumber : {
             value : null,
             require : false
         },
@@ -68,7 +68,7 @@
                 sex: member.sex.value,
                 birth: member.birth.value,
                 myPhoneNumber: member.myPhoneNumber.value,
-                parentPhoneNumber: member.parentPhoneNumber.value,
+                parentsPhoneNumber: member.parentsPhoneNumber.value,
                 address: member.address.value,
                 school: member.school.value,
                 grade: member.grade.value,
@@ -200,7 +200,7 @@
                     보호자 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentsPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
                 </div>
             </div>
         </div>

@@ -10,6 +10,7 @@
 
     const titleName = '회원 등록';
 
+    let isNameDuplicate = undefined;
     let isMyPhoneNumberDuplicate = undefined;
     
     let member = {
@@ -94,14 +95,14 @@
 
     function onKeyupMyPhoneNumber(e){
         member.myPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
-        duplicateCheck();
+        duplicatePhoneCheck();
     }
 
     function onKeyupParentPhoneNumber(e){
         member.parentsPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
     }
 
-    function duplicateCheck(){
+    function duplicatePhoneCheck(){
 
         let myPhoneNumberValue = member.myPhoneNumber.value;
 
@@ -124,6 +125,28 @@
         })
     }
 
+    function duplicateNameCheck(){
+        let nameValue = member.name.value;
+        console.log(nameValue);
+
+        if(nameValue === ''){
+            isNameDuplicate = undefined;
+            return;
+        }
+        const request = getAxios();
+        request.post('/v1/members/duplicate-name?name=' + nameValue)
+        .then(res => {
+            if(res.status === 200 && res.data.code === 'FAIL'){
+                isNameDuplicate = true;
+                alertError(3000, '이미 등록된 이름입니다.');
+            }else if(res.status === 200 && res.data.code === 'SUCC'){
+                isNameDuplicate = false;
+            }
+        })
+        .catch(res => {
+            console.error(res);
+        })
+    }
 
     function fitPhoneNumberAsRegex(phoneString){
         return phoneString.replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-");
@@ -138,7 +161,14 @@
                     이름<span class="necessary">*</span>
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.name.value} placeholder="이름을 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateNameCheck} bind:value={member.name.value} placeholder="이름을 입력하세요.">
+                    <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
+                        {#if isNameDuplicate === true}
+                            <ErrorIcon/>
+                        {:else if isNameDuplicate === false}
+                            <SuccessIcon/>
+                        {/if}
+                    </div>
                 </div>
             </div>
             <div class="form_group">

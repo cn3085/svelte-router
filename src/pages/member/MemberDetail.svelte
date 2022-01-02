@@ -122,7 +122,7 @@
     }
 
 
-    function duplicateCheck(){
+    function duplicatePhoneCheck(){
         let myPhoneNumberValue = member.myPhoneNumber.value;
 
         if(myPhoneNumberValue === ''){
@@ -163,7 +163,7 @@
 
     function onKeyupMyPhoneNumber(e){
         member.myPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
-        duplicateCheck();
+        duplicatePhoneCheck();
     }
 
     function onKeyupParentPhoneNumber(e){

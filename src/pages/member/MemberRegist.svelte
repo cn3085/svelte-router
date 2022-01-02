@@ -92,6 +92,15 @@
         page.show('/member');
     }
 
+    function onKeyupMyPhoneNumber(e){
+        member.myPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
+        duplicateCheck();
+    }
+
+    function onKeyupParentPhoneNumber(e){
+        member.parentsPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
+    }
+
     function duplicateCheck(){
 
         let myPhoneNumberValue = member.myPhoneNumber.value;
@@ -113,6 +122,11 @@
         .catch(res => {
             console.error(res);
         })
+    }
+
+
+    function fitPhoneNumberAsRegex(phoneString){
+        return phoneString.replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-");
     }
 </script>
 <ContentTitle {titleName}/>
@@ -185,7 +199,7 @@
                     본인 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="본인 연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={onKeyupMyPhoneNumber} bind:value={member.myPhoneNumber.value} placeholder="본인 연락처를 입력하세요.">
                     <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
                         {#if isMyPhoneNumberDuplicate === true}
                             <ErrorIcon/>
@@ -200,7 +214,7 @@
                     보호자 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentsPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={onKeyupParentPhoneNumber} bind:value={member.parentsPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
                 </div>
             </div>
         </div>

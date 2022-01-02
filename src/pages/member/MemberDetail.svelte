@@ -6,6 +6,8 @@
     import router from 'page'
     import { onMount } from 'svelte';
     import page from 'page';
+    import ErrorIcon from '../../components/common/icon/ErrorIcon.svelte';
+    import SuccessIcon from '../../components/common/icon/SuccessIcon.svelte';
 
     export let params;
     export let querystring;
@@ -13,6 +15,8 @@
     const memberId = params.id;
 
     const titleName = '회원 조회';
+
+    let isMyPhoneNumberDuplicate = undefined;
     
     let member = {
         name : {
@@ -119,12 +123,25 @@
 
 
     function duplicateCheck(){
+        let myPhoneNumberValue = member.myPhoneNumber.value;
+
+        if(myPhoneNumberValue === ''){
+            isMyPhoneNumberDuplicate = undefined;
+            return;
+        }
         const request = getAxios();
         request.post('/v1/members/duplicate-phone?myPhoneNumber=' + member.myPhoneNumber.value)
-            .then(res => console.log(res))
-            .catch(res => {
-                console.error(res);
-            })
+        .then(res => {
+            if(res.status === 200 && res.data.code === 'FAIL'){
+                // isMyPhoneNumberDuplicate = true;
+                // alertError(3000, '이미 등록된 연락처입니다.');
+            }else if(res.status === 200 && res.data.code === 'SUCC'){
+                // isMyPhoneNumberDuplicate = false;
+            }
+        })
+        .catch(res => {
+            console.error(res);
+        })
     }
 
     onMount(async () => {
@@ -142,6 +159,19 @@
         member.address.value = memberData.address;
         member.school.value = memberData.school;
         member.sex.value = memberData.sex;
+    }
+
+    function onKeyupMyPhoneNumber(e){
+        member.myPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
+        duplicateCheck();
+    }
+
+    function onKeyupParentPhoneNumber(e){
+        member.parentsPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
+    }
+
+    function fitPhoneNumberAsRegex(phoneString){
+        return phoneString.replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-");
     }
 
     onMount(async () => {
@@ -232,7 +262,14 @@
                     본인 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" on:keyup={duplicateCheck} bind:value={member.myPhoneNumber.value} placeholder="본인 연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={onKeyupMyPhoneNumber} bind:value={member.myPhoneNumber.value} placeholder="본인 연락처를 입력하세요.">
+                    <div style="display: inline-block; position: absolute; right: 22px; top: 10px;">
+                        {#if isMyPhoneNumberDuplicate === true}
+                            <ErrorIcon/>
+                        {:else if isMyPhoneNumberDuplicate === false}
+                            <SuccessIcon/>
+                        {/if}
+                    </div>
                 </div>
             </div>
             <div class="form_group">
@@ -240,7 +277,7 @@
                     보호자 연락처
                 </div>
                 <div class="input_form">
-                    <input class="input w4" type="text" maxlength="15" bind:value={member.parentsPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
+                    <input class="input w4" type="text" maxlength="15" on:keyup={onKeyupParentPhoneNumber} bind:value={member.parentsPhoneNumber.value} placeholder="보호자 연락처를 입력하세요.">
                 </div>
             </div>
         </div>

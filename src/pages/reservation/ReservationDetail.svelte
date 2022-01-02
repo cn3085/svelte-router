@@ -38,6 +38,8 @@
     let originReservationEndTime;
     let originSelectedContents;
 
+    let memo;
+
     let state = 'Y';
 
     $ : selectedContents = null;
@@ -131,13 +133,14 @@
         }
         let requestBody = {
             "reservationId" : reservationId,
-            "state" : "OK",
+            "state" : state,
             "startTime" : `${originReservationStartDate} ${$reservationTimeSelection.startTimeValue}:00`,
             "endTime" : `${originReservationStartDate} ${$reservationTimeSelection.endTimeValue}:00`,
             "contents" : {
                 "contentsId" : selectedContents.contentsId
             },
-            "members" : members
+            "members" : members,
+            "memo" : memo
         }
         
         try{
@@ -256,6 +259,9 @@
         originReservationEndTime = dayjs(reservationData.endTime).format('HH:mm');
 
         originSelectedContents = reservationData.contents;
+        state = reservationData.state;
+
+        memo = reservationData.memo;
 
         state = reservationData.state;
         await selectContents(reservationData.contents);
@@ -431,6 +437,16 @@
                 </div>
             </div>
         </div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_name">
+                    메모
+                </div>
+                <div class="input_form">
+                    <textarea class="input w8" cols="40" rows="40" maxlength="500" bind:value={memo}></textarea>
+                </div>
+            </div>
+        </div>
         
         <div class="form_line w10">
             {#if state === 'OK'}
@@ -441,6 +457,9 @@
                     <button class="warn_btn submit w2" type="button" on:click={cancelReservation}>예약 취소</button>
                 </div>
             {:else}
+                <div class="form_group button_group">
+                    <button class="success_btn submit w2" type="button" on:click={updateReservation}>예약 수정</button>
+                </div>
                 <div class="form_group button_group">
                     <button class="warn_btn submit w2" type="button" on:click={removeReservation}>예약 삭제</button>
                 </div>

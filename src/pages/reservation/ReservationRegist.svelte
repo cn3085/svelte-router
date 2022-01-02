@@ -25,6 +25,7 @@
     let operatingEndTime;
     let startDate;
     let endDate;
+    let memo;
 
     let socket;
 
@@ -119,7 +120,8 @@
             "contents" : {
                 "contentsId" : selectedContents.contentsId
             },
-            "members" : members
+            "members" : members,
+            "memo" : memo
         }
         
         try{
@@ -310,6 +312,16 @@
                     {#if selectedContents !== null}
                         <ReservationTimeLine contentsId={selectedContents.contentsId} {operatingStartTime} {operatingEndTime} />
                     {/if}
+                </div>
+            </div>
+        </div>
+        <div class="form_line">
+            <div class="form_group">
+                <div class="form_name">
+                    메모
+                </div>
+                <div class="input_form">
+                    <textarea class="input w8" cols="40" rows="40" maxlength="500" bind:value={memo}></textarea>
                 </div>
             </div>
         </div>

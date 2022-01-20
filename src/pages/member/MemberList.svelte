@@ -27,6 +27,7 @@ import { empty } from 'svelte/internal';
         nm: null,
         st: '',
         ab: null,
+        bb: null,
         mp: null,
         pp: null,
         sch: null,
@@ -44,6 +45,7 @@ import { empty } from 'svelte/internal';
         searchParam.nm =  queryObj.get('nm') ?? null;
         searchParam.st =  queryObj.get('st') ?? '';
         searchParam.ab =  queryObj.get('ab') ?? null;
+        searchParam.bb =  queryObj.get('bb') ?? null;
         searchParam.mp =  queryObj.get('mp') ?? null;
         searchParam.pp =  queryObj.get('pp') ?? null;
         searchParam.sch =  queryObj.get('sch') ?? null;
@@ -231,6 +233,7 @@ import { empty } from 'svelte/internal';
     <input type="hidden" name="nm" bind:value={searchParam.nm}>
     <input type="hidden" name="st" bind:value={searchParam.st}>
     <input type="hidden" name="ab" bind:value={searchParam.ab}>
+    <input type="hidden" name="bb" bind:value={searchParam.bb}>
     <input type="hidden" name="mp" bind:value={searchParam.mp}>
     <input type="hidden" name="pp" bind:value={searchParam.pp}>
     <input type="hidden" name="sch" bind:value={searchParam.sch}>

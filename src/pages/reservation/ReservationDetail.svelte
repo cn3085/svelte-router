@@ -63,9 +63,9 @@
         }
     }
 
-    async function searchFunction(){
+    async function searchFunction(searchWord){
         const request = getAxios();
-        const res = await request.get('/v1/members/all');
+        const res = await request.get('/v1/members/all?nm=' + searchWord);
         return res.data.data;
     }
 

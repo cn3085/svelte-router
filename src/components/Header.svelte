@@ -1,10 +1,37 @@
 <script>
     import page from 'page';
     import {doLogout} from '../js/service/LoginService'
+    import { onMount } from 'svelte';
 
     function goHome(){
         page.show('/');
     }
+
+	let time = new Date();
+
+    let noonDiff = 0
+    let noonName = ''
+    $: if(time.getHours() > 12 ){
+        noonDiff = 12;
+        noonName = '오후';
+    }else{
+        noonDiff = 0;
+        noonName = '오전';
+    }
+    
+	$: hours = (time.getHours() - noonDiff + '').padStart(2, '0');
+	$: minutes = (time.getMinutes() + '').padStart(2, '0');
+	$: seconds = (time.getSeconds() + '').padStart(2, '0');
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			time = new Date();
+		}, 1000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	});
 </script>
 
 <div id="header">
@@ -18,6 +45,9 @@
     </div>
     <div class="top_logout_box">
         <!-- <p class="logout_btn" on:click={doLogout}>로그아웃</p> -->
+    </div>
+    <div class="top_time_box">
+        {noonName} {hours}:{minutes}:{seconds}
     </div>
 </div>
 
@@ -61,4 +91,12 @@
     text-decoration: underline;
     cursor: pointer;
 }
+.top_time_box{
+    color: rgb(255, 255, 255);
+    font-size: 25px;
+    line-height: 61.21px;
+    vertical-align: middle;
+    padding-right: 20px;
+}
+
 </style>

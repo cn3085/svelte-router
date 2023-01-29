@@ -2,7 +2,8 @@
     import dayjs from 'dayjs';
     export let endDate = null;
 
-    const h = dayjs(endDate).get('h');
+    let h = dayjs(endDate).get('h');
+    h = h > 12 ? h - 12 : h;
     const m = dayjs(endDate).get('m');
 </script>
 <div class="time_head hour" class:hour={m === 0} class:half={m === 30}>

@@ -163,7 +163,7 @@
 
     function onKeyupMyPhoneNumber(e){
         member.myPhoneNumber.value = fitPhoneNumberAsRegex(e.target.value);
-        duplicatePhoneCheck();
+        // duplicatePhoneCheck();
     }
 
     function onKeyupParentPhoneNumber(e){

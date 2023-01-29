@@ -42,9 +42,9 @@
 <div class="time_registed" style="background-color:{color}95;left:{leftCount * LINE_WIDTH}px; width:{widthCount * LINE_WIDTH}px">
     <div class="label" style="border-top-color:{color}" on:click={showThisReservationPage}></div>
     <div>
-        {dayjs(startTime).format('HH:mm')}
+        {dayjs(startTime).format('hh:mm')}
         <div style="display: inline-block;">~</div>
-        {dayjs(endTime).format('HH:mm')}
+        {dayjs(endTime).format('hh:mm')}
     </div>
     <div class="member_name">
         {#if members[0].sex === 'M'}
